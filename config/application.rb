@@ -81,6 +81,7 @@ module Ggtracker
 
     # S3 configuration from config/s3.yml
     config.s3 = YAML.load(ERB.new(File.read("#{Rails.root}/config/s3.yml")).result)[Rails.env]
+    config.s3['matchblobs']['bucket'] = ENV['ESDB_MATCHBLOBS_BUCKET'] if ENV['ESDB_MATCHBLOBS_BUCKET']
     
     config.generators do |g|
       # We disable all automatic spec generation because it's annoying behavior
