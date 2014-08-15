@@ -38,3 +38,6 @@ cookbooks
 # Ignore DJs personal files
 journal.txt
 ggtracker_scan
+
+# Ignore nonsense that node installed here
+node_modules
