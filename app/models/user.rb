@@ -134,9 +134,8 @@ class User < ActiveRecord::Base
     builder.pro(self.pro?)
 
     # Assocations.
-    # I tried doing a nice send(), but Jbuilder freaks out for some reason.
-    builder.accounts(accounts) {|json, account| account.to_builder(json)}
-    builder.notifications(notifications) {|json, notification| notification.to_builder(json)}
+    builder.accounts(accounts) {|account| account.to_builder(builder)}
+    builder.notifications(notifications) {|notification| notification.to_builder(builder)}
 
     builder
   end

@@ -21,6 +21,10 @@ describe ReplaysController do
     # about uploads, we never want them to fail.
     # TODO: add tests that demonstrate this better (duplicate replays, etc.)
     it 'should create the replay' do
+      if Rails.configuration.s3['replays']['access_key_id'] == 'YOUR_ACCESS_KEY'
+        pending("can't test this without configuring Amazon S3")
+      end
+
       post :drop, :replay => Rack::Test::UploadedFile.new(@replay_file)
     
       response.status.should == 201 # created
@@ -34,6 +38,10 @@ describe ReplaysController do
     # the upload has been a success and inform the user we're not waiting to
     # process the replay.
     it 'should create the replay with 100% progress' do
+      if Rails.configuration.s3['replays']['access_key_id'] == 'YOUR_ACCESS_KEY'
+        pending("can't test this without configuring Amazon S3")
+      end
+
       post :drop, :replay => Rack::Test::UploadedFile.new(@replay_file)
     
       response.status.should == 201 # created

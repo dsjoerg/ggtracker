@@ -8,38 +8,19 @@ describe User do
   it 'should serialize via jbuilder correctly' do
     expected_keys = [:email, :password, :password_confirmation, :remember_me, :handle]
 
-    user = User.new
+    user = FactoryGirl.create(:user)
     hash = user.to_builder.attributes!
 
     expected_keys.each do |xk|
       hash[xk.to_s].should == user.send(xk)
     end
-    
+
     hash['accounts'].should_not be_nil
-    # hash['replays'].should_not be_nil
     hash['notifications'].should_not be_nil
+
+    hash['accounts'][0].keys.length.should == 23
+    hash['notifications'][0].keys.length.should == 6
   end
-
-  # Handle not required/used anymore currentl
-
-  # it 'should require a handle' do
-  #   user = User.new
-  #   user.handle = nil
-  #   user.valid?.should == false
-  # end
-
-  # it 'should validate the handle to be alphanumeric, mostly' do
-  #   user = FactoryGirl.build(:user)
-  # 
-  #   user.handle = 'EG_IdrA2012'
-  #   user.valid?.should == true
-  # 
-  #   user.handle = 'I pwnz Whitespace'
-  #   user.valid?.should == false
-  # 
-  #   user.handle = 'WHO$)§WOULD%/§DO*THIS*?'
-  #   user.valid?.should == false
-  # end
 
   it 'should require an email' do
     user = User.new
