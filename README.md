@@ -47,14 +47,6 @@ It'll work, but there will be no matches, no players.  To make it more interesti
 And then go to http://localhost:3000/matches in your browser.  If you see recent matches, it's working!
 
 
-### Keeping npm/node updated
-
-update/install npm: `curl https://npmjs.org/install.sh | sh`
-update/install node: `brew install node`
-
-Note: node includes npm, which should be sufficient. If you installed npm before node, you may have to `brew link -f node`
-
-
 ### Testing
 
 #### Ruby (rspec)
@@ -87,3 +79,11 @@ Start testacular: `/usr/local/share/npm/bin/testacular start`
 This will launch a chrome window (you need chrome installed, of course) and automatically monitor specs for changes.
 
 Run all tests: `/usr/local/share/npm/bin/testacular run`
+
+
+### Keeping npm/node updated
+
+update/install npm: `curl https://npmjs.org/install.sh | sh`
+update/install node: `brew install node`
+
+Note: node includes npm, which should be sufficient. If you installed npm before node, you may have to `brew link -f node`
