@@ -1,4 +1,9 @@
-# Gee Gee!
+# NOT YET READY FOR PRIMETIME
+
+I still need to test and streamline the installation procedure for interested developers.
+
+So keep it quiet for now, thanks :)
+
 
 ### Requirements
 
