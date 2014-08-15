@@ -1,0 +1,79 @@
+<%# stylesheet_link_tag "sc2/units" %>
+<style type="text/css" media="screen">
+  .unit {
+    border: black 2px solid;
+    float: left;
+    margin: 0px 10px 20px 0px;
+    position: relative;
+  }
+
+  .unit .name {
+    display: block;
+    position: absolute;
+    left: -2px;
+    bottom: -12px;
+    width: 100%;
+    background: black;
+    padding: 2px;
+    text-align: center;
+    font-size: 10px;
+    color: white;
+    font-weight: bold;
+  }
+
+  h1 {
+    font-size: 200%;
+    font-weight: bold;
+    margin: 20px 0px;
+    clear: both;
+  }
+</style>
+
+<h1>Via sc2.js armyUnits</h1>
+<p>Where is <s>waldo</s> the mothership?</p>
+
+<div id="armyUnits"></div>
+<script type="text/javascript" charset="utf-8">
+  $.each([32, 48, 76], function(__,s) {
+    $('#armyUnits').append('<h1>Size: '+s+'</h1>');
+
+    $.each(Sc2.armyUnits, function(k) {
+      size = s != 76 ? '-'+s : '';
+      $('#armyUnits').append('<div class="unit unit-mpq unit-mpq'+size+'-'+k+'"><span class="name">'+k+'</span></div>');
+    });
+  });
+</script>
+
+<h1>From MPQ</h1>
+
+<% for unit in unitnames_in_order('p') %>
+  <div class="unit unit-mpq unit-mpq-<%= unit %>">
+    <span class="name"><%= unit %></span>
+  </div>
+<% end %>
+
+<h1>MPQ small</h1>
+
+<% for unit in unitnames_in_order('p') %>
+  <div class="unit unit-mpq-32 unit-mpq-32-<%= unit %>">
+    <span class="name"><%= unit %></span>
+  </div>
+<% end %>
+
+<h1>Modelviewer</h1>
+
+<% for unit in unitnames_in_order('p') %>
+  <div class="unit unit-gen unit-gen-<%= unit %>">
+    <span class="name"><%= unit %></span>
+  </div>
+<% end %>
+
+<h1>Holy @#%$, it's moving!<br />Well, it's wiggling.. I screwed up the cropping on my last export</h1>
+
+
+<% for unit in unitnames_in_order('p') %>
+  <div class="unit">
+    <img src="/assets/sc2/units/gen/<%= unit %>.gif" />
+    <span class="name"><%= unit %></span>
+  </div>
+<% end %>

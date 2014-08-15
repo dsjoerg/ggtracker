@@ -1,0 +1,16 @@
+<div id="home">
+  <div class="content">
+    <div class="hookline">
+      <% hooklines = [
+        '<div class="light">Measure and track your Starcraft skills</div><div><span class="light">so you can</span> <span class="semibold">get better faster</span></div>',
+        ]%>
+      <%=raw hooklines[rand(hooklines.size)] %>
+    </div>
+
+    <div class="boxes">
+      <div class="dialog-signup">
+        <%= render 'dialogs/join_aio' %>
+      </div>
+    </div>
+  </div>
+</div>

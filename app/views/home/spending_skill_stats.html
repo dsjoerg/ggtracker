@@ -1,0 +1,40 @@
+<% content_for(:head) do %>
+  <title>Spending Skill Stats</title>
+  <meta name="Description" content="Spending Quotient (SQ) measures a Starcraft II player's spending skill.  See stats from over 100,000 games, broken out by league, race and more.">
+<% end %>
+
+<div id="static" ng-controller="SpendingCalcController">
+  <div id="spending">
+    <div class="filters-wrap">
+      <ul class="filters">
+        <li class="filter" style="border-right: none;"><span class="name">SPENDING SKILL STATS</span></li>
+        <li class="filter race" style="border-left: none"><raceselect name="race"/></li>
+        <li class="filter"><ggselect class="gateway" name="gateway" values="AM:am,EU:eu" selected="us"/></li>
+      </ul>
+    </div>
+  </div>
+  <div class="content spending_skill">
+    <div class="static_inner">
+      <div class="chart">
+       <span class="djcloak title">{{ race }} Spending Quotient vs Game Length<br>({{ gg.regionname[gateway] }} region, {{ ss.totalgames }} matches)</span>
+       <div class="canvas"></div>
+      </div>
+      <div class="sqcalc">
+        <h3>Compute Your Spending Quotient</h3><br>
+        <p>
+          <label>Resource Collection Rate (Income)</label>
+          <input type="text" ng-model="inc" placeholder="Enter RCR here">
+        </p>
+        <p>
+          <label>Average Unspent Resources</label>
+          <input type="text" ng-model="aur" placeholder="Enter AUR here">
+        </p>
+        <p>
+          <label>Spending Quotient</label>
+          <span class="djcloak sq"><b>{{ sq }}</b></span>
+        </p>
+      </div>
+      <p>GGTracker can compute your Spending Quotient and Spending Skill<a href class="ggtipper2 tiny" style="vertical-align:super" title="Spending Skill = what league your Spending Quotient and game length correspond to for your race and region">*</a> for every game you play, with pretty charts to help you stay on top of your macro.  <a class="signup" href>Sign up</a> and we'll retrieve your Spending Quotient and Spending Skill after every replay you upload.</p>
+    </div>
+  </div>
+</div>

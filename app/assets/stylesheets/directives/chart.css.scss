@@ -1,0 +1,26 @@
+.title {
+  display: block;
+  font-size: 12px;
+  text-transform: uppercase;
+  text-align: center;
+  @include opacity(0.4);
+  margin-bottom: 10px;
+  margin-top: 10px;
+}
+
+.cloudfront {
+  text-align: right;
+}
+
+.title.lefty {
+  text-align: left;
+  display: inline-block;
+}
+
+.chart {
+  .canvas {
+    width: 310px;
+    height: 150px;
+// height is also in areachart.js.  could not DRY it up due to show/hide behavior.
+  }
+}

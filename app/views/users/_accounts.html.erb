@@ -1,0 +1,101 @@
+<div class="accounts">
+  <ul>
+    <li class="uaccount {{ account.state }}" ng-repeat="account in user.accounts" data-account="account" data-user="user" ng-class="{new: !account.id}">
+      <a href="/players/{{ account.identity_id }}/{{ account.name }}"><div class="portrait" style="{{ account.portrait_css }}">
+      </div></a>
+
+      <form name="form">
+        <div class="name large">
+          <div class="status state-authed">
+            <span class="icon icon-check-white-24">authenticated</span>
+          </div>
+
+          <a href class="status state-queued" data-placement="top" data-content="we are updating your account, please stand by" data-original-title="updating">
+            <span class="icon icon-warning-white-24">updating</span>
+          </a>
+
+          <span ng-hide="!account.synced">
+            <span class="name"><a href="/players/{{ account.identity_id }}/{{ account.name }}">{{ account.name }}</a>
+            </span>
+            <% if current_user.pro? %>
+              <div class="icon icon-star-32" ng-show="user.primary_account_id == account.id"></div>
+            <% end %>
+          </span>
+        </div>
+
+        <div>
+          <input type="text" ng-model="account.profile_url" class="profile_url" name="profile_url" placeholder="Type in your Battle.Net Profile Link" ui-validate="validateBnetUrl"/><br/>
+          <a href class="ggtipper underline clicky" ng-click="toggle()" data-gravity="nw"><span class="tiny" >Example</span></a>
+            <div class="ggtipcontent">
+            <div id="find-your-profile" class="settings-tip">
+            <p>Tell us about your Battle.Net Account so we can customize GGTracker for you. Here's how:</p><br>
+
+            <ul>
+            <li>Log into Battle.Net by clicking <a target="_blank" href="http://battle.net/sc2?login">here</a></li>
+            <li>In Battle.Net, right-click on your account name</li>
+            <li>Select Copy Link Address</li>
+            <li>Paste it into the box above, and hit the SAVE button.</li>
+            </ul>
+            </div>
+            </div>
+          <span>: http://us.battle.net/sc2/en/profile/637188/1/Zoulas/</span>
+          <span class="error" ng-show="form.profile_url.$error.validator">error!</span>
+        </div>
+
+      
+        <div ng-show="account.checked && !account.authenticated">
+          <a href class="button-orange ggtipper">authenticate</a>
+          <div class="auth">
+            <div id="prove-yourself" class="prove-yourself">
+              <p>Please prove you are the owner of this Battle.Net account. In SC2, change:</p>
+
+              <div class="portrait-current">
+                <span>your current portrait</span>
+                <div class="portrait" style="{{ account.portrait_css }}"></div>
+              </div>
+
+              <div class="portrait-expected">
+                <span>to this portrait:</span>
+                <div class="portrait" style="{{ account.expected_portrait_css }}"></div>
+              </div>
+
+              <p>and then hit the UPDATE button.  Afterwards, you may change your portrait back.</p>
+              <br>
+              <p>(There's a bug with the 4th Anniversary portraits, please change to something else for the authentication process)</p>
+            </div>
+          </div>
+          <br />
+          <span class="tiny"> &nbsp; </span>
+        </div>
+
+        <div>
+          <a href class="action button" ng-click="save()">save</a><br />
+          <span class="tiny"> &nbsp; </span>
+        </div>
+
+        <% if current_user.pro? %>
+        <div ng-show="user.primary_account_id != account.id">
+          <a href class="button" ng-click="makePrimary()">make primary</a><br />
+          <span class="tiny"> &nbsp; </span>
+        </div>
+        <% end %>
+
+        <div>
+          <a href class="button" ng-click="delete()">delete</a><br />
+          <span class="tiny"> &nbsp; </span>
+        </div>
+
+        <div ng-show="account.checked && account.authenticated">
+          <a href class="button" ng-click="delete_all_matches()">delete all matches</a><br />
+          <span class="tiny"> &nbsp; </span>
+        </div>
+
+      </form>
+    </li>
+  </ul>
+  <% if current_user.pro? %>
+  <a class="add" href ng-click="addAccount()">GGTracker Pro: Add Another Account</a>
+  <br>
+  <a class="add" href="cancel">Cancel GGTracker Pro</a>
+  <% end %>
+</div>

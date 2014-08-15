@@ -1,0 +1,282 @@
+// user accounts directive
+// angular/directives/accounts.js
+
+$stripe-size: 50px;
+$stripe-color: rgba(255, 154, 26, 1);
+
+@include keyframes(move) {
+  0%    { background-position: 0; }
+  100%  { background-position: 100%; }
+}
+
+$accounts-inactive-background: #EEE;
+$accounts-active-background: #FFF;
+
+.htmltip {
+
+  .prove-yourself {
+    max-width: 200px;
+  }
+
+  .settings-tip {
+    line-height: 16px;
+    a, a:visited {
+      text-decoration: underline;
+    }
+    max-width: 300px;
+    ul {
+      padding-left: 20px;
+      list-style-type: disc;
+      li {
+        padding-bottom: 2px;
+      }
+    }
+  }
+
+  .portrait {
+    width: 75px;
+    height: 75px;
+    display: inline-block;
+  }
+
+  .portrait-expected,
+  .portrait-current {
+    width: 50%;
+    text-align: center;
+    margin: 10px 0px;
+  }
+
+  .portrait-current {
+    float: left;
+  }
+  
+  .portrait-expected {
+    float: right;
+  }
+}
+
+
+
+.accounts {
+  position: relative;
+//  margin-top: 25px;
+
+  .add {
+    @include button2();
+    margin-bottom: 15px;
+    text-align: center;
+    font-weight: $extrabold;
+    text-transform: uppercase;
+    font-size: 16px;
+    overflow: hidden;
+    cursor: pointer;
+    margin-left: 50px;
+  }
+  
+  ul {
+    li {
+      display: inline-block;
+//      background: rgba(0,0,0,.1);
+      @include border-radius(2px);
+
+//      padding: 5px;
+      margin-bottom: 10px;
+
+      .charcode {
+        display: none;
+      }
+      
+      div.portrait {
+        float: left;
+        width: 75px;
+        height: 75px;
+        position: relative;
+        @include border-radius(1px);
+
+        margin-right: 5px;
+
+        // Maybe put it inside the portrait? This is left here just in case..
+        .status {
+          position: absolute;
+          top: 8px;
+          left: 3px;
+          
+          background: white;
+        }
+      }
+
+      .status {
+        @include border-radius(2px);
+      }
+
+      form {
+        display: inline-block;
+
+        > div {
+          display: inline-block;
+          position: relative;
+
+          // I wanted to display "invalid battle.net url" somewhere, but just 
+          // can't decide how, where, what right now..
+          span.error {
+            display: none;
+          }
+        }
+
+        .icon-star-32 {
+          position: relative;
+          top: -5px;
+        }
+
+        > div.name {
+          display: block;
+          clear: right;
+//          margin-top: 5px;
+          margin-bottom: 10px;
+
+          span.name {
+//            margin-right: 15px;
+          }
+        }
+
+        input[type=text] {
+          font-size: 14px;
+          padding: 6px 8px;
+          border: $gray-light 1px solid;
+
+          // @include opacity(0.65);
+          background: $accounts-inactive-background;
+
+          &:hover {
+            background: $accounts-inactive-background;
+          }
+
+          &:active, &:focus {
+            // @include opacity(1.0);
+            background: $accounts-active-background;
+          }
+        }
+
+        input.profile_url {
+          width: 400px;
+        }
+
+        input.character_code {
+          width: 150px;
+        }
+
+        div.why {
+          position: relative;
+          top: -15px;
+          right: -15px;
+        }
+
+        a.button, a.button-orange {
+          text-align: center;
+          font-weight: $extrabold;
+          text-transform: uppercase;
+          overflow: hidden;
+          cursor: pointer;
+          position: relative;
+          top: -3px;
+        }
+        
+        input.ng-invalid-validator {
+          border: red 1px solid;
+          @include box-shadow(0px 0px 6px rgba(255, 0, 0, 0.3));
+        }
+      }
+
+      .status {
+        display: inline-block;
+        // width: 150px;
+        margin: 0px 5px;
+      }
+      
+      // .info { display: none; }
+      // authentication status, help popover, etc.
+      .auth { 
+        display: none; 
+      }
+    }  // li
+
+    // Account when not authenticated
+    li.unauthed {
+      .state-authed, .state-queued { display: none; }
+
+      .status {
+        background: lighten(desaturate(red, 25%), 10%);
+      }
+    }
+
+    // Account when fully authenticated
+    li.authed {
+      .state-unauthed, .state-queued { display: none; }
+
+      // I'm red/green blind.. I can barely see the difference here. Someone
+      // that is not blind should probably adjust these to look good ;)
+      // TODO
+      .status {
+        background: lighten(desaturate(green, 25%), 10%);
+      }
+      
+      .charcode {
+        display: inline-block;
+      }
+    }
+
+    // Account when synced, but not scraped yet
+    li.queued {
+      .state-unauthed, .state-authed { display: none; }
+
+      // This is a nice experiment, but IE9 doesn't support animations and
+      // for some reason the background-size jumps around here..
+      // So, we'll use an image (might want to animate it as gif)
+      /*
+      @include background-size($stripe-size);
+      @include background(linear-gradient(-45deg, $stripe-color 25%, transparent 25%, transparent 50%, $stripe-color 50%, $stripe-color 75%, transparent 75%, transparent));
+      */
+
+      // Turns out I hate the image, it might be cooler with a more subtle 
+      // image though.. so, a spinner it is. (Also, IE9 still doesn't support 
+      // animation.)
+      /*
+      background: image-url('stripe.png') 0px 0px repeat-x;
+      @include animation(move 4s linear infinite);
+      */
+      
+      background: transparent;
+
+      // Maybe have the spinner on the input?
+      /*
+      input.profile_url {
+        background: image-url('spinner1.gif') 8px 8px no-repeat $accounts-inactive-background;
+        padding-left: 32px;
+        padding-right: 8px; // defined elsewhere, here to be safe.
+        width: 476px;
+
+        &:active, &:focus {
+          background-color: $accounts-active-background;
+        }
+      }
+      */
+
+      // I think using a status icon might be nicer.
+      .status .icon {
+        background: image-url('spinner-18.gif') 3px 3px no-repeat transparent;
+      }
+    }
+
+    // Account when unsaved (has no ID)
+    li.new {
+      .state-authed, .state-unauthed, .state-queued { display: none; }
+
+      background: transparent;
+
+      // just preserving the space here real quick
+      .status { display: none; }
+      // input.profile_url { margin-left: 38px; }
+    }
+  }
+}
+

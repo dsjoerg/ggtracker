@@ -1,0 +1,7 @@
+<div class="chart armychart {{ classes }}">
+  <h2>{{ name }}</h2>
+  <div style="width: {{ width }}; height: {{ height }}px" class="canvas"></div>
+  <div id="timebar" style="left: {{ timebarleft }}px"><span style="width: {{ timebarwidth }}px; height: {{ timebarheight }}px"></span>
+    <div ng-show="currentTime" id="timecode"><span> {{ currentTime }} </span></div>
+  </div>
+</div>

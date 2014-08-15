@@ -1,0 +1,51 @@
+<% content_for(:head) do %>
+  <title>API</title>
+  <meta name="Description" content="GGTracker has an API.">
+<% end %>
+
+<div id="static">
+  <div class="content spending_skill">
+    <div class="static_inner">
+      <h1>API</h1>
+      <ul>
+        <li>This API is experimental. We might shut it down at any time.</li>
+        <li>Please contact us before using the API.  If people are using this API, we can prioritize supporting it.</li>
+        <li>It's not perfect but it works.</li>
+        <li>Limit yourself to one request per second.  If you need to go faster than that, please contact us and we'll arrange for a bulk download.</li>
+        <li>All results are in JSON.  For maximum enjoyment of the following examples, install <a href="https://chrome.google.com/webstore/detail/jsonview/chklaanhfefbnpoihckbnefhakgolnmc">JSONview for Chrome</a> or something like that.
+      </ul>
+      <br>
+      <br>
+      <b>Retrieve simple details for a GGTracker player</b>
+      <p>
+        Use the player's GGTracker ID, like this:
+        <a href="http://api.ggtracker.com/api/v1/identities/1455.json">http://api.ggtracker.com/api/v1/identities/1455.json</a>
+      </p>
+      <b>Retrieve simple details for a GGTracker match</b>
+      <p>
+        Use the match's GGTracker ID, like this:
+        <a href="http://api.ggtracker.com/api/v1/matches/3529593.json">http://api.ggtracker.com/api/v1/matches/3529593.json</a>
+      </p>
+      <b>Retrieve extended details for a GGTracker match</b>
+      <p>
+        Use the match's GGTracker ID, like this:
+          <a href="https://gg2-matchblobs-prod.s3.amazonaws.com/3529593">https://gg2-matchblobs-prod.s3.amazonaws.com/3529593</a>
+      </p>
+      <b>Retrieve match details for a GGTracker player's latest ten PvT 1v1 ladder matches</b>
+      <p>
+        <a href="http://api.ggtracker.com/api/v1/matches?category=Ladder&game_type=1v1&identity_id=1455&page=1&paginate=true&race=protoss&vs_race=terran">http://api.ggtracker.com/api/v1/matches?category=Ladder&game_type=1v1&identity_id=1455&page=1&paginate=true&race=protoss&vs_race=terran</a>
+      </p>
+      <b>Retrieve average APM for a GGTracker player</b>
+      <p>
+        <a href="http://api.ggtracker.com/api/v1/matches?identity_id=1455&paginate=true&stats=apm(avg:[<1455])">http://api.ggtracker.com/api/v1/matches?identity_id=1455&paginate=true&stats=apm(avg:[&lt;1455])</a>
+      </p>
+      <b>Retrieve Spending Skill for 1v1 Ladder matches</b>
+      <p>
+        <a href="http://api.ggtracker.com/api/v1/matches?category=Ladder&game_type=1v1&identity_id=1455&paginate=true&stats=spending_skill(avg:[<1455])">http://api.ggtracker.com/api/v1/matches?category=Ladder&game_type=1v1&identity_id=1455&paginate=true&stats=spending_skill(avg:[&lt;1455])</a><br>
+        0.0 is bronze average, 1.0 is silver average, 2.0 gold, 3.0 plat, 4.0 diamond, 5.0 master, 6.0 grandmaster average.
+      </p>
+      <br><br><br>
+      <p>Anything you see on the GGTracker website is accessible via the API as well.  Have a question?  Want something not documented here?  Just ask!</p>
+    </div>
+  </div>
+</div>

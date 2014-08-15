@@ -1,0 +1,160 @@
+// Notes: I've decided to steal quite a lot from bootstrap - I like some of
+// their code, but am absolutely against blanket inclusion and usage of it.
+// If you want to implement one of their elements - they use a style similar to
+// mine. Just pick from their less components:
+// https://github.com/twitter/bootstrap/tree/master/less
+// And translate it into SCSS :) (Also, LESS is bad because I don't want a js
+// interpreter delivering my CSS. I think SCSS is superior to LESS.)
+
+// Reset.
+
+@import "compass/reset";
+@import "compass/css3";
+
+$experimental-support-for-svg: true;
+
+@import "compass/css3/images";
+@import "compass/css3/border-radius";
+@import "compass/css3/box-shadow";
+@import "compass/css3/transition";
+@import "compass/css3/text-shadow";
+@import "compass/css3/transform";
+@import "compass/css3/animation";
+@import "compass/css3/filter";
+@import "compass/typography/text/ellipsis";
+
+// Variables
+// Note: mixins go into mixins/ - variables can stay here for now
+
+$gg-baseline-height: 14px;
+$gg-width: 1024px;
+$bg: #f7f4ef;
+$fg: black;
+
+$black: black;
+$white: white;
+
+$link-color: #111;
+
+$gray-white: #ccc;
+$gray-light: #999;
+$gray-medium: #666;
+$gray-dark: #1d1d1d;
+
+// Generic / Global
+
+@import "typo.css.scss";
+@import "grid.css.scss";
+@import "ui/spinner.css.scss";
+@import "layout.css.scss";
+@import "sc2/various.css.scss";
+
+// Sprite Maps
+@import "compass/utilities/sprites";
+@import "sc2/sprites.css.scss";
+@import "sc2/units.css.scss";
+@import "ui/icons.css.scss";
+
+@import "debug.css.scss";
+
+// Generic UI components
+
+// Remix of select2's default css
+@import "vendor/select2.css.scss";
+
+// mixins and other shared styles for the UI - it might need other UI parts
+// so keep them in correct order for now.
+@import "ui/buttons.css.scss";
+@import "ui/shared.css.scss";
+@import "ui/notifications.css.scss";
+@import "ui/tables.css.scss";
+@import "ui/forms.css.scss";
+@import "ui/heading.css.scss";
+@import "ui/progress.css.scss";
+@import "ui/dialogs.css.scss";
+
+// Taken pretty much directly from bootstrap
+@import "ui/tooltips.css.scss";
+@import "ui/popovers.css.scss";
+@import "ui/dropdowns.css.scss";
+@import "ui/pagination.css.scss";
+@import "ui/errors.css.scss";
+
+// Directives / Widgets
+// (small generic parts too for now, unless UI specific)
+
+@import "directives/chart.css.scss";
+@import "directives/uploads.css.scss";
+@import "directives/army.css.scss";
+@import "directives/select.css.scss";
+@import "directives/matches.css.scss";
+@import "directives/mapselect.css.scss";
+@import "directives/matchmap.css.scss";
+
+// Our slider directive uses jquery-ui slider
+@import "directives/slider.css.scss";
+
+@import "directives/filter.css.scss";
+
+// Controllers / Pages
+// can be as specific as controllers/controller_name/action if necessary
+
+// @import "controllers/castersheet.css.scss";
+@import "controllers/home.css.scss";
+@import "controllers/go_pro.css.scss";
+@import "controllers/static.css.scss";
+@import "controllers/tour.css.scss";
+@import "controllers/spending_skill.css.scss";
+@import "controllers/matches.css.scss";
+@import "controllers/accounts.css.scss";
+@import "controllers/players.css.scss";
+@import "controllers/users.css.scss";
+@import "controllers/replays.css.scss";
+
+// LULZ
+
+// it's CSS3 and animated gifs working in tandem. 
+// Don't let <marquee> hear about this.
+
+@include keyframes(run) {
+  0%  { 
+    left: 0%;
+  }
+  100%{ 
+    left: -10%;
+  }
+}
+
+.invert {
+  @include filter(invert(100%));
+}
+
+.djcloak {
+  display: none;
+}
+
+.runforthehills {
+//  position: absolute;
+//  bottom: -2px;
+  margin-top: 50px;
+  margin-left: 50px;
+  width: 100%;
+
+  .animation {
+    position: absolute;
+    left: 50%;
+  }
+
+  .runner, .shadow {
+    position: absolute;
+    bottom: 0px;
+  }
+  
+  .shadow {
+    @include transform(skew(300deg));
+    @include opacity(0.2);
+    width: 140px;
+    height: 20px;
+    left: 25px;
+  }
+}

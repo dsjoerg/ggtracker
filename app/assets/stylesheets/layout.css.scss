@@ -1,0 +1,433 @@
+// Global Layout file
+// footer, header, background - globally visible elements are defined here
+
+// A bunch of (temporary?) generic mixins
+@mixin center {
+  width: $gg-width;
+  margin: 0px auto;
+}
+
+// "inset" block, should contain .content which @includes center.
+// should not exist within another center element, but can.
+@mixin inset {
+  background: $gray-dark;
+
+  border-top: black 2px solid;
+  border-bottom: #2c2c2c 1px solid;
+
+  @include background(linear-gradient(#272727 5%, #2e2e2e 15%, #1d1d1d 70%));
+
+  .content {
+    @include center;
+
+    color: $bg;
+  }
+}
+
+// background taken from bernats PSD, noisy grid
+@mixin background-noisegrid {
+  background: image-url('noisegrid.jpg');
+
+  // it's dark, we can default all logos to white in it :)
+  .logo40 { background: image-url('logo40w.png') right center transparent no-repeat; }
+  .logo30 { background: image-url('logo30w.png') right center transparent no-repeat; }
+  .logo20 { background: image-url('logo20w.png') right center transparent no-repeat; }
+  .logo10 { background: image-url('logo10w.png') right center transparent no-repeat; }
+}
+
+a, a:visited {
+  text-decoration: none;
+  color: $fg;
+}
+
+a:hover {
+  color: $gray-dark;
+}
+
+// Collection of oneliners
+em, b { font-weight: bold; }
+.clear { clear: both; line-height: 0px; height: 0px; }
+
+// help! (TODO)
+.help {
+  text-decoration: none;
+}
+
+.icon-help {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  font-weight: $extrabold;
+  cursor: pointer;
+  text-align: center;
+  font-size: 16px;
+  line-height: 16px;
+  border-bottom: purple 1px dashed;
+}
+
+// some logo styling, might want to get these into sprites too
+.logo {}
+
+.logo40 {
+  background: image-url('logo40.png') right center transparent no-repeat;
+  padding-right: 60px;
+}
+
+.logo30 {
+  background: image-url('logo30.png') right center transparent no-repeat;
+  padding-right: 50px;
+}
+
+// 20 is actually 14 high because I wanted it to fit the header
+.logo20 {
+//  background: image-url('//assets/logo20.png') right center transparent no-repeat;
+  background: image-url('logo20.png') right center transparent no-repeat;
+  padding-right: 30px;
+}
+
+.logo21 {
+  padding-right: 42px;
+}
+
+.logo10 {
+  background: image-url('logo10.png') right center transparent no-repeat;
+  padding-right: 20px;
+}
+
+body {
+  background: $bg;
+  color: $fg;
+  
+  // We are using a base font-size of 14px across the site, use percentages
+  // wherever possible. However, modern browsers are capable of zooming without
+  // simply increasing font-size ..so, we don't really care anymore :)
+  font-size: 14px;
+  font-family: $font-default;
+}
+
+// Replace the logo with a spinner when loading!
+body.loading {
+  header .logo20 {
+    background-image: image-url('spinner-18.gif');
+  }
+}
+
+$header-height: 50px;
+$header-padding: 15px;
+
+$header-inner-height: $header-height - $header-padding * 2;
+
+header {
+  height: $header-height;
+  line-height: $header-height;
+
+  @include background(linear-gradient($bg, darken($bg, 1%)));
+  border-bottom: darken($bg, 15%) 1px solid;
+  @include box-shadow(0px 0px 14px rgba(0,0,0,0.2));
+
+  .content {
+    @include center;
+    height: $header-height;
+    line-height: $header-height;
+    position: relative;
+
+    padding: 0px 0px;
+    width: $gg-width - 0px * 2;
+
+    // Notes about the "centering" going on: the line-height and va:middle
+    // constructs in header are very ..uncompromising currently. This whole
+    // thing can be made much more general and clean with some effort, which
+    // will easily offset any hacking necessary.
+    //
+    // If you find yourself in this CSS file, wondering why stuff in header
+    // exploded.. spend the time refactoring, rather than trying to work around
+    // stuff with hacks.
+
+    // resetting the line-height only for li
+    li {
+      line-height: normal;
+    }
+
+    ul.menu {
+      display: inline-block;
+      margin-left: 40px;
+
+      > li {
+        display: inline-block;
+        position: relative;
+
+        > a.menu-item {
+          display: block;
+          height: $header-height;
+          line-height: $header-height;
+          padding: 0px 15px;
+
+          font-size: 14px;
+          font-weight: normal;
+          text-transform: uppercase;
+
+          color: $gray-medium;
+
+          span { vertical-align: middle; }
+
+          .caret {
+            margin-top: 3px;
+            vertical-align: middle;
+          }
+
+          &:hover {
+            background: darken($bg, 4%);
+            color: $gray-dark;
+          }
+        }
+
+        // #upload is 30px high, all buttons should follow suit
+        > a.button2 {
+          margin-top: 1px;
+          padding: 8px 14px;
+          height: 14px;
+          line-height: 14px;
+        }
+      }
+
+      li.dropdown {
+        // customizing the dropdown here
+
+        > a {
+          padding: 0px 15px;
+
+          span {
+            display: inline-block;
+            max-width: 125px;
+            @include ellipsis;
+          }
+        }
+
+        ul.dropdown-menu {
+          right: 0;
+          left: auto;
+
+          li {
+            display: block;
+          }
+        }
+
+        ul.dropdown-menu.dropdown-menu-left {
+          right: auto;
+          left: 0;
+
+          li {
+            text-align: left;
+            display: block;
+
+            .menuheader {
+              font-weight: bold;
+              padding-left: 8px;
+            }
+          }
+        }
+
+      }
+
+      li.active {
+        a {
+          font-weight: bold;
+        }
+      }
+
+      li.first {
+        a {
+        }
+      }
+    } // .menu
+
+    .left {
+      float: left;
+      text-align: right;
+    } //.left
+    
+    .right {
+      text-align: right;
+      float: right;
+
+      ul.menu {
+        > li {
+          padding-left: 15px;
+          display: inline-block;
+        }
+      }
+    }
+
+    #logo {
+      display: inline-block;
+      font-size: 18px;
+      font-weight: normal;
+      text-transform: uppercase;
+      
+      float: left;
+
+      vertical-align: middle;
+      margin-left: 0px;
+    }
+
+    #cobrand {
+      height: 1px;
+      display: inline-block;
+      z-index: 5;
+      position: absolute;
+      top: -5px;
+      left: 900px;
+
+      img {
+        height: 100px;
+      }
+    }
+ 
+    // TODO: full dropdown implementation
+    ul.nav {
+      .dropdown {
+        position: relative;
+
+        ul {
+          position: absolute;
+          display: none;
+          
+          border: $fg 1px solid;
+          background: $bg;
+        }
+        
+        &:hover {
+          ul {
+            display: block;
+          }
+        }
+      }
+    } //.nav
+  }
+}
+
+header.invert {
+  @include background(linear-gradient(lighten($gray-dark, 5%), $gray-dark));
+  border-bottom: black 1px solid;
+  @include box-shadow(0px 0px 14px rgba(255,255,255,0.4));
+  
+  // HAX: just removing border for now, david's probably not going to like the 
+  // inverting anyway, right?
+  li, li a { 
+    border: none !important; 
+    &:hover {
+      background: #111 !important;
+    }
+  }
+  
+  color: $bg;
+  a, a:visited { color: $bg; }
+}
+
+.inset {
+  @include inset;
+}
+
+// Central content wrapper
+#content {
+}
+
+.hidden {
+  visibility: hidden;
+}
+
+.sidebarad {
+  position: absolute;
+  top: 0px;
+  right: -190px;
+}
+
+.leaderad {
+  width: 732px;
+  margin: 0px auto;
+}
+
+.ggadzone {
+    padding: 5px 0px;
+    margin: -15px 0px 0px 0px;
+
+    @include background(linear-gradient(darken($bg, 5%), darken($bg, 7%)));
+    @include box-shadow(inset 0px 0px 6px rgba(0,0,0,0.2));
+    border-top: 1px white solid;
+    border-bottom: 1px white solid;
+
+    .content {
+      @include center;
+    }
+}
+
+
+// Footer!
+// Note: homepage modifications to the footer in home.css
+
+footer {
+  display: block;
+  // background: $white;
+  margin-top: 25px;
+  margin-bottom: 25px;
+  padding-bottom: 30px;
+  color: $gray-light !important; 
+
+  ul {
+    @include center;
+    display: block;
+
+    li {
+      float: right;
+      font-size: 75%;
+      height: 20px;
+      margin-left: 25px;
+      margin-top: 25px;
+      
+      a {
+        height: 20px;
+        display: block;
+        color: $gray-light !important; 
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+    
+    li.sepl {
+      padding-left: 0px;
+
+      a {
+        border-left: $gray-light 1px solid;
+        padding-left: 25px;
+      }
+    }
+    
+    li.left {
+      float: left;
+    }
+  }
+}
+
+select {
+  -webkit-appearance: none;
+  font-family: $font-default;
+}
+
+.reddit {
+  vertical-align: top;
+  padding-left: 33px;
+  padding-top: 54px;
+  display: inline-block;
+}
+
+.other_replay_analyzer {
+  vertical-align: top;
+  padding-left: 33px;
+  padding-top: 40px;
+  display: inline-block;
+  a {
+    text-decoration: underline;
+  }
+}

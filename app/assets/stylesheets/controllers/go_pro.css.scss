@@ -1,0 +1,46 @@
+
+#go_pro {
+  .content {
+    @include center;
+
+    min-height: 600px;
+    max-width: 1000px;
+
+    margin-top: 50px;
+    font-size: 20px;
+    
+
+    .going_pro {
+      margin-left: 100px;
+      margin-right: 100px;
+    }
+    
+    a, a:visited {
+      text-decoration: underline;
+    }
+
+    a.button {
+      text-align: center;
+      font-weight: $extrabold;
+      text-transform: uppercase;
+      overflow: hidden;
+      cursor: pointer;
+      position: relative;
+      text-decoration: none;
+    }
+
+    ul.instructions {
+      list-style-type: circle;
+      padding-left: 20px;
+      li {
+        padding-bottom: 10px;
+        line-height: 30px;
+      }
+    }
+
+    .icon {
+      position: relative;
+      top: -4px;
+    }
+  }
+}

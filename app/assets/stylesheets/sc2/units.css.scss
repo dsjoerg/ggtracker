@@ -1,0 +1,39 @@
+// Hint: spritemap regeneration is a little fickle.
+// to get it to regenerate just modify and save this file.
+
+ 
+// Directly from the MPQ
+
+$units-mpq: sprite-map("sc2/units/mpq/76/*.png");
+.unit-mpq {
+  background: $units-mpq;
+  width: 76px;
+  height: 76px;
+}
+@include sprites($units-mpq, sprite_names($units-mpq), '.unit-mpq', false, 'unit-mpq');
+
+$units-mpq-32: sprite-map("sc2/units/mpq/32/*.png");
+.unit-mpq-32 {
+  background: $units-mpq-32;
+  width: 32px;
+  height: 32px;
+}
+@include sprites($units-mpq-32, sprite_names($units-mpq-32), '.unit-mpq-32', false, 'unit-mpq-32');
+ 
+$units-mpq-48: sprite-map("sc2/units/mpq/48/*.png");
+.unit-mpq-48 {
+  background: $units-mpq-48;
+  width: 48px;
+  height: 48px;
+}
+@include sprites($units-mpq-48, sprite_names($units-mpq-48), '.unit-mpq-48', false, 'unit-mpq-48');
+
+// Generated from the modelviewer
+
+$units-gen: sprite-map("sc2/units/gen/*.png");
+.unit-gen {
+  background: $units-gen;
+  width: 76px;
+  height: 76px;
+}
+@include sprites($units-gen, sprite_names($units-gen), '.unit-gen', true, 'unit-gen');

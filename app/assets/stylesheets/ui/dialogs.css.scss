@@ -1,0 +1,170 @@
+// jquery-ui dialog styles
+// TODO: clean up
+
+.ui-widget-overlay { 
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+
+  // no opacity on the overlay here, we could remove it altogether too, but
+  // I'll leave the .click on it to close the dialog for now.
+  background: rgba(0,0,0,0.0);
+}
+
+.ui-dialog { 
+  position: absolute; 
+  width: 300px; 
+  overflow: hidden; 
+  border: 1px solid rgba(0,0,0,0.5);
+  @include border-radius(2px);
+  @include box-shadow(0px 0px 20px 0px rgba(0,0,0,0.8));
+
+  @include background(linear-gradient(#141414, #0A0A0A));
+  color: $white;
+
+  .ui-dialog-titlebar { padding: .4em 1em; position: relative;  }
+  .ui-dialog-title { float: left; margin: .1em 16px .1em 0; } 
+  .ui-dialog-titlebar-close { position: absolute; right: .3em; top: 50%; width: 19px; margin: -10px 0 0 0; padding: 1px; height: 18px; }
+  .ui-dialog-titlebar-close span { display: block; margin: 1px; }
+  .ui-dialog-titlebar-close:hover, 
+  .ui-dialog-titlebar-close:focus { padding: 0; }
+  .ui-dialog-content { position: relative; border: 0; padding: .5em 1em; overflow: auto; zoom: 1; }
+  .ui-dialog-buttonpane { text-align: left; border-width: 1px 0 0 0; background-image: none; margin: .5em 0 0 0; padding: .3em 1em .5em .4em; }
+  .ui-dialog-buttonpane .ui-dialog-buttonset { float: right; }
+  .ui-dialog-buttonpane button { margin: .5em .4em .5em 0; cursor: pointer; }
+  .ui-resizable-se { width: 14px; height: 14px; right: 3px; bottom: 3px; }
+}
+.ui-draggable .ui-dialog-titlebar { cursor: move; }
+
+.dialog {
+  display: none;
+}
+
+.dialog-plain {
+  min-height: 50px;
+  .ui-dialog-titlebar { display: none; }
+}
+
+// home, sessions-new: show login
+// users-create: show signup (posting there, see errors, etc.)
+
+body {
+  .form-join, .form-password { display: none; }
+  .form-login { display: block; }
+}
+
+body.users-create {
+  .form-login, .form-password { display: none; }
+  .form-join { display: block; }
+}
+
+$dialog-width: 350px;
+$dialog-gutter: 5px;
+$dialog-padding: 25px;
+$dialog-inner-width: $dialog-width - $dialog-padding * 2;
+
+.dialog-signup {
+  @include box-shadow(0px 0px 20px 0px lightblue);
+  // @include background(linear-gradient(#141414, #0A0A0A));
+  @include background-noisegrid;
+  color: white;
+  width: $dialog-width;
+
+  input {
+    @include box-sizing(border-box);
+  }
+
+  .logo {
+    font-size: 40px;
+    font-weight: normal;
+    text-align: center;
+    margin-bottom: 25px;
+
+    em {
+      font-weight: $extrabold;
+    }
+  }
+
+  // TODO: figure out good default link colors, put them in layout.css
+  a {
+    color: white;
+    margin-right: 10px;
+
+    &:hover {
+      color: #CCC;
+    }
+  }
+  
+  // Actual form styling
+  .form {
+    padding: $dialog-padding;
+
+    ol {
+      li {
+        display: block;
+        margin-bottom: $dialog-gutter;
+
+        input {
+          display: block;
+          width: 100%;
+        }
+      }
+    }
+  }
+
+  .form-login {
+    ol {
+      // FIXME: this is breaking apart currently - the sign in button wraps
+      // unless really fast solution can be found, I'll make it a freaking 
+      // table.
+      word-spacing: 12px;
+      padding-right: 10px;
+      text-align: justify; 
+      -ms-text-justify: distribute-all-lines;
+      font-size: 0px;
+
+      li {
+        // margin-right: -6px; 
+        // width: 25%;
+        display: inline-block; 
+        word-spacing: normal;
+        text-align: left; 
+        font-size: normal;
+      }
+
+      li.email {
+        display: block;
+      }
+
+      li.password {
+        // compensating a little.. no time to figure out wtf is going on.
+        // width: ($dialog-inner-width * 0.70) - $dialog-gutter - 2;
+        width: 55%;
+        margin-right: 10px;
+        // margin-right: $dialog-gutter + 2;
+
+        input {
+          width: 100%;
+        }
+      }
+
+      li.action {
+        // width: ($dialog-inner-width * 0.30);
+        width: 30%;
+
+        button {
+          @include button2(lighten(desaturate(green, 15%), 35%), black);
+          width: 100%;
+          white-space: nowrap;
+          overflow: hidden;
+        }
+      }
+    }
+
+  }
+}
+
+// inside an actual dialog, we don't want the excessive box-shadow of course
+.ui-dialog {
+  .dialog-signup {
+    @include box-shadow(none);
+  }
+}

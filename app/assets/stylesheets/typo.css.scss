@@ -1,0 +1,64 @@
+// Typography
+
+// font-faces
+@import "fonts/open-sans";
+
+// default font family (applied to body)
+$font-default: "Open Sans", Helvetica, Arial, sans-serif;
+
+// font family for small/very small text (<=12px)
+$font-small: Verdana, Helvetica, sans-serif;
+
+.tiny {
+  font-size: 10px;
+  // Use Verdana/Helvetica for tiny text
+  font-family: Verdana, Helvetica, sans-serif;
+}
+
+.small {
+  font-size: 12px;
+}
+
+.big {
+  font-size: 16px;
+}
+
+.large {
+  font-size: 20px;
+}
+
+// dictionary says: huge adj. extremely large in size
+// so, huge is greater than large, I assume ;)
+
+.huge {
+  font-size: 24px;
+}
+
+// Since we're literally only going to have a handful of colors for text around
+// the site, we should just use classes to set these. All color definitions 
+// should be in all.css.scss for now.
+
+.gray-dark { color: $gray-dark!important; }
+.gray-light { color: $gray-light!important; }
+.gray-medium { color: $gray-medium!important; }
+
+// Boldness!
+
+.light { font-weight: $light; }
+.semibold { font-weight: $semibold; }
+.bold { font-weight: bold; }
+.extrabold { font-weight: $extrabold; }
+
+// letter-spacing..
+
+.narrow { letter-spacing: -2px !important; }
+
+// headers?
+
+h1 {
+  @extend .huge;
+}
+
+h2 {
+  @extend .large;
+}

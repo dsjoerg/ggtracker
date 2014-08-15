@@ -1,0 +1,56 @@
+<div class="matches">
+  <div class="filters-wrap">
+    <ul class="filters search">
+      <li class="filter race">
+        <raceselect name="race" playername="identity.name" versus="is" winner="one_wins" dowinner="true" unit="unit_one"/>
+        <unitselect name="unit_one" race="race"/>
+        <timeselect name="time_one"/>
+      </li>
+      <!-- put in unitselect -->
+      <li class="vs"><span>vs</span></li>
+      <li class="filter vs_race">
+        <raceselect name="vs_race" playername="identity.name" versus="is against" winner="two_wins" dowinner="true" unit="unit_two"/>
+        <unitselect name="unit_two" race="vs_race"/>
+        <timeselect name="time_two"/>
+      </li>
+      <li class="filter average_league"><leagueselect name="average_league" /></li>
+    </ul>
+  </div>
+
+  <div class="transcluded" ng-transclude></div>
+
+  <div class="center">
+    <div class="no-matches" ng-show="matches.length == 0">
+      <h1>Sorry, we have no matches for your selection.</h1>
+    </div>
+
+    <table border="0" cellspacing="0" cellpadding="0" ng-hide="matches.length == 0">
+      <tr>
+        <th class="num">#</th>
+        <th class="map">map<b class="arrow"></b></th>
+        <th class="team1">player</th>
+        <th class="team2">vs player</th>
+
+        <th class="duration"">length</th>
+        <th class="result">result</th>
+
+        <th class="league">avg league<b class="arrow"></b></th>
+        <th class="date">played</th>
+      </tr>
+      <tr ng-repeat="match in matches" ng-click="go(match.id)">
+        <td class="map nowrap"><a target="_self" href="/matches/{{ match.id }}">{{ match.map_name }}</a></td>
+        <td class="team1"><div class="icon sc2 sc2-{{ match.entity_team(1).race_name }}-plain-24">{{ match.entity_team(1).race_name }}</div> {{ match.entity_team(1).identity.name }} </td>
+        <td class="team2"><div class="icon sc2 sc2-{{ match.entity_team(2).race_name }}-plain-24">{{ match.entity_team(2).race_name }}</div> {{ match.entity_team(2).identity.name }} </td>
+
+        <td class="duration nowrap">{{ match.duration_minutes() }} mins</td>
+        <td class="result">{{ match.entity(identity.id).win_pretty() }}</td>
+
+        <td class="league"><league data-league="{{ match.average_league }}"></league></td>
+        <td class="nowrap">{{ match.ended_at | timeago }}</td>
+      </tr>
+    </table>
+
+    <unpaginate data-collection="matches"></unpaginate>
+  </div>
+
+</div>

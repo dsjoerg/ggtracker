@@ -1,0 +1,127 @@
+/*
+  tiny 960 oriented grid
+  Author: Marian Rudzynski
+
+  This is a very minimal "grid framework".
+  My recommendation is to not use this (or any other like it) because unless
+  the actual website design is strictly "gridded", the amounts of workarounds
+  and problems will skyrocket over time. There is no way to utilize a very 
+  generic approach like this unless the overall site design is very generic
+  itself. Things like this are mostly useful to prototype something quickly.
+  
+  Also - once heights diverge, it's not really a grid anymore. If you want
+  something like pinterest.com or unlike.net, simply use jQuery masonry (or
+  if that's overkill, custom code like pinterest did)
+  
+  With this being said, it's very easy to use:
+  
+  .container_<width> are container classes for grid elements.
+  Apply .container and .container_<width> to the container, then put grid
+  elements using .grid_<width> in it. Done.
+  
+  So the very basic usage would be to have a 3-wide grid, like this:
+  
+  <div class="container container_3">
+    <div class="grid_1"></div>
+    <div class="grid_1"></div>
+    <div class="grid_1"></div>
+  </div>
+
+  Or maybe with one 2-wide box?
+  
+  <div class="container container_3">
+    <div class="grid_2"></div>
+    <div class="grid_1"></div>
+  </div>
+
+  Closing words: it's currently not actively being used anymore anywhere.
+  Please don't use it.
+*/
+
+$grid_padding: 0px;
+$grid_width: 310px;
+$grid_spacing: 25px;
+$grid_gutter: 10px;
+
+.container_1 {
+  width: $grid_width + $grid_spacing;
+}
+
+.container_2 {
+  width: ($grid_width * 2) + ($grid_spacing * 2);
+}
+
+.container_3, .container_21, .container_12 {
+  width: ($grid_width * 3) + ($grid_spacing * 3);
+}
+
+.container {
+  clear: both;
+  margin: 0px $grid_gutter;
+}
+
+.container_21, .container_12 {
+  @extend .container;
+
+  .left {
+    float: left;
+    clear: none;
+    margin-right: 0px;
+  }
+
+  .right {
+    float: right;
+    clear: none;
+    margin-left: 0px;
+  }
+}
+
+.container_21 {
+  .left { 
+    @extend .container_2; 
+    .grid_3 { display: none; }
+  }
+  .right { 
+    @extend .container_1; 
+    .grid_2, .grid_3 { display: none; }
+  }
+}
+
+.container_12 {
+  .left { 
+    @extend .container_1; 
+    .grid_2, .grid_3 { display: none; }
+  }
+  .right { 
+    @extend .container_2; 
+    .grid_3 { display: none; }
+  }
+}
+
+.grid_1,
+.grid_2,
+.grid_3,
+.grid_4 {
+  display: inline-block;
+
+  // padding: 0px;
+  // border: white $grid_padding solid;
+  padding: $grid_padding;
+
+  margin: $grid_spacing / 2;
+  // overflow: hidden;
+
+  // background: green;
+}
+
+.grid_1 {
+  width: $grid_width - ($grid_padding * 2);
+}
+
+.grid_2 {
+  width: (($grid_width * 2) - ($grid_padding * 2)) + $grid_spacing;
+}
+
+.grid_3 {
+  width: (($grid_width * 3) - ($grid_padding * 2)) + ($grid_spacing * 2);
+}

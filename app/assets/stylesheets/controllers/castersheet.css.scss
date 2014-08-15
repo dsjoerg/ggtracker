@@ -1,0 +1,114 @@
+/*
+@font-face {
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Lato Regular'), local('Lato-Regular'), url(http://themes.googleusercontent.com/static/fonts/lato/v6/qIIYRU-oROkIk8vfvxw6QvesZW2xOQ-xsNqO47m55DA.woff) format('woff');
+}
+*/
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Lato', verdana, arial, helvetica, sans-serif;
+  font-size: 20px;
+}
+
+h1 {
+  font-size: 26px;
+  font-weight: bold;
+}
+
+p {
+  margin-bottom: 15px;
+}
+
+#content {
+  margin: 0px auto;
+  width: 960px;
+}
+
+#castersheet {
+  h1 {
+    font-size: 48px;
+    margin-top: 25px;
+  }
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+
+    th, td {
+      border: #000 1px solid;
+      padding: 5px 10px;
+    }
+
+    th {
+      background: #EEE;
+      font-weight: normal;
+    }
+    
+    .winner {
+      font-weight: bold;
+    }
+  }
+
+  table.army {
+    td:nth-child(2), th:nth-child(2),
+    td:nth-child(4), th:nth-child(4),
+    td:nth-child(6), th:nth-child(6) {
+      border-left: black 3px solid;
+    }
+    
+    td.first {
+    }
+    
+    td.used {
+      font-weight: bold;
+
+      position: relative;
+      padding-bottom: 7px;
+
+      .bar {
+        background: black;
+        border: black 1px solid;
+
+        position: absolute;
+        bottom: 0px;
+        left: 0px;
+      }
+    }
+    
+    td.unused {
+      opacity: 0.5;
+      font-weight: normal;
+    }
+  }
+
+  #timetable {
+    width:475px
+  }
+  #avgarmycost {
+    width:125px
+  }
+
+  // Random form stuff
+  form {
+    select {
+      vertical-align: text-top;
+    }
+
+    .combobox-container {
+      display: inline-block;
+      width: 250px;
+    }
+  }
+}
+
+#credit {
+  text-align: right;
+  font-size: 26px;
+  font-weight: normal;
+  margin-top: 50px;
+
+  img { vertical-align: text-top };
+}

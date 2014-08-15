@@ -1,0 +1,62 @@
+// users#settings
+
+#settings {
+  .content {
+    @include center;
+
+    // TODO merge this nonsense with go_pro.css.scss
+        a.button {
+          text-align: center;
+          font-weight: $extrabold;
+          text-transform: uppercase;
+          overflow: hidden;
+          cursor: pointer;
+          position: relative;
+        }
+
+    // TODO merge this nonsense with go_pro.css.scss
+    ol.instructions {
+      list-style-type: disc;
+      padding-left: 20px;
+      li {
+        padding-bottom: 10px;
+      }
+    }
+
+    .token {
+      @include button2(#FFF, #000);
+      cursor: text;
+#      margin-bottom: 15px;
+      font-size: 18px;
+    }
+
+    form {
+      li {
+        label, input {
+          display: inline-block;
+        }
+
+        label {
+          width: 200px;
+        }
+
+        input {
+          width: 300px;
+          border: 1px solid $gray-light;
+        }
+      }
+    }
+
+    form.user {
+      margin: 15px 0px;
+      margin-bottom: 35px;
+    }
+
+    h2 {
+      margin: 45px 0px 15px 0px;
+    }
+    h2.first {
+      margin-top: 15px;
+    }
+  }
+}

@@ -1,0 +1,29 @@
+// very simple progress bar, only used in /replays right now
+.progress-simple {
+  background: darken($bg, 10%);
+  position: relative;
+  height: 16px;
+  line-height: 16px;
+  @include border-radius(2px);
+
+  .label {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    text-align: center;
+    z-index: 2;
+    width: 100%;
+    vertical-align: middle;
+    color: $gray-dark;
+  }
+
+  .bar {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    background: darken($bg, 5%);
+    height: 16px;
+    z-index: 1;
+    @include border-radius(2px);
+  }
+}

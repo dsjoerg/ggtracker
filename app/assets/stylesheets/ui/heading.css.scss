@@ -1,0 +1,260 @@
+// general styling for the heading component
+// TODO: blocks and their padding can be made dynamic, which would be 
+// preferable. e.g. no pixel perfect paddings, simple middle align and
+// so on.
+
+// this includes heading styling for EVERYTHING! (matches, players, etc.)
+
+#heading {
+  margin-bottom: 25px;
+
+  text-transform: uppercase;
+  font-size: 110%;
+
+  // Because we're doing it the inline way, don't let it wrap, ever.
+  white-space: nowrap;
+  overflow: hidden;
+
+  // HAX (letter-spacing is for inline-block whitespace)
+  letter-spacing: -4px;
+  * {
+    * { letter-spacing: normal; }
+    vertical-align: top;
+  }
+
+  .block {
+    display: inline-block;
+    border-right: lighten($gray-dark, 5%) 1px solid;
+    border-left: darken($gray-dark, 3%) 1px solid;
+  }
+
+  // only "centers" when the heading is 90px high right now
+  // and does more than "centering"..
+  .centered {
+    line-height: 90px;
+    text-align: center;
+
+    > div {
+      display: inline-block;
+      vertical-align: middle; 
+      line-height: normal;
+      padding: 0px 15px;
+
+      // HAX to bring tiny up
+      .tiny {
+        line-height: 5px;
+      }
+    }
+  }
+
+  // some special button styling for buttons in the heading!
+  // - we have a span with class caption in them that we vertically align
+  .button2 {
+    margin: 26px 12px 0px 12px; // button2 stands alone!
+
+    // border: #222 3px solid;
+    // @include border-radius(5px);
+
+    height: 40px;
+    line-height: 40px;
+    padding: 0px 15px;
+
+    * { line-height: normal; }
+    display: inline-block;
+
+    span.caption {
+      vertical-align: middle; 
+      display: inline-block;
+      margin-top: -4px;
+
+      font-weight: bold;
+      .tiny { 
+        font-weight: normal; 
+        color: $gray-light;
+        @include text-shadow(none);
+      }
+
+      span {
+        display: block;
+        line-height: 95%;
+      }
+    }
+  }
+
+  .first {
+    border-left: none;
+  }
+
+  .last {
+    border-right: none;
+  }
+  
+  // general, re-usable blocks
+
+  // a block with two lines of centered text
+  .double-center {
+    span {
+      color: gray;
+      font-size: 10px;
+      display: block;
+      margin: 0px auto;
+    }
+
+    span.first {
+      font-size: 13px;
+      color: white;
+    }
+  }
+  
+  // named blocks
+  
+  $match-height: 90px;
+  
+  .match {
+    > div {
+      height: $match-height;
+    }
+
+    // TOTAL HAX
+    .map {
+      height: $match-height;
+      overflow: hidden;
+      .minimap {
+        padding-right: 10px;
+      }
+    }
+
+    .info {
+      padding: 30px 35px;
+      height: $match-height - 60;
+    }
+
+    .name {
+      padding: 23px 35px 27px 0px;
+      height: $match-height - 50;
+
+      width: 175px;
+
+      h1 {
+        font-size: 110%;
+        font-weight: bold;
+        margin-bottom: 5px;
+        
+        @include ellipsis;
+      }
+
+      span { 
+        display: block;
+        margin-top: 2px;
+      }
+
+      a {
+        color: gray;
+        padding-left: 10px;
+      }
+    }
+  }
+  
+  $player-height: 90px;
+  
+  .player {
+    > div {
+      height: $player-height;
+    }
+
+    .stats {
+      padding: 0px 0px;
+
+      .stat {
+        border: none;
+        display: inline-block;
+        > div {
+          padding: 0px 10px;
+        }
+      }
+    }
+
+    .portrait {
+      width: $player-height;
+      height: $player-height;
+    }
+
+    .bnet {
+      padding-right: 10px;
+    }
+  
+    .name {
+      padding: 20px 35px;
+      height: $player-height - 40;
+
+      width: 250px;
+      overflow: hidden;
+
+      h2 {
+        font-size: 200%;
+        font-weight: bold;
+        text-transform: none;
+        // I chose not to do this and let the h2 overflow as far as it can,
+        // then overflow: hidden above cuts it off instead.
+        // @include ellipsis;
+        
+        a {
+          color: $bg;
+          padding-right: 12px;
+        }
+        .icon {
+          position: relative;
+          top: -2px;
+        }
+        .prolabel {
+          position: relative;
+          top: 36px;
+          left: -28px;
+          font-weight: normal;
+          color: gray;
+        }
+      }
+
+      .links {
+        margin-top: 5px;
+
+        a {
+          font-size: 10px;
+          color: gray;
+
+          &:hover {
+            color: white;
+          }
+        }
+        span {
+          font-size: 10px;
+          color: gray;
+        }
+        #charcode {
+          padding-left: 15px;
+        }
+      }
+    } // .name (yes I'm cool with this in CSS sometimes, 4 closing brackets 
+      // are just stupid hard to read)
+    
+    .info {
+      padding: 20px 35px;
+      height: $player-height - 40;
+
+      .league-icon, span {
+        display: inline-block;
+      }
+      
+      span.bracket {
+        font-size: 220%;
+        text-transform: none;
+        font-weight: bold;
+        padding-top: 5px;
+      }
+
+      div.gateway {
+        text-align: center;
+      }
+    }
+  }
+}

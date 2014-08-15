@@ -1,0 +1,24 @@
+// 404 and 500 styling
+
+#error {
+  @include center;
+  padding: 25px 0px;
+  text-align: center;
+  
+  h1 {
+    font-size: 400%;
+    color: $gray-dark;
+  }
+  
+  p {
+    margin-top: 15px;
+    font-size: 150%;
+  }
+  
+  a {
+    color: $gray-light;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}

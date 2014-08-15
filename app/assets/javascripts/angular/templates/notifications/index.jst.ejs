@@ -1,0 +1,9 @@
+<div id="notifications" class="container container_3">
+  <ul>
+    <li class="alert-{{ notification.notification_type }} alert notification" ng-repeat="notification in notifications">
+      <a class="close" ng-click="ack()">&times;</a>
+
+      {{ notification.message }}
+    </li>
+  </ul>
+</div>

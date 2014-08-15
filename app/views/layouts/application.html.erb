@@ -1,0 +1,250 @@
+<!--
+
+ _ ____.(   ___.(   ____ _  ______   ).___  ___.(   __  __. _____.(_______ _
+   / ____)_/ ____)_/   (_  /      \_(___  \/   __)_/  \/ (_/   ____)      \
+  /  \_   /  \_   /  .__/_/  _%___/   /   /   /   /   /___)   __/_/  _%___/
+ /   /   /   /   /   /   /   /  \/   /   /   /   /   /  \/   /   /   /  \
+_\%_____/\%_____/\%_____/\%_/   /\%___fx/\%_____/\__/   /\%_____/\__/   /.com_
+    killing esports since  ).__/ 2012.             ).__/           ).__/
+
+-->
+<!DOCTYPE html>
+<html ng-app="gg">
+<head>
+  <meta charset='utf-8'>
+  <meta name="robots" content="all">
+  <meta name="copyright" content="GGTracker">
+  <meta name="content-language" content="en">
+
+  <% if meta.present? %>
+    <%= meta %>
+    <title><%= meta('title') %></title>
+  <% end %>
+  <%= favicon_link_tag %>
+
+  <%= include_gon(init: true) %>
+  <%= stylesheet_link_tag "gg", :media => "all" %>
+  <%= render 'shared/analytics' %>
+  <%= csrf_meta_tags %>
+
+  <% if !Rails.env.production? %>
+    <%= javascript_include_tag "gg" %>
+  <% end %>
+
+<!-- https://developers.google.com/speed/docs/best-practices/payload#DeferLoadingJS -->
+<!-- http://stackoverflow.com/questions/5852767/possible-to-defer-loading-of-jquery -->
+<script type="text/javascript">
+
+  function getScript(url,success){
+    var script=document.createElement('script');
+    script.src=url;
+    var head=document.getElementsByTagName('head')[0],
+        done=false;
+    script.onload=script.onreadystatechange = function(){
+      if ( !done && (!this.readyState || this.readyState == 'loaded' || this.readyState == 'complete') ) {
+        done=true;
+        success();
+        script.onload = script.onreadystatechange = null;
+        head.removeChild(script);
+      }
+    };
+    head.appendChild(script);
+  }
+
+  function afterScriptLoads() {
+
+    $(function() {
+      $('.djcloak').removeClass('djcloak');
+
+      var jug = new Juggernaut({port: 5300});
+
+      <% if signed_in? %>
+        gg.settings.replay_channel = "<%= current_user.replay_channel %>";
+        gg.settings.user_channel = "<%= current_user.channel %>";
+        gg.settings.user_id = "<%= current_user.id %>";
+
+        jug.subscribe(gg.settings.user_channel, function(data){
+          rootScope = angular.element($('html')).scope();
+          rootScope.user = data;
+          rootScope.$digest();
+        });
+      <% else %>
+        <%# could add resolution and whatnot to make this even more unique %>
+        gg.settings.replay_channel = CryptoJS.SHA1($.browser + Date()).toString();
+      <% end %>
+
+      jug.subscribe(gg.settings.replay_channel, function(data){
+        uploadScope = angular.element($('.uploads')).scope();
+        //        Proxino.log("replay update received: " + JSON.stringify(data));
+        replay = _.find(uploadScope.allreplays, function(rep) { return rep.replay_file_name == data.replay_file_name });
+        if (_.isNull(replay) || _.isUndefined(replay)) {
+          thelen = 0;
+          if (uploadScope.allreplays) {
+            thelen = uploadScope.allreplays.length;
+          }
+          // Proxino.log("erk, couldnt find replay.  allreplays has " + thelen + " items.");
+        } else {
+          // Proxino.log("found replay, it's " + JSON.stringify(replay));
+        }
+        $.extend(replay, data);
+        throttledUploadDigest();
+      });
+    });
+  };
+
+  function getOurScript() {
+    getScript("<%= javascript_path 'gg' %>", afterScriptLoads);
+  }
+
+  <% if Rails.env.production? %>
+    // Check for browser support of event handling capability
+    if (window.addEventListener)
+      window.addEventListener("load", getOurScript, false);
+    else if (window.attachEvent)
+      window.attachEvent("onload", getOurScript);
+    else window.onload = getOurScript;
+  <% else %>
+    afterScriptLoads();
+  <% end %>
+
+</script>
+
+
+  <%= yield :head %>
+</head>
+<body class="<%= body_name %>" ng-class="{loading: gg.state.loading}">
+  <header>
+    <div class="content">
+      <div class="left">
+
+        <a id="logo" class="logo logo20" target="_self" href="/">
+          <% if !Rails.env.production? %>
+          <em>gg</em><%= Rails.env %>
+          <% else %>
+          <em>gg</em>tracker
+          <% end %>
+        </a>
+
+        <ul class="menu">
+          <li class="first <%= active?(:players) %>"><a class="menu-item" target="_self" href="/players"><span>players</span></a></li>
+          <li class="<%= active?(:matches) %>"><a class="menu-item" target="_self" href="/matches"><span>matches</span></a></li>
+          <li class="dropdown">
+            <a class="dropdown-toggle menu-item" data-toggle="dropdown" href="#"><span class="icon icon-star-16"></span>&nbsp;<span>more</span></a>
+            <ul class="dropdown-menu dropdown-menu-left">
+              <li><p class="menuheader">Tools</p></li>
+              <li><a href="/spending_skill_stats">Spending Skill Stats</a></li>
+              <li><a href="/economy_stats">Economy Stats</a></li>
+              <li><a href="/econ_staircase">TheStaircase Benchmarks</a></li>
+              <li><a href="/GoldSpeedAhead"><span class="icon icon-star-16"></span>&nbsp;Gold Speed Ahead with desRow</a></li>
+              <li><a href="/matches#?wcs=true">WCS matches</a></li>
+              <li>&nbsp;</li>
+              <li><p class="menuheader">Help</p></li>
+              <li><a href="/faq">Frequently Asked Questions</a></li>
+              <li><a href="/spending_skill">Spending Skill</a></li>
+              <li><a href="/saturation_speed">Saturation Speed</a></li>
+              <li><a href="/auto_uploader">Auto Uploader</a></li>
+              <li><a href="/race_macro">Race-Specific Macro</a></li>
+              <li><a href="/injects">All About Larva Injects</a></li>
+              <li><a href="/faq_deutsch">FAQ in Deutsch</a></li>
+              <li>&nbsp;</li>
+              <li><p class="menuheader">Other Replay Analyzers</p></li>
+              <li><a href="http://sc2replaystats.com/">Sc2ReplayStats</a></li>
+              <li><a href="http://spawningtool.com/">Spawning Tool</a></li>
+              <li><a href="https://sites.google.com/site/scelight/">Scelight</a></li>
+            </ul>
+          </li>
+          <% if signed_in? && !current_user.pro? %>
+            <li class="<%= active?(:go_pro)%>"><a class="menu-item" target="_self" href="/go_pro"><span>go pro</span></a></li>
+          <% else %>
+            <li><a class="menu-item" target="_self" href="/tour"><span>tour</span></a></li>
+          <% end %>
+        </ul>
+      </div>
+
+        <% if controller.cobrand? %>
+          <span id="cobrand"><img src="http://opcdn.battle.net/static/wcs/public/images/wcs-logo-blue.png"/></span>
+        <% else %>
+
+      <div class="right">
+        <ul class="menu">
+          <li>
+            <div class="button-upload">
+              <input type="file" name="file" multiple/>
+              <span class="caption">
+                <div class="icon icon-upload-white-32"></div> Upload
+              </span>
+            </div>
+          </li>
+          <% if !signed_in? %>
+          <li>
+            <a href class="login button2"><span class="caption">login</span></a>
+            <a href class="signup button2 button2-lime"><span class="caption">sign up</span></a>
+          </li>
+          <% else %>
+          <li class="dropdown">
+            <a class="dropdown-toggle menu-item" data-toggle="dropdown" href="#"><span><%= current_user.display_name %></span> <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+              <% if current_user.accounts.size == 1 %>
+                <li><%= link_to 'your stats and matches', "/dashboard" %></li>
+              <% elsif current_user.accounts.size > 1 %>
+                <% current_user.accounts.each do |account| %>
+                  <li><%= link_to "#{account.name} (#{account.gateway})", "/players/#{account.esdb_id}/#{account.name}"  %></li>
+                <% end %>
+              <% end %>
+              <li><%= link_to 'your settings', '/settings' %></li>
+              <li><%= link_to 'your replays', '/replays' %></li>
+              <li><%= link_to 'sign out', destroy_user_session_path, :method => :delete %></li>
+              <li class="divider"></li>
+              <li class="viewmode"><a href ng-click="toggleStaircase()"><span ng-show="staircase()">&#10003;&nbsp;</span><span>TheStaircase view</span></a></li>
+            </ul>
+          </li>
+          <% end %>
+        </ul>
+      </div> <!-- right -->
+      <% end %>
+
+    </div>
+  </header>
+
+  <div id="content">
+    <uploads></uploads>
+
+    <notifications></notifications>
+
+    <%= yield %>
+    
+    <div class="clear"></div>
+  </div>
+
+  <footer>
+    <ul>
+      <li>&copy; 2012 GGTracker</li>
+      <li class="contact"><a href="http://nytm.org/made">Made in NYC</a></li>
+      <li class="contact"><a href="https://twitter.com/ggtracker">Twitter</a></li>
+      <li class="contact">Powered by <a style="display: inline-block" href="https://github.com/graylinkim/sc2reader">sc2reader</a></li>
+      <li class="contact"><a href="/terms">Terms of Use</a></li>
+      <li class="contact"><a href="/privacy">Privacy</a></li>
+      <li class="contact"><a href="/api">API</a></li>
+      <li class="contact"><a href="/changelog">Changelog</a></li>
+      <%= yield :foot %>
+    </ul>
+  </footer>
+
+  <div id="join" class="dialog dialog-signup">
+    <%= render('dialogs/join_aio', :resource => User.new) %>    
+  </div>
+
+
+
+<% if !controller.is_a?(HomeController) %>
+ <script type="text/javascript">
+  var uvOptions = {};
+  (function() {
+    var uv = document.createElement('script'); uv.type = 'text/javascript'; uv.async = true;
+    uv.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'widget.uservoice.com/8BTpyF5EF3nVRFjK2XnHA.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(uv, s);
+  })();
+ </script>
+<% end %>
+</body>
+</html>

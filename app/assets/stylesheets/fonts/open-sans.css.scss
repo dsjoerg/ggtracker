@@ -1,0 +1,26 @@
+// After looking at fontsquirrel's CSS.. no, let's not use fontsquirrel ;)
+// Reminder: 400 = normal, 700 = bold.
+
+// Don't use "lighter" or "bolder" to avoid confusion, they're relative values.
+$light: 300;
+$semibold: 600;
+$extrabold: 800;
+
+// TODO: remove styles that we aren't really using at some point ..
+$styles: (Light normal $light) (Regular normal normal) (Italic italic normal) (Semibold normal $semibold) (Bold normal bold) (ExtraBold normal $extrabold);
+
+@each $x in $styles {
+  $name: nth($x, 1);
+  $style: nth($x, 2);
+  $weight: nth($x, 3);
+
+  @font-face {
+    font-family: "Open Sans";
+    font-weight: $weight;
+    font-style: $style;
+    src: url('/assets/fonts/open-sans/OpenSans-#{$name}-webfont.eot?#iefix') format('embedded-opentype'),
+         url('/assets/fonts/open-sans/OpenSans-#{$name}-webfont.woff') format('woff'),
+         url('/assets/fonts/open-sans/OpenSans-#{$name}-webfont.ttf') format('truetype'),
+         url('/assets/fonts/open-sans/OpenSans-#{$name}-webfont.svg#OpenSans#{$name}') format('svg');
+  }
+}

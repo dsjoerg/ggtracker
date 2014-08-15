@@ -1,0 +1,235 @@
+table.default {
+  // @include debug-highlight;
+  width: 100%;
+
+  tr {
+    &:nth-child(odd) {
+      td {
+      }
+    }
+  
+    th, td {
+    }
+
+    th {
+      // background: darken($bg, 10%);
+      // white-space: nowrap;
+      padding: 8px 14px;
+      text-transform: uppercase;
+      color: $gray-light;
+      border-bottom: darken($bg, 15%) 1px solid;
+
+      &:nth-last-child(1) {
+        text-align: right;
+      }
+    }
+
+    // clickable table headers are for sorting!
+    // Note: we're not setting the actual default for ordering anywhere 
+    // currently, so we don't know the initial state until one is set.
+    // So, by default, there is no arrow.
+
+    // th[ng-click] {
+    th.orderable {
+      text-decoration: underline;
+      cursor: pointer;
+
+      &:hover {
+        color: $gray-dark;
+      }
+
+      .arrow {
+        display: inline-block;
+        width: 0;
+        height: 0;
+        vertical-align: middle;
+        content: "";
+        margin-left: 5px;
+      }
+    }
+
+    th.asc {
+      .arrow {
+        border-bottom: none;
+        border-top: 4px solid black;
+        border-right: 4px solid transparent;
+        border-left:  4px solid transparent;
+      }
+    }
+
+    th.desc {
+      .arrow {
+        border-top: none;
+        border-bottom: 4px solid black;
+        border-right: 4px solid transparent;
+        border-left:  4px solid transparent;
+      }
+    }
+
+    td {
+      border-bottom: darken($bg, 15%) 1px solid;
+      padding: 4px 14px;
+
+      // keep them all around the same height so icons don't blow up proportion
+      height: 35px;
+      line-height: 16px;
+
+      &:nth-last-child(1) {
+        text-align: right;
+      }
+    }
+
+    td.nowrap {
+      white-space: nowrap;
+    }
+    
+    td.ellipsis {
+      @include ellipsis;
+    }
+
+    // Thank the Lord we're in an age where this should work fine..
+    &:hover {
+      td {
+        background: rgba(0,0,0,0.05);
+        cursor: pointer;
+      }
+    }
+  }
+}
+
+/*
+  Very Specific Table Layouts!
+  e.g. fixed widths for fields on matches and players index
+  Remember: we only really need to be strict about columns that change in width
+  and th will keep td in check.
+  
+  With table-layout:fixed and overflow:hidden/ellipsis on the td, th's width 
+  will force the td in line.
+*/
+
+.players table {
+  table-layout: fixed;
+
+  th.name {
+    width: 250px;
+  }
+}
+
+.matches table {
+  table-layout: fixed;
+
+  th.map { width: 175px; }
+  th.team1, th.team2 { width: 200px; }
+  th.matchup { width: 85px; }
+  th.date { width: 105px; }
+  th {
+    &.spending_skill, &.sat_skill_1, &.sat_skill_2, &.sat_skill_3 {
+      width: 75px;
+    }
+  }
+
+  th, td {
+    &.spending_skill, &.saturation_skill, &.league, &.matchup, &.result, &.sat_skill_1, &.sat_skill_2, &.sat_skill_3 {
+      text-align: center;
+    }
+  }
+
+  // numeric columns have left-aligned numbers and headers.  DJ
+  // experimented with right-adjusting the number and centering the
+  // header, but the relative alignment of header and number is then
+  // tricky.
+
+  td {
+    &.apm, &.racemacro, &.duration {
+      text-align: left;
+    }
+  }
+  th.racemacro {
+    width: 56px;
+  }
+  td.racemacro {
+    width: 30px;
+    padding: 4px 18px;
+  }
+  th.apm {
+    width: 40px;
+  }
+  th {
+    &.apm, &.racemacro, &.duration {
+      text-align: left;
+    }
+  }
+
+
+  td.map, td.matchup, td.team1, td.team2 {
+    @include ellipsis(true);
+  }
+}
+
+#static table {
+  &:hover {
+    td {
+      background: inherit;
+      cursor: default;
+    }
+  }
+}
+
+table.estats {
+      min-width: 375px;
+      max-width: 800px;
+      margin: auto;
+      margin-top: -13px;
+
+      .flag {
+        padding-right: 4px;
+        margin-right: 3px;
+      }
+
+      tbody {
+        &:nth-last-child(1) {
+          border-bottom: none;
+        }
+      }
+
+      tr {
+        th {
+          white-space: normal !important;
+          font-size: 12px;
+          color: $gray-dark;
+          padding: 0px 8px;
+          text-align: center;
+          font-weight: bold;
+          display: table-cell;
+          padding: 20px 12px 2px 12px;
+        }
+      }
+
+      tbody {
+        th:nth-child(1) { 
+          display: table-cell; 
+          font-weight: normal;
+          text-align: left;
+          text-transform: uppercase;
+        }
+      }
+
+      tr {
+        td {
+          border: darken($bg, 25%) 1px solid;
+          min-width: 36px;
+        }
+      }
+
+      tr {
+        td {
+
+          padding: 8px 8px;
+          font-size: 14px;
+        
+          text-align: center;
+        }
+      }
+    }
+
+

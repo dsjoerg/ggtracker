@@ -1,0 +1,33 @@
+<div id="home">
+  <div class="content">
+    <div class="hookline">
+      <% hooklines = [
+        '<div class="light">Measure and track your Starcraft skills</div><div><span class="light">so you can</span> <span class="semibold">get better faster</span></div>',
+        ]%>
+      <%=raw hooklines[rand(hooklines.size)] %>
+    </div>
+
+    <div class="boxes">
+      <div class="dialog-signup">
+        <div class="form">
+          <div class="logo logo30"><em>GG</em>TRACKER</div>
+          <%= semantic_form_for(resource, :as => :user, :url => password_path(:user), :html => {method: :put}) do |f| %>
+            <span class="inline-errors"><%= flash[:alert] if flash[:alert] %></span>
+            <%= f.hidden_field :reset_password_token %>
+
+            <%= f.inputs do %>
+              <%= f.input :password, :label => false, :input_html => {:placeholder => 'New  password'} %>
+              <%= f.input :password_confirmation, :label => false, :input_html => {:placeholder => 'Confirm new  password'} %>
+            <% end %>
+
+            <%= f.inputs do %>
+              <%= f.action :submit, :as => :button, :label => 'change my password' %>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+

@@ -1,0 +1,7 @@
+<div class="pagination">
+  <ul>
+    <li ng-show="collection.page > 1"><a href ng-click="prevPage()">Prev</a></li>
+    <li ng-show="collection.page > 1"><a href>{{ collection.page }}</a></li>
+    <li ng-show="collection.length == collection.limit"><a href ng-class="{solo: collection.page <= 1}" ng-click="nextPage()">Next</a></li>
+  </ul>
+</div>

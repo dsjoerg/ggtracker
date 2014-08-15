@@ -1,0 +1,34 @@
+<div class="replays">
+  <div class="center">
+    <div class="transcluded" ng-transclude></div>
+
+    <div class="no-replays" ng-show="replays.length == 0">
+      <b>You have no replays uploaded.</b>
+      
+      <div class="button-upload">
+        <input type="file" name="file" multiple/>
+          <span class="caption">
+            <div class="icon icon-upload-white-32"></div> Upload your replays
+          </span>
+      </div>
+    </div>
+
+    <table class="default" border="0" cellspacing="0" cellpadding="0" ng-hide="replays.length == 0">
+      <tr>
+        <th class="date">uploaded</th>
+        <th class="filename">filename</th>
+        <th class="status">status</th>
+      </tr>
+      <tr ng-repeat="replay in replays" ng-click="go(replay.state, replay.md5)">
+        <td class="date">{{ replay.created_at | timeago }}</td>
+        <td class="filename">{{ replay.replay_file_name }}</td>
+        <td class="status">
+          <div ng-hide="replay.progress != 100" class="state-{{ replay.state }}">{{ replay.state }}</div>
+          <div ng-hide="replay.progress == 100" class="progress-simple"><span class="label tiny">{{ replay.progress }}%</span><div class="bar" style="width: {{ replay.progress }}%;"></div></div>
+        </td>
+      </tr>
+    </table>
+
+    <unpaginate data-collection="replays"></unpaginate>
+  </div>
+</div>

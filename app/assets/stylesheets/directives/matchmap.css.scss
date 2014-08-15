@@ -1,0 +1,23 @@
+div.matchmap_container {
+  position: absolute;
+  z-index: 1;
+  display: none;
+  pointer-events: none;
+}
+
+img.matchmap {
+  position: absolute;
+  top: 50px;
+  left: 50px;
+  border: 2px solid rgba(0, 0, 0, 0.4);
+  pointer-events: none;
+}
+
+canvas.mmcanvas {
+  position: relative;
+  top: 50px;
+  left: 50px;
+  z-index: 2;
+  margin: 2px;
+  pointer-events: none;
+}

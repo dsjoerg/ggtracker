@@ -1,0 +1,10 @@
+<div class="pagination">
+  <ul>
+    <li ng-class="{disabled:(collection.page <= 1)}"><a href ng-click="prevPage()">Prev</a></li>
+    <li ng-repeat="page in pages" ng-class="{active:(collection.page == page),disabled:(page=='...')}">
+      <a href ng-click="toPage(page)" ng-show="page != '...'">{{ page }}</a>
+      <a ng-show="page == '...'">...</a>
+    </li>
+    <li ng-class="{disabled:(collection.page >= collection.pages)}"><a href ng-click="nextPage()">Next</a></li>
+  </ul>
+</div>

@@ -1,0 +1,315 @@
+<% content_for(:heading) do %>
+<!-- do not invert top HAX -->
+<% end %>
+
+          <%# note: this is here because even though ng-class is fast, it will make transitions fire %>
+<div id="match" ng-controller="MatchController" ng-class="{condensed: condensed}" class="type-<%= @match.game_type %> <%= @match.game_type != '1v1' ? 'condensed' : '' %>">
+  <div id="heading" class="inset">
+    <div class="content match">
+      <div class="first name block">
+        <h1><%= @match.map_name %></h1>
+        
+        <span class="tiny gray-light"><%= @match.expansion_long %></span>
+        <span class="tiny gray-light">played <%= time_ago_in_words(@match.ended_at) %> ago</span>
+        <span class="tiny gray-light"><%= @match.duration_minutes %> min game
+          <% if controller.show_delete_link? %> <a href class="deletelink" ng-click="delete()">delete</a><% end %>
+        </span>
+      </div>
+
+      <% if @match.map_url.present? || @match.map["s2ma_hash"].present? %>
+      <div class="last map block">
+      <% if !@match.map_url || @match.map_url.blank? %>
+        <img class="minimap" height="90" src="http://s3.amazonaws.com/<%= Rails.configuration.s3['minimaps']['bucket']  %>/<%= @match.map["s2ma_hash"] %>_100.png" />
+      <% else %>
+        <img src="<%= @match.map_url %>"/>
+      <% end %>
+      </div>
+      <% end %>
+
+      <div class="block">
+
+      <% if @match.replays.length > 0 and @match.replays[0].url %>
+        <a class="dlbutton button2 button2-lime" href="/matches/<%= @match.id %>/replay"><span class="caption">download</span></a>
+        <div class="botbutbox">
+      <% else %>
+        <div class="midbutbox">
+      <% end %>
+
+        <a href class="lilreddit" ng-click="reddit($event)"> <img src="http://www.reddit.com/static/spreddit7.gif" alt="submit to reddit" border="0" /> </a>
+
+        </div> <!-- midbutbox or botbutbox -->
+
+      </div> <!-- block -->
+
+
+      <div class="last block spoiler" ng-class="{spoiled: spoiled}" ng-hide="match.winner == undefined">
+        <a class="button2 front" ng-click="spoil()">
+          <span class="caption"><span>show winner</span></span>
+        </a>
+
+        <a class="button2 back button-team{{ match.winning_team }}" style="background: #{{ match.winner_color }};" ng-click="spoil()">
+          <span class="caption">{{ match.winner }}</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="clear"></div>
+  </div>  <!-- heading -->
+
+  <%= render('matches/debug') if params[:debug] %>
+
+  <% if @match.replays_count > 0 %>
+  <div class="top">
+    <%= render 'shared/sidebarad' %>    
+
+    <matchmap data-framee="current_framee" data-minimapurl="http://s3.amazonaws.com/<%= Rails.configuration.s3['minimaps']['bucket']  %>/<%= @match.map["s2ma_hash"] %>_100.png" data-match="match"></matchmap>
+    <a href class="ggtipper2" title="Total army strength in minerals + gas throughout the game.<br><br>Move your mouse over the chart to see what was in each army at any point in the game.<br><br>Click and drag to zoom.<br><br>Click on the chart to freeze that time selection." data-gravity="nw">
+      <span class="title lefty">army strength, minerals + gas</span>
+    </a>
+    <armychart id="armychart" data-width="1024px" data-data="armies_and_idents" data-frame="current_frame" data-framee="current_framee" data-initial-frame="<%= @match.duration_seconds * 16 / 2 %>" data-chart="armychart" data-armies="armies" data-match="match" data-condensed="condensed">
+    </armychart>
+
+    <span class="title lefty armycomp">army composition and resource value</span>
+    <div class="djcloak teams">
+      <div ng-show="time_has_been_set" class="sep"><span class="vs">vs</span><span class="time" ng-bind="current_time"></span></div>
+
+      <% for team, entities in @match.teams.sort do %>
+      <div class="team team<%= team %>">
+        <div class="info">
+          <div class="name">
+            <span class="flag" style="background-color: #{{ entity.color }};"></span>
+            <a target="_self" href="/players/{{ entity.identity.id }}/{{ entity.identity.name }}">Team <%= team %></a>
+          </div>
+
+          <ul class="stats">
+            <li class="minerals"><div class="icon sc2-mineral-16"></div><span class="value">{{ match.teams[<%= team %>].minerals }}</span></li>
+            <li class="gas"><div class="icon sc2-gas-16"></div><span class="value">{{ match.teams[<%= team %>].gas }}</span></li>
+            <li class="supply"><div class="icon sc2-supply-16"></div><span class="value">{{ match.teams[<%= team %>].supply }}</span></li>
+          </ul>
+
+          <div class="clear"></div>
+        </div>
+        
+        <% for entity in entities do %>
+          <%= render('entity', :entity => entity, :entity_num => @match.entities.index(entity)) %>
+        <% end %>
+      </div>
+      <% end %>
+      <div class="clear"></div>
+    </div>
+
+    <a href class="condense button2" ng-click="toggleCondensed()">
+      <span ng-hide="condensed">&uarr;&nbsp;&nbsp;&nbsp;collapse&nbsp;&nbsp;&nbsp;&uarr;</span>
+      <span ng-show="condensed">&darr;&nbsp;&nbsp;&nbsp;expand&nbsp;&nbsp;&nbsp;&darr;</span>
+    </a>
+  </div>
+  <% end %>
+
+  <div class="djcloak noarmy middle"><div class="content">Please re-upload this replay to see the army chart.</div></div>
+
+  <% if @match.summaries? %>
+
+  <div class="djcloak middle">
+    <div class="content">
+      <div class="middlepicker">
+        <div><a class="pickerbutton overview" ng-class="{selected: selected == 'overview'}" ng-click="selected = 'overview'">Overview</a></div>
+        <div><a class="pickerbutton stats" ng-show="match.entities[0].stats != null" ng-class="{selected: selected == 'stats'}" ng-click="selected = 'stats'">Economy</a></div>
+      </div>
+      <div id="overview" class="midbox" ng-show="selected == 'overview'">
+        <table class="players">
+          <tbody class="team team{{ team.num }}" ng-repeat="team in match.teams">
+            <tr class="team">
+              <th>Team {{ team.num }}</th>
+              <th ng-hide='match.entities[0].summary.workers_created == null'>workers created</th>
+              <th>structures built</th>
+              <th>income</th>
+              <th>avg unspent resources</th>
+              <th>spending skill</th>
+              <th>units trained</th>
+              <th ng-hide='match.entities[0].summary.time_supply_capped == null'>time supply capped</th>
+              <th>units killed</th>
+              <th>structures razed</th>
+            </tr>
+
+            <tr class="player" ng-repeat="entity in team.entities">
+              <td class="name" style="border-left-color: #{{ entity.color }};">
+                <a target="_self" href="/players/{{ entity.identity.id }}/{{ entity.identity.name }}">{{ entity.identity.name }}</a>
+              </td>
+              <td ng-hide='match.entities[0].summary.workers_created == null'>{{ entity.summary.workers_created }}</td>
+              <td>{{ entity.summary.structures_built }}</td>
+              <td>{{ entity.summary.resource_collection_rate }}</td>
+              <td>{{ entity.summary.average_unspent_resources }}</td>
+              <td class="league"><a href class="ggtipper2" title="SQ: {{ entity.summary.spending_quotient.toFixed(0) }}"><league data-league="{{ entity.summary.spending_skill }}"></league></a></td>
+              <td>{{ entity.summary.units_trained }}</td>
+              <td ng-hide='match.entities[0].summary.time_supply_capped == null'>{{ entity.summary.time_supply_capped }}</td>
+              <td>{{ entity.summary.killed_unit_count }}</td>
+              <td>{{ entity.summary.structures_razed_count }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div> <!-- overview -->
+      <% if @match.entities[0]['stats'].present? %>
+      <div id="stats" class="midbox" ng-show="selected == 'stats'">
+        <div class="statbox">
+          <table class="estats">
+            <tbody>
+              <tr>
+                <th>Base Timing</th>
+                <th ng-repeat="entity in match.entities">
+                  <span class="flag" style="background-color: #{{ entity.color }};"></span>
+                  <span>{{ entity.identity.name }}</span>
+                </th>
+              </tr>
+              <tr><td>
+                  <a href class="ggtipper2" title="When a second base is completed, and located directly next to the mineral patches." data-gravity="s">
+                    2nd Mining Base Complete
+                  </a>
+                </td><td ng-repeat="entity in match.entities">{{ entity.stats.miningbase_2 | minutes_seconds }}</td></tr>
+              <tr><td>
+                  <a href class="ggtipper2" title="When a third base is completed, and located directly next to the mineral patches." data-gravity="s">
+                    3rd Mining Base Complete
+                  </a>
+                </td><td ng-repeat="entity in match.entities">{{ entity.stats.miningbase_3 | minutes_seconds}}</td></tr>
+              <tr><th>Saturation Speed</a></th>
+                  <th ng-repeat="entity in match.doubleents" ng-show="$index % 2 == 0 || user.view_mode == 1">
+                    <span ng-show="$index % 2 == 0">{{ entity.identity.name }}</span>
+                  </th>
+              </tr>
+              <tr>
+                <td>
+                  <a href class="ggtipper2" title="When sixteen workers are mining from mineral patches, they gather 640 minerals per minute, which is the maximum income per worker.  This statistic shows when 640 minerals per minute income was first achieved." data-gravity="s">
+                    1 Base Mineral Income (640)</a>
+                </td>
+                <td ng-repeat="entity in match.doubleents" ng-show="$index % 2 == 0 || user.view_mode == 1">
+                  <span ng-show="$index % 2 == 0">{{ entity.stats.mineral_saturation_1 | minutes_seconds }}</span>
+                  <span ng-show="$index % 2 == 1" ><league data-league="{{ entity.sat_1_skill }}"></league></span>
+                </td></tr>
+              <tr><td>
+                  <a href class="ggtipper2" title="
+This statistic measures how long it takes from when the second mining base is
+completed, to when 2x640 = 1280 minerals per minute income is achieved." data-gravity="s">
+                  Time from 2nd Base Complete to 2 Base Mineral Income (1280)</a></td>
+                <td ng-repeat="entity in match.doubleents" ng-show="$index % 2 == 0 || user.view_mode == 1">
+                  <span ng-show="$index % 2 == 0">{{ entity.mdelta2() | minutes_seconds  }}</span>
+                  <span ng-show="$index % 2 == 1" ><league data-league="{{ entity.sat_2_skill }}"></league></span>
+                </td>
+              </tr>
+              <tr><td>
+                  <a href class="ggtipper2" title="
+This statistic measures how long it take from when the third mining base is
+completed to when 3x640 = 1920 minerals per minute income is achieved." data-gravity="s">
+                  Time from 3rd Base Complete to 3 Base Mineral Income (1920)</a></td>
+                <td ng-repeat="entity in match.doubleents" ng-show="$index % 2 == 0 || user.view_mode == 1">
+                  <span ng-show="$index % 2 == 0">{{ entity.mdelta3() | minutes_seconds  }}</span>
+                  <span ng-show="$index % 2 == 1" ><league data-league="{{ entity.sat_3_skill }}"></league></span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div> <!-- stats -->
+      <% end %>
+    </div> <!-- content -->
+  </div>
+  <% end %>
+
+  <div class="djcloak bottom">
+    <% if @match.replays_count > 0 %>
+      <chart id="apm" class="grid_1" data-series="match.series.apm.combined" data-condensed="condensed">
+        <span class="title">actions per minute</span>
+      </chart>
+    <% end %>
+
+    <chart id="replayincome" class="grid_1 djcloak" ng-show="$parent.match.MineralsCurrent" data-series="match.series.replayincome.combined" data-condensed="condensed" data-replaystats="true">
+      <span class="title">mineral income</span>
+    </chart>
+    <chart id="replaygasincome" class="grid_1 djcloak" ng-show="$parent.match.MineralsCurrent" data-series="match.series.replaygasincome.combined" data-condensed="condensed" data-replaystats="true">
+      <span class="title">gas income</span>
+    </chart>
+    <chart id="replaylost" class="grid_1 djcloak" ng-show="$parent.match.MineralsCurrent" data-series="match.series.replaylost.combined" data-condensed="condensed" data-replaystats="true">
+      <span class="title">resources lost in combat</span>
+    </chart>
+    <chart id="replayminerals" class="grid_1 djcloak" ng-show="$parent.match.MineralsCurrent" data-series="match.series.replayminerals.combined" data-condensed="condensed" data-replaystats="true">
+      <span class="title">minerals in bank</span>
+    </chart>
+    <chart id="replaygas" class="grid_1 djcloak" ng-show="$parent.match.MineralsCurrent" data-series="match.series.replaygas.combined" data-condensed="condensed" data-replaystats="true">
+      <span class="title">gas in bank</span>
+    </chart>
+    <chart id="replaytotalincome" class="grid_1 djcloak" ng-show="$parent.match.MineralsCurrent" data-series="match.series.replaytotalincome.combined" data-condensed="condensed" data-replaystats="true">
+      <span class="title">total resources gathered</span>
+    </chart>
+    <chart id="replayworkers" class="grid_1 djcloak" ng-show="$parent.match.MineralsCurrent" data-series="match.series.replayworkers.combined" data-condensed="condensed" data-replaystats="true">
+      <span class="title">workers active</span>
+     </chart>
+
+    <% if @match.summaries? %>
+      <chart id="income" class="grid_1" ng-hide="$parent.match.ended_at > '2013-05-06'" data-series="match.series.summary_income.combined" data-condensed="condensed">
+        <span class="title">income</span>
+      </chart>
+      <chart id="workersactive" class="grid_1" ng-hide="$parent.match.ended_at > '2013-05-06'" data-series="match.series.summary_workersactive.combined" data-condensed="condensed">
+        <span class="title">workers active</span>
+      </chart>
+      <% if @match.replays_count == 0 %>
+        <chart id="armystrength" class="grid_1" data-series="match.series.summary_army.combined" data-condensed="condensed">
+          <span class="title">army strength</span>
+        </chart>
+      <% end %>
+    <% end %>    
+    <% if @match.replays_count > 0 %>
+      <chart id="num_bases" class="djcloak grid_1" ng-show="$parent.match.num_bases.length > 0" data-series="match.series.bases.combined" data-condensed="condensed">
+        <span class="title">
+          <a href class="ggtipper2" title="Number of bases.<br><br>Bases are considered alive 100 seconds after the build command (worker travel time is ignored).<br><br>They are considered dead after the last time they are selected." data-gravity="n">bases</a>
+        </span>
+      </chart>
+      <macrochart class="grid_1" match="match" ng-show="show" ng-repeat="entity in match.race_entities('Z')">
+        <span class="title">
+          <a href class="ggtipper2" title="Each row is a Hatchery/Lair/Hive.<br><br>Times when larva-inject is active are colored rectangles. Those are good.<br><br>A score of 60% means that your Hatches were injected with larva 60% of the time. The higher the better. Scores are not comparable across races.<br><br>You can click and drag to zoom." data-gravity="n">
+            {{ entity.identity.name }}'s inject timing ({{ entity.race_macro_pretty() }}%)
+          </a>
+        </span>
+      </macrochart>
+
+      <chart id="creep_spread" ng-show="$parent.match.any_creep_spread" class="grid_1" data-series="match.series.creep_spread.combined" data-condensed="condensed">
+        <span class="title">creep spread</span>
+      </chart>
+
+
+      <protosschart class="grid_1" match="match" ng-show="show" ng-repeat="entity in match.race_entities('P')">
+        <span class="title">
+          <a href class="ggtipper2" title="Each row is a Nexus.<br><br>Chronoboosts are circles. Times when Nexus energy was maxed out are colored rectangles. Those are <b>not good</b>!<br><br>A score of 80% means that your Nexuses were <b>below</b> max energy 80% of the time. The higher the better. Scores are not comparable across races.<br><br>You can click and drag to zoom." data-gravity="n">
+            {{ entity.identity.name }}'s chronoboosts<br>and nexus energy maxouts ({{ entity.race_macro_pretty() }}%)
+          </a>
+        </span>
+      </protosschart>
+      <terranchart class="grid_1" match="match" ng-show="show" ng-repeat="entity in match.race_entities('T')">
+        <span class="title">
+          <a href class="ggtipper2" title="Each row is an Orbital Command.<br><br>MULEs are squares, scans are circles, supply calldowns are diamonds. Times when Orbital energy was maxed out are colored rectangles. Those are <b>not good</b>!<br><br>A score of 80% means that your Orbitals were <b>below</b> max energy 80% of the time. The higher the better. Scores are not comparable across races.<br><br>You can click and drag to zoom." data-gravity="n">
+            {{ entity.identity.name }}'s Orbital Command<br>usage and energy maxouts ({{ entity.race_macro_pretty() }}%)
+          </a>
+        </span>
+      </terranchart>
+    <% end %>
+    <% if signed_in? %>
+      <matchnote data-match_id='match.id'></matchnote>
+    <% end %>
+
+    <div class="reddit">
+      <a href ng-click="reddit($event)"> <img src="http://www.reddit.com/static/spreddit13.gif" alt="submit to reddit" border="0" /> </a>
+      <br><span class="tiny">Ask for advice, share an awesome match, whatever...</span>
+      <br><span class="tiny">You can edit the post before it's submitted.</span>
+    </div>
+
+    <div class="other_replay_analyzer">
+      <span>
+        <% if @match.id % 3 == 0 %>
+          Want to see build orders?  Upload this replay to <a href="http://spawningtool.com/">Spawning Tool</a>.
+        <% elsif @match.id % 3 == 1 %>
+          Want to see more details about your games?  Upload this replay to <a href="http://sc2replaystats.com/">Sc2ReplayStats</a>.
+        <% else %>
+          Want a heavy-duty replay analyzer program that runs on your computer?  Try <a href="https://sites.google.com/site/scelight/">Scelight</a>.
+        <% end %>
+      </span>
+    </div>
+
+  </div> <!-- bottom -->
+</div>

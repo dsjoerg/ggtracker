@@ -1,0 +1,75 @@
+<% content_for(:head) do %>
+  <title>Economy Stats</title>
+  <meta name="Description" content="Economic stats from over 100,000 Starcraft II games, broken out by league and matchup.">
+<% end %>
+
+<div id="static" ng-controller="EconomyStatsController">
+  <div id="spending">
+    <div class="filters-wrap">
+      <ul class="filters">
+        <li class="filter" style="border-right: none;"><span class="name">ECONOMY STATS</span></li>
+        <li class="filter race" style="border-left: none"><raceselect name="race"/></li>
+        <li class="filter vs_race"><raceselect name="vs_race"/></li>
+      </ul>
+    </div>
+  </div>
+  <div class="content spending_skill">
+    <div class="static_inner">
+      <div class="chart">
+       <span class="djcloak title">{{ race }} Economic Stats vs {{ vs_race }}</span>
+       <br>
+          <table class="estats">
+            <tbody>
+              <tr>
+                <th>Base Timing</th>
+                <th ng-repeat="league in leagues">
+                  <span><league data-league="{{ league }}" data-size="small"></league></span>
+                </th>
+              </tr>
+              <tr><td>
+                  <a href class="ggtipper2" title="When a second base is completed, and located directly next to the mineral patches." data-gravity="s">
+                    2nd Mining Base Complete
+                  </a>
+                </td><td ng-repeat="league in leagues">{{ es[key][league].miningbase_2 | minutes_seconds }}</td></tr>
+              <tr><td>
+                  <a href class="ggtipper2" title="When a third base is completed, and located directly next to the mineral patches." data-gravity="s">
+                    3rd Mining Base Complete
+                  </a>
+                </td><td ng-repeat="league in leagues">{{ es[key][league].miningbase_3 | minutes_seconds}}</td></tr>
+              <tr><th>Saturation Speed</a></th><th ng-repeat="league in leagues"></th></tr>
+              <tr><td>
+                  <a href class="ggtipper2" title="When sixteen workers are mining from mineral patches, they gather 640 minerals per minute, which is the maximum income per worker.  This statistic shows when 640 minerals per minute income was first achieved." data-gravity="s">
+                    1 Base Mineral Income (640)</a></td><td ng-repeat="league in leagues">{{ es[key][league].mineral_saturation_1 | minutes_seconds }}</td></tr>
+              <tr><td>
+                  <a href class="ggtipper2" title="
+This statistic measures how long it takes from when the second mining base is
+completed, to when 2x640 = 1280 minerals per minute income is achieved." data-gravity="s">
+                  Time from 2nd Base Complete to 2 Base Mineral Income (1280)</a></td>
+                <td ng-repeat="league in leagues">
+                  {{ es[key][league].mdelta2 | minutes_seconds  }}
+                </td>
+              </tr>
+              <tr><td>
+                  <a href class="ggtipper2" title="
+This statistic measures how long it take from when the third mining base is
+completed to when 3x640 = 1920 minerals per minute income is achieved." data-gravity="s">
+                  Time from 3rd Base Complete to 3 Base Mineral Income (1920)</a></td>
+                <td ng-repeat="league in leagues">
+                  {{ es[key][league].mdelta3 | minutes_seconds }}
+                </td>
+              </tr>
+              <tr><td>Number of games</td>
+                <td ng-repeat="league in leagues">
+                  {{ es[key][league]['count(*)'] }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+      </div>
+      <p>See more about Saturation Speed <a href="saturation_speed">here</a>.</p>
+      <p>All games are 1v1 HotS Ladder, vs-AI excluded, from May 8, 2013 to {{ es['PvP'][1].retrieval_time | date:'MMM d, y'}}.</p>
+      <p>Stats are updated once per day.</p>
+      <p>Alternate view: <a href="economy_stats2">all matchups, one league</a></p>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,79 @@
+development:
+  replays:
+    access_key_id: YOUR_ACCESS_KEY
+    secret_access_key: YOUR_SECRET_ACCESS_KEY
+    endpoint: s3.amazonaws.com
+    bucket: gg2-replays-dev
+    s3_host_alias: 
+  matchblobs:
+    access_key_id: YOUR_ACCESS_KEY
+    secret_access_key: YOUR_SECRET_ACCESS_KEY
+    endpoint: s3.amazonaws.com
+    bucket: gg2-matchblobs-dev
+    s3_host_alias:
+  minimaps:
+    access_key_id: YOUR_ACCESS_KEY
+    secret_access_key: YOUR_SECRET_ACCESS_KEY
+    endpoint: s3.amazonaws.com
+    bucket: gg2-minimaps-dev
+    s3_host_alias:
+
+test:
+  replays:
+    access_key_id: YOUR_ACCESS_KEY
+    secret_access_key: YOUR_SECRET_ACCESS_KEY
+    endpoint: s3.amazonaws.com
+    bucket: gg2-replays-test
+    s3_host_alias:
+  matchblobs:
+    access_key_id: YOUR_ACCESS_KEY
+    secret_access_key: YOUR_SECRET_ACCESS_KEY
+    endpoint: s3.amazonaws.com
+    bucket: gg2-matchblobs-test
+    s3_host_alias:
+  minimaps:
+    access_key_id: YOUR_ACCESS_KEY
+    secret_access_key: YOUR_SECRET_ACCESS_KEY
+    endpoint: s3.amazonaws.com
+    bucket: gg2-minimaps-test
+    s3_host_alias:
+
+production:
+  replays:
+    access_key_id: YOUR_ACCESS_KEY
+    secret_access_key: YOUR_SECRET_ACCESS_KEY
+    endpoint: s3.amazonaws.com
+    bucket: gg2-replays-prod
+    s3_host_alias: 
+  matchblobs:
+    access_key_id: YOUR_ACCESS_KEY
+    secret_access_key: YOUR_SECRET_ACCESS_KEY
+    endpoint: s3.amazonaws.com
+    bucket: gg2-matchblobs-prod
+    s3_host_alias:
+  minimaps:
+    access_key_id: YOUR_ACCESS_KEY
+    secret_access_key: YOUR_SECRET_ACCESS_KEY
+    endpoint: s3.amazonaws.com
+    bucket: gg2-minimaps-prod
+    s3_host_alias:
+
+staging:
+  replays:
+    access_key_id: YOUR_ACCESS_KEY
+    secret_access_key: YOUR_SECRET_ACCESS_KEY
+    endpoint: s3.amazonaws.com
+    bucket: gg2-replays-dev
+    s3_host_alias: 
+  matchblobs:
+    access_key_id: YOUR_ACCESS_KEY
+    secret_access_key: YOUR_SECRET_ACCESS_KEY
+    endpoint: s3.amazonaws.com
+    bucket: gg2-matchblobs-dev
+    s3_host_alias:
+  minimaps:
+    access_key_id: YOUR_ACCESS_KEY
+    secret_access_key: YOUR_SECRET_ACCESS_KEY
+    endpoint: s3.amazonaws.com
+    bucket: gg2-minimaps-dev
+    s3_host_alias:

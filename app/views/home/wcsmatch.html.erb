@@ -1,0 +1,95 @@
+<% content_for(:head) do %>
+  <title>WCS Match Page</title>
+  <meta name="Description" content="WCS Match Page">
+<% end %>
+
+<div id="static">
+  <div class="content spending_skill">
+    <div class="static_inner">
+<div id="player"></div>
+<div><span id="yt_time"></span></div>
+<div><span id="s2_time"></span></div>
+
+<div id="match" ng-controller="MatchController" class="type-1v1">
+    <div class="teams">
+      <div class="sep"><span class="vs">vs</span><span class="time">{{ current_time }}</span></div>
+
+      <% for team, entities in @match.teams.sort do %>
+      <div class="team team<%= team %>">
+        <div class="info">
+          <div class="name">
+            <span class="flag" style="background-color: #{{ entity.color }};"></span>
+            <a target="_self" href="/players/{{ entity.identity.id }}/{{ entity.identity.name }}">Team <%= team %></a>
+          </div>
+
+          <ul class="stats">
+            <li class="minerals"><div class="icon sc2-mineral-16"></div><span class="value">{{ match.teams[<%= team %>].minerals }}</span></li>
+            <li class="gas"><div class="icon sc2-gas-16"></div><span class="value">{{ match.teams[<%= team %>].gas }}</span></li>
+            <li class="supply"><div class="icon sc2-supply-16"></div><span class="value">{{ match.teams[<%= team %>].supply }}</span></li>
+          </ul>
+
+          <div class="clear"></div>
+        </div>
+        
+        <% for entity in entities do %>
+          <%= render('entity', :entity => entity, :entity_num => @match.entities.index(entity)) %>
+        <% end %>
+      </div>
+      <% end %>
+      <div class="clear"></div>
+    </div>
+</div>
+
+
+    <script>
+      // 2. This code loads the IFrame Player API code asynchronously.
+      var tag = document.createElement('script');
+
+      tag.src = "https://www.youtube.com/iframe_api";
+      var firstScriptTag = document.getElementsByTagName('script')[0];
+      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+      // 3. This function creates an <iframe> (and YouTube player)
+      //    after the API code downloads.
+      var player;
+      function onYouTubeIframeAPIReady() {
+        player = new YT.Player('player', {
+          height: '390',
+          width: '640',
+          videoId: 'X6bJ4haYXyM',
+          events: {
+            'onReady': onPlayerReady
+          }
+        });
+      }
+
+      S2_TIMESCALE = 1.4018;
+
+      function compute_s2_time(yt_time) {
+        if (yt_time < 637) {
+          return 20 + S2_TIMESCALE * (yt_time - 417);
+        }
+        if (yt_time < 851) {
+          return 329
+        }
+
+        return 334 + S2_TIMESCALE * (yt_time - 851);
+      }
+
+      function updateObserverUI() {
+        $('#yt_time').text(player.getCurrentTime());
+        s2_time = compute_s2_time(player.getCurrentTime());
+        $('#s2_time').text(s2_time);
+        matchScope = angular.element($('#match')).scope();
+        matchScope.current_time = s2_time * 16.0;
+      }
+
+      function onPlayerReady(event) {
+        event.target.playVideo();
+        window.setInterval(updateObserverUI, 250);
+      }
+
+    </script>
+    </div>
+  </div>
+</div>

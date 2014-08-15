@@ -1,0 +1,59 @@
+<% content_for(:head) do %>
+  <title>Economy Benchmarks for TheStaircase</title>
+  <meta name="Description" content="Economic benchmarks for TheStaircase from over 100,000 Starcraft II games, broken out by league and matchup.">
+<% end %>
+
+<div id="static" ng-controller="EconomyStaircaseController">
+  <div id="spending">
+    <div class="filters-wrap">
+      <ul class="filters">
+        <li class="filter" style="border-right: none;"><span class="name">ECONOMY BENCHMARKS for TheStaircase</span></li>
+        <li class="filter race" style="border-left: none"><raceselect name="race"/></li>
+        <li class="filter vs_race"><raceselect name="vs_race"/></li>
+      </ul>
+    </div>
+  </div>
+  <div class="content spending_skill">
+    <div class="static_inner">
+      <div class="chart">
+       <span class="djcloak title">{{ race }} Economic Benchmarks vs {{ vs_race }}</span>
+       <br>
+          <table class="estats">
+            <tbody>
+              <tr><th>Saturation Speed</a></th><th ng-repeat="league in leagues"><span><league data-league="{{ league }}" data-size="small"></league></span></th></tr>
+              <tr><td>
+                  <a href class="ggtipper2" title="When sixteen workers are mining from mineral patches, they gather 640 minerals per minute, which is the maximum income per worker.  This statistic shows when 640 minerals per minute income was first achieved." data-gravity="s">
+                    1 Base Mineral Income (640)</a></td><td ng-repeat="league in leagues">{{ es[league + key + '_mineral_saturation_1'][metric()] | minutes_seconds }}</td></tr> 
+              <tr><td>
+                  <a href class="ggtipper2" title="
+This statistic measures how long it takes from when the second mining base is
+completed, to when 2x640 = 1280 minerals per minute income is achieved." data-gravity="s">
+                  Time from 2nd Base Complete to 2 Base Mineral Income (1280)</a></td>
+                <td ng-repeat="league in leagues">
+                  {{ es[league + key + '_mdelta2'][metric()] | minutes_seconds  }}
+                </td>
+              </tr>
+              <tr><td>
+                  <a href class="ggtipper2" title="
+This statistic measures how long it take from when the third mining base is
+completed to when 3x640 = 1920 minerals per minute income is achieved." data-gravity="s">
+                  Time from 3rd Base Complete to 3 Base Mineral Income (1920)</a></td>
+                <td ng-repeat="league in leagues">
+                  {{ es[league + key + '_mdelta3'][metric()] | minutes_seconds }}
+                </td>
+              </tr>
+              <tr><td>Number of games</td>
+                <td ng-repeat="league in leagues">
+                  {{ es[league + key + '_mineral_saturation_1']['median_count'] }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+      </div>
+      <p>See more about <a href="http://www.teamliquid.net/forum/viewmessage.php?topic_id=374400">TheStaircase</a> and <a href="saturation_speed">Saturation Speed</a>.</p>
+      <p>Games are 1v1 HotS Ladder, vs-AI excluded, from May 8, 2013 to {{ es['now'] | date:'MMM d, y'}}.</p>
+      <p>Benchmarks are set by calculating the median time for the given matchup and league.  The times are then adjusted to the best-fit line from Silver to Masters using a standard least-squares regression.  (In the rare case when the best-fit line slopes the wrong way, we use the Masters time for all leagues)</p>
+      <p>Stats are updated once per day.</p>
+    </div>
+  </div>
+</div>

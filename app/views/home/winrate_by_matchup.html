@@ -1,0 +1,48 @@
+<% content_for(:head) do %>
+  <title>Winrate by Matchup</title>
+  <meta name="Description" content="Starcraft II win rate statistics by matchup and league.">
+<% end %>
+
+<div id="static" ng-controller="WinrateController">
+  <div id="spending">
+    <div class="filters-wrap">
+      <ul class="filters">
+        <li class="filter" style="border-right: none;"><span class="name">1v1 LADDER WIN RATES BY MATCHUP</span></li>
+        <li class="filter"><ggselect class="timeperiod" name="timeperiod" values="1.4.3:patch_143,1.5.3:patch_153"/></li>
+      </ul>
+    </div>
+  </div>
+  <div class="content spending_skill">
+    <div class="static_inner">
+      <div ng-repeat="matchup in matchups">
+      <table class="default" border="0" cellspacing="0" cellpadding="0" >
+        <tr>
+          <th>win %</th>
+          <th><div class="{{ 'icon sc2 sc2-' + raceName(matchup[0]) + '-plain-48' }}" foo="{{ Sc2.leagues }}"></div></th>
+          <th><div class="{{ 'icon sc2 sc2-' + raceName(matchup[1]) + '-plain-48' }}" foo="{{ Sc2.leagues }}"></div></th>
+          <th><a href class="ggtipper2" title="How far off the win% shown here might be from the 'true' balance of the matchup, given the limited number of games in our sample.  For more details, see the Q&A below.">+/-</a></th>
+          <th># matches</th>
+        </tr>
+        <tr ng-repeat="league in leagues">
+          <td><league data-league="{{ league }}" data-size="normal"></td>
+          <td>{{ msdata(matchup[2],league,matchup[0]) }}</td>
+          <td>{{ msdata(matchup[2],league,matchup[1]) }}</td>
+          <td>{{ msdata(matchup[2],league,"2sde") }}</td>
+          <td>{{ msdata(matchup[2],league,"num_matches") }}</td>
+        </tr>
+      </table>
+      <br><br><br>
+      </div>
+    </div>
+    <p><b>Where is this data from?</b></p>
+    <p>Every day, GGTracker retrieves the details of thousands of matches from GGTracker users and their leaguemates.  The stats here are primarily from the AM and EU servers, with a small amount of KR and SEA as well.  We would be happy to share more detailed statistics with anyone who'd like to examine the data for accuracy and completeness.</p>
+    <p><b>What do 1.4.3 and 1.5.3 mean?</b></p>
+    <p>They refer to the version number of Starcraft patches that affect the balance of the game.  See the complete list of patches <a href="http://wiki.teamliquid.net/starcraft2/Patches">here</a>. 1.4.3 includes all matches played from 1.4.3 BU until 1.5.3 BU, and 1.5.3 includes all matches played from 1.5.3 onward.</p>
+    <p><b>When was this data last updated?</b></p>
+    <p>{{ prettyDataDate() }}</p>
+    <p><b>What does +/- mean?</b></p>
+    <p>It tells you how far off the win% shown here might be from the "true" balance of the matchup, given the limited number of games in our sample.  There's only a 5% chance that we are wrong about the true balance of the matchup by more than the +/- range reported here.</p><p>Suppose you had a perfectly fair coin and flipped it 10,000 times. Of course, you wouldn't get exactly 5,000 heads.</p><p>However, it'd be pretty close -- the chances are 95% that the number of heads would be in the range of 4,900 to 5,100.  We'd call that +/- 1%.  The formula is 1/sqrt(N), where N is the size of the sample.  For more math fun, see <a href="http://en.wikipedia.org/wiki/Checking_whether_a_coin_is_fair">Checking whether a coin is fair</a>.</p><p>For each of the matchup/league combinations above, we use that formula to compute the +/-, with N = the # of games we have for that matchup and league.</p>
+    <p class="coinflips">Computers are good at flipping coins really fast.  Your browser just flipped a perfectly fair coin {{ N }} times and got {{ numHeads }} heads, which is {{ pctHeads.toFixed(1) }} percent.  Click <a href ng-click="flipcoins()">here</a> to flip the coins again.<br><br>You can change the number of coins here: <input type="number" ng-model="N" ng-change="flipcoins()"><br><br>
+    95% of the time, you will find that the percentage of heads will be 50.0 +/- {{ plusminus.toFixed(1) }}, that is it'll be between {{ (50.0 - plusminus).toFixed(1) }} and {{ (50.0 + plusminus).toFixed(1) }}.</p>
+  </div>
+</div>

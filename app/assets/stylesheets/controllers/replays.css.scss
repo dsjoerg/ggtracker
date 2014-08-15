@@ -1,0 +1,11 @@
+#replays {
+  margin-top: 15px;
+
+  .center {
+    @include center;
+  }
+
+  .state-failed {
+    color: #f00;
+  }
+}

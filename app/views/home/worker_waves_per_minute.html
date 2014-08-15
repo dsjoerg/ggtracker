@@ -1,0 +1,17 @@
+<% content_for(:head) do %>
+  <title>Worker Waves Per Minute</title>
+  <meta name="Description" content="Worker Waves Per Minute measures how many workers you make in Starcraft 2.">
+<% end %>
+
+<div id="static">
+  <div class="content spending_skill">
+    <div class="static_inner">
+      <h1>Worker Waves Per Minute</h1>
+      <p>"Worker waves per minute" (WWPM) is designed to be a close approximation of "workers built per minute".  Higher-league players tend to have a higher WWPM.</p>
+      <p>Ideally, we would be able to simply measure the number of workers that you build. Unfortunately that is not possible, because the replay file doesn't contain that information. The replay contains only your worker-build commands.  Simply measuring the worker-build commands isn't good enough, because players spam the worker-build command.</p>
+      <p>So instead we measure "worker waves".  A "worker wave" is a group of worker-build commands with no more than three seconds between them. So if you spam the worker-build command, it still only counts as one worker wave.</p>
+      <p>For Protoss and Terran this is a useful way to measure, because workers tend to be built individually.  For Zergs, WWPM is less useful because multiple workers are often built in a single wave.</p>
+      <p>In every race, higher-league players tend to have higher WWPM than lower-league players.</p>
+    </div>
+  </div>
+</div>

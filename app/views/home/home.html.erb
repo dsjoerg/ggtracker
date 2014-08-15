@@ -1,0 +1,44 @@
+<% content_for(:head) do %>
+  <title>GGTracker</title>
+  <meta name="Description" content="Get better faster.  Upload your Starcraft II replays here.  Charts and stats you can't get anywhere else.">
+<% end %>
+
+
+<% content_for(:foot) do %>
+      <li><a href="http://icueva.wordpress.com/">Photo &copy; Ignacio de la Cueva Torregrosa</a></li>
+      <% if !signed_in? %>
+      <li><a href="/players">Players</a></li>
+      <li><a href="/matches">Matches</a></li>
+      <li><a href="/tour">Tour</a></li>
+      <% end %>
+<% end %>
+
+<div id="home">
+  <div class="content">
+    <div class="hookline">
+      <% hooklines = [
+        '<div class="light">Measure and track your Starcraft skills</div><div><span class="light">so you can</span> <span class="semibold">get better faster</span></div>',
+        ]%>
+      <%=raw hooklines[rand(hooklines.size)] %>
+    </div>
+
+    <div class="boxes">
+      <% if !signed_in? %>
+      <div class="dialog-signup">
+        <%= render 'dialogs/join_aio', :resource => User.new %>
+      </div>
+      <% end %>
+
+      <div class="box">
+        <h3 class="large">Are you new to GGTracker?</h3>
+
+        <div class="button-upload">
+          <input type="file" name="file" multiple/>
+          <span class="caption">
+            <div class="icon icon-upload-white-32"></div> Upload your replays
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

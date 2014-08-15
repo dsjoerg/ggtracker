@@ -1,0 +1,5 @@
+<li class="alert-<%= notification.notification_type %> alert">
+  <a class="close" data-dismiss="alert" href="<%= ack_notification_url(notification) %>">&times;</a>
+
+  <%= notification.message %>
+</li>

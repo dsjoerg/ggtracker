@@ -1,0 +1,51 @@
+// general form styling
+//
+// I'm using button2 even for text inputs (it's pretty simple)
+// and overriding some of button2's styling. At this point, one could rename
+// button2 to input and ..well, you get the idea.
+
+form {
+  input[type=text], 
+  input[type=email], 
+  input[type=password] {
+    @include button2(white, black);
+  }
+
+  input[type=text], 
+  input[type=email], 
+  input[type=password],
+  button {
+    font-family: $font-default;
+    text-align: left;
+    padding: 8px 10px;
+    font-size: 16px;
+    cursor: auto;
+  }
+  
+  button {
+    text-align: center;
+    font-weight: $extrabold;
+    text-transform: uppercase;
+    overflow: hidden;
+    cursor: pointer;
+  }
+ 
+  // Placeholder compat styling (this does not style real placeholder text)
+  input.placeholder { color: #aaa !important; }
+  
+  // formtastic!
+  
+  .inline-errors {
+    color: desaturate(red, 15%);
+  }
+  
+  li {
+    vertical-align: top;
+  }
+  
+  li.error {
+    input {
+      @include box-shadow(0px 0px 7px desaturate(red, 15%));
+    }
+  }
+}

@@ -1,0 +1,87 @@
+<div class="matches">
+  <div class="filters-wrap">
+    <ul class="filters">
+      <li class="filter map"><mapselect name="map_name" /></li>
+      <li class="filter average_league"><leagueselect name="average_league" /></li>
+      <li class="filter race"><raceselect name="race" playername="identity.name" versus="is"/></li>
+      <li class="vs"><span>vs</span></li>
+      <li class="filter vs_race"><raceselect name="vs_race" playername="identity.name" versus="is against" /></li>
+
+      <li class="filter double type-gateway">
+        <ggselect class="type" name="game_type" values="1v1,2v2,3v3,4v4,FFA"/>
+        <ggselect class="gateway" name="gateway" values="AM:us,EU:eu,KR/TW:kr,SEA:sea,CN:cn"/>
+      </li>
+      <li class="filter category">
+        <ggselect class="category" name="category" values="LADDER:Ladder"/>
+      </li>
+    </ul>
+  </div>
+
+  <div class="transcluded" ng-transclude></div>
+
+  <div class="center">
+    <div class="no-matches" ng-show="matches.length == 0">
+      <h1>Sorry, we have no matches for your selection.</h1>
+    </div>
+
+    <table border="0" cellspacing="0" cellpadding="0" ng-class="{staircase: user.view_mode == 1}" ng-hide="matches.length == 0">
+      <tr>
+        <th class="num">#</th>
+        <th class="map">map<b class="arrow"></b></th>
+        <th class="type">type<b class="arrow"></b></th>
+        <th class="matchup">matchup</th>
+        <th class="team1">players</th>
+        <th class="team2">vs players</th>
+
+        <th class="duration"">length<b class="arrow"></b></th>
+        <th class="apm">apm</th>
+        <th class="wpm"><a href class="ggtipper2" title="Worker Waves Per Minute.  See the Help menu for more about WWPM.">wwpm</a></th>
+        <th class="racemacro"><a href class="ggtipper2" title="Race-Specific Macro.  100 = perfect.  See the help menu for more about Race-Specific Macro.">race macro</a></th>
+        <th class="creep_spread" ng-show="identity.most_played_race == 'z'">max creep spread %</th>
+        <th class="spending_skill">spending skill</th>
+        <th class="saturation_skill">saturation speed</th>
+        <th class="sat_skill_1">satur speed 1</th>
+        <th class="sat_skill_2">satur speed 2</th>
+        <th class="sat_skill_3">satur speed 3</th>
+        <th class="result">result</th>
+        <th class="race">race</th>
+
+        <th class="league">avg league<b class="arrow"></b></th>
+        <th class="date">played<b class="arrow"></b></th>
+      </tr>
+      <tr ng-repeat="match in matches" ng-click="go(match.id)">
+        <td class="num">
+          {{ matches.total - (((matches.page-1) * matches.limit) + $index ) }}
+          <div class="ggtipper2 icon icon-text-16" data-gravity='nw' title="{{match.my_matchnote.note}}" ng-show="match.hasMatchNote()"></div>
+        </td>
+        <td class="map nowrap"><a target="_self" href="/matches/{{ match.id }}">{{ match.map_name }}</a></td>
+        <td class="type">{{ match.game_type }}</td>
+        <td class="matchup">
+          {{ match.matchup(identity.id) }}
+        </td>
+        <td class="team1" ng-bind-html="match.team_names(1).join(', ')"></td>
+        <td class="team2" ng-bind-html="match.team_names(2).join(', ')"></td>
+
+        <td class="duration nowrap">{{ match.duration_minutes() }} mins</td>
+        <td class="apm">{{ match.entity(identity.id).apm.toFixed(0) }}</td>
+        <td class="wpm">{{ match.entity(identity.id).wpm.toFixed(1) }}</td>
+        <td class="racemacro">{{ match.entity(identity.id).race_macro_pretty() }}</td>
+        <td class="creep_spread" ng-show="identity.most_played_race == 'z'">{{ match.entity(identity.id).max_creep_spread.toFixed(0) }}</td>
+        <td class="spending_skill"><a href class="ggtipper2" title="SQ: {{ match.entity(identity.id).spending_quotient.toFixed(0) }}"><league data-league="{{ match.entity(identity.id).spending_skill }}"></a></league></td>
+        <td class="saturation_skill"><league data-league="{{ match.entity(identity.id).saturation_skill }}"></league></td>
+        <td class="sat_skill_1"><league data-league="{{ match.entity(identity.id).sat_1_skill }}"></league></td>
+        <td class="sat_skill_2"><league data-league="{{ match.entity(identity.id).sat_2_skill }}"></league></td>
+        <td class="sat_skill_3"><league data-league="{{ match.entity(identity.id).sat_3_skill }}"></league></td>
+        <td class="result">{{ match.entity(identity.id).win_pretty() }}</td>
+        <td class="race"><div class="icon sc2-{{ match.entity(identity.id).race_name }}-color-16"></div></td>
+
+        <td class="league"><league data-league="{{ match.average_league }}"></league></td>
+        <td class="nowrap">{{ match.ended_at | timeago }}</td>
+      </tr>
+    </table>
+
+<!-- TODO use the paginate directive when paginate=true. how to do this?! -->
+    <unpaginate data-collection="matches"></unpaginate>
+  </div>
+
+</div>

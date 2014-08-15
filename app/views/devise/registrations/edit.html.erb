@@ -1,0 +1,28 @@
+<div id="settings" ng-controller="SettingsController">
+  <div class="content">
+    <h2 class="first">Your Battle.Net Account</h2>
+    <%= render 'accounts' %>
+
+    <% if current_user.pro? %>
+    <h2>GGTracker Pro Auto-uploader</h2>
+<ol class="instructions">
+<li>Download the auto-uploader: <a class="action button" href="https://s3.amazonaws.com/auto-uploader/ggtracker+uploader.zip">download</a></li>
+<li>Unzip it and start the version appropriate to your operating system.</li>
+<li>Click the Choose... button and pick a directory.  The auto-uploader will watch that directory and its subdirectories for new replays.</li>
+<li>Paste this code: <span class="token"><%= current_user.access_token %></span> into the Upload key field in the Auto-uploader window.</li>
+<li>Play Starcraft!  The auto-uploader will watch for any new replays and upload them to GGTracker.</li>
+</ol>
+
+    <h2>SC2Gears Auto-uploader Plugin</h2>
+<p><a href="https://twitter.com/Dougcope">Doug Copestake</a> wrote a plugin for SC2Gears that automatically uploads your games from SC2Gears to GGTracker.  Thanks Doug!  You get GGTracker Pro for life!</p>
+<ol class="instructions">
+<li>Download the SC2Gears auto-uploader plugin: <a class="action button" href="https://s3.amazonaws.com/auto-uploader/sc2gears_ggtracker_autouploader_plugin.zip">download</a></li>
+<li>Unzip it and place it into the Plugins subdirectory of SC2Gears.</li>
+<li>Restart SC2Gears, go to Tools->Plugin Manager, select the GGTracker Auto Uploader plugin, click Enable Plugin, click Configure Plugin
+<li>Put your email address into Username, and paste this code: <span class="token"><%= current_user.access_token %></span> into the Upload Key field.</li>
+<li>Play Starcraft!  The plugin will watch for any new replays and upload them to GGTracker.</li>
+</ol>
+
+    <% end %>
+  </div>
+</div>

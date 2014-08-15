@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+  </head>
+  <body>
+    <pre>
+    USER FUNNEL, PAST 10 DAYS
+<%=  Hirb::Helpers::AutoTable.render(ActiveRecord::Base.connection.exec_query("""
+select count(*) as 2_accts,
+       sum(case when rcr is null then 0 else 1 end) as 3_uploaded,
+       sum(case when authenticated_at is null then 0 else 1 end) as 4_authed,
+       sum(case when character_code is null then 0 else 1 end) as 5_charcode,
+       sum(case when numreps > 10 then 1 else 0 end) as 6_atleast10reps,
+       sum(case when numreps > 10 and character_code is not null then 1 else 0 end) as 7_charcodeand10reps,
+       sum(case when numreps > 100 and character_code is not null then 1 else 0 end) as 8_charcodeand100reps
+       from
+(select a.gateway, u.created_at, a.authenticated_at,
+       a.character_code, u.prolevel, max(r.created_at) as rcr, count(*) as numreps                                                                     
+from (users u left outer join replays r on r.user_id = u.id)
+left outer join accounts a on a.user_id = u.id
+where u.created_at > (now() - interval 10 day)
+group by gateway, u.created_at, authenticated_at, character_code, prolevel 
+) as theusers
+"""), :max_width=>1000) %>
+<%=  Hirb::Helpers::AutoTable.render(ActiveRecord::Base.connection.exec_query("""
+select date(created_at) as 1_date,
+       count(*) as 2_accts,
+       sum(case when rcr is null then 0 else 1 end) as 3_uploaded,
+       sum(case when authenticated_at is null then 0 else 1 end) as 4_authed,
+       sum(case when character_code is null then 0 else 1 end) as 5_charcode,
+       sum(case when numreps > 10 then 1 else 0 end) as 6_atleast10reps,
+       sum(case when numreps > 10 and character_code is not null then 1 else 0 end) as 7_charcodeand10reps,
+       sum(case when numreps > 100 and character_code is not null then 1 else 0 end) as 8_charcodeand10reps
+       from
+(select a.gateway, u.created_at, a.authenticated_at,
+       a.character_code, u.prolevel, max(r.created_at) as rcr, count(*) as numreps                                                                     
+from (users u left outer join replays r on r.user_id = u.id)
+left outer join accounts a on a.user_id = u.id
+where u.created_at > (now() - interval 10 day)
+group by gateway, u.created_at, authenticated_at, character_code, prolevel 
+) as theusers
+group by date(created_at)
+order by date(created_at) desc
+"""), :max_width=>1000) %>
+    </pre><br>
+    <pre>
+    UPLOADING ACTIVITY, PAST 30 DAYS
+<%=  Hirb::Helpers::AutoTable.render(ActiveRecord::Base.connection.exec_query("""
+select sum(case when user_id is null then 1 else 0 end) as 1_anon_reps,
+       sum(case when user_id is null then 0 else 1 end) as 2_user_reps,
+count(distinct user_id)
+from replays r
+where created_at > (now() - interval 30 day) 
+limit 10
+"""), :max_width=>1000) %>
+    </pre><br>
+    <pre>
+    UPLOADING ACTIVITY, PAST 10 DAYS
+<%=  Hirb::Helpers::AutoTable.render(ActiveRecord::Base.connection.exec_query("""
+select date(created_at) 0_date,
+       sum(case when user_id is null then 1 else 0 end) as 1_anon_reps,
+       sum(case when user_id is null then 0 else 1 end) as 2_user_reps,
+count(distinct user_id)
+from replays r
+group by date(created_at)
+order by date(created_at) desc
+limit 10
+"""), :max_width=>1000) %>
+    </pre><br>
+    <pre>
+    UPLOADING ACTIVITY, PAST 10 WEEKS
+<%=  Hirb::Helpers::AutoTable.render(ActiveRecord::Base.connection.exec_query("""
+select CONCAT(YEAR(created_at), '/', WEEK(created_at)) 0_week,
+       sum(case when user_id is null then 1 else 0 end) as 1_anon_reps,
+       sum(case when user_id is null then 0 else 1 end) as 2_user_reps,
+count(distinct user_id)
+from replays r
+group by CONCAT(YEAR(created_at), '/', WEEK(created_at))
+order by CONCAT(YEAR(created_at), '/', WEEK(created_at)) desc
+limit 10
+"""), :max_width=>1000) %>
+    </pre><br>
+    <pre>
+    UPLOADING ACTIVITY BY MONTH
+<%=  Hirb::Helpers::AutoTable.render(ActiveRecord::Base.connection.exec_query("""
+select CONCAT(YEAR(created_at), '/', MONTH(created_at)) 1_month,
+       sum(case when user_id is null then 1 else 0 end) as 1_anon_reps,
+       sum(case when user_id is null then 0 else 1 end) as 2_user_reps,
+count(distinct user_id)
+from replays r
+group by CONCAT(YEAR(created_at), '/', MONTH(created_at))
+order by CONCAT(YEAR(created_at), '/', MONTH(created_at)) desc
+limit 10
+"""), :max_width=>1000) %>
+    </pre><br>
+    <pre>
+    REPLAY LATENCY AND TROUBLE BY DATE
+<%=  Hirb::Helpers::AutoTable.render(ActiveRecord::Base.connection.exec_query("""
+select date(created_at) thedate, floor(avg(timestampdiff(second, created_at, updated_at))) avglatency,
+count(*) thecount,
+floor(100.0 * sum(case when state='done' then 0 else 1 end)/count(*)) trouble_pct
+from replays where created_at > (now() - interval 10 day)
+group by date(created_at) order by date(created_at) desc
+"""), :max_width=>1000) %>
+    </pre><br>
+    <pre>
+    AVERAGE OF PER-MINUTE REPLAY PROCESSING LATENCY, BY DATE
+<%=  Hirb::Helpers::AutoTable.render(ActiveRecord::Base.connection.exec_query('select thedate, floor(avg(avglatency)), sum(thecount) from (  select date(created_at) as thedate, date_format(created_at, "%Y%m%d %H%i") as repmin, avg(timestampdiff(second, created_at, updated_at)) avglatency, count(*) thecount  from replays  where created_at > (now() - interval 10 day)  group by thedate, repmin ) innerstuff group by thedate order by thedate desc'), :max_width=>1000) %>
+    </pre><br>
+    <pre>
+    MATCHNOTES USAGE
+<%=  Hirb::Helpers::AutoTable.render(ActiveRecord::Base.connection.exec_query("""
+select num_matchnotes, count(*) as num_users
+from (
+select user_id, count(*) as num_matchnotes
+from matchnotes
+group by user_id
+order by count(*) desc
+) theinnner
+group by num_matchnotes
+order by num_matchnotes
+"""), :max_width=>1000) %>
+    </pre><br>
+  </body>
+</html>

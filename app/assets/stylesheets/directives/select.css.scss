@@ -1,0 +1,81 @@
+// Various "select" styles, ggselect, raceselect..
+
+.raceselect, .ggselect, .leagueselect {
+  list-style-type: none;
+  padding: 0px;
+  display: inline-block;
+  
+  li {
+    display: inline-block;
+    @include opacity(0.45);
+
+    span.name {
+      display: none;
+    }
+
+    &:hover {
+      @include opacity(1.0);
+      cursor: pointer;
+    }
+  }
+
+
+  // I still hate that they took away my &.class in sass
+  li.selected {
+    @include opacity(1.0);
+    cursor: pointer;
+  }
+}
+
+// Extend race/league icons rather than using their classes directly so we can
+// invert/change size here.
+
+// sadly, there simply is no space for anything larger than 32px as it is.
+// we would have to make the map select ~140px to make it work with ~42, which
+// would bare leave enough place for the first 10 characters.
+$ssize: 32;
+
+$races: zerg, terran, protoss;
+$leagues: bronze, silver, gold, platinum, diamond, master, grandmaster;
+
+@for $i from 1 through length($leagues) {
+  .leagueselect li .league-#{nth($leagues, $i)} { @extend .sc2-#{nth($leagues, $i)}-#{$ssize}; }
+}
+
+.raceselect {
+  @for $i from 1 through length($races) { .icon-#{nth($races, $i)} { @extend .sc2-#{nth($races, $i)}-plain-#{$ssize}; } }
+}
+
+// Colors on inset background
+
+#matches, #players, #spending {
+  .filters-wrap {
+    @for $i from 1 through length($leagues) {
+      .leagueselect li .league-#{nth($leagues, $i)} { @extend .sc2-#{nth($leagues, $i)}-white-#{$ssize}; }
+    }
+
+    .raceselect {
+      @for $i from 1 through length($races) { .icon-#{nth($races, $i)} { @extend .sc2-#{nth($races, $i)}-plain-white-#{$ssize}; } }
+    }
+  }
+}
+
+// TODO: contains styling specific to text content for the game type select
+// in matches/index.
+.ggselect {
+  li {
+    margin-right: 8px;
+
+    &:nth-last-child(1) {
+      margin-right: 0px;
+    }
+
+    span.name {
+      display: inline;
+      
+      font-size: 14px;
+      font-weight: bold;
+    }
+  }
+}
+

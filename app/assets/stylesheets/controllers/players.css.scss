@@ -1,0 +1,188 @@
+#player {
+  // less margin on #heading due to filter
+  #heading {
+    margin-bottom: 10px;
+  }
+
+  .center {
+    @include center;
+
+    // so that sidebarad can be positioned relative to it
+    position: relative;
+  }
+
+  position: relative;
+
+  .overlay {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    background: $bg;
+    z-index: 10;
+    
+    padding-top: 10%;
+    width: 100%;
+    height: 90%;
+  }
+
+  .statdescrip {
+    font-size: 13px;
+    text-transform: uppercase;
+    vertical-align: 1px;
+    @include opacity(0.8);
+
+  }
+  .statdescrip.spendingskill {
+    position: relative;
+    top: -12px;
+  }
+  .statdescrip.spendingskill.first {
+    padding-right: 30px;
+  }
+
+  .stat {
+    font-size: 125%;
+    font-weight: bold;
+    padding-right: 6px;
+    padding-left: 16px;
+  }
+  .stat.first {
+    padding-left: 36px;
+  }
+  .stat.apm {
+    padding-left: 60px;
+  }
+  .stat.wwpm {
+    padding-left: 50px;
+  }
+  .chartleague {
+    position: relative;
+    top: -2px;
+  }
+  .chartleague.first {
+    padding-left: 30px;
+    left: 30px;
+  }
+  p.chartleague {
+    height: 18px;
+  }
+
+
+  .overlay .content, .no-matches {
+    margin: 0px auto;
+    text-align: center;
+    
+    h1 {
+      font-size: 200%;
+      font-weight: bold;
+      color: lighten($gray-dark, 20%);
+    }
+    
+    h2 {
+      font-size: 150%;
+      color: $gray-light;
+    }
+  }
+
+  // Charts!
+  .charts {
+    .chart-wrap {
+      width: 33%;
+      float: left;
+      display: none;
+      margin-bottom: 35px;
+    }
+    a {
+      display: block;
+    }
+  }
+
+  .sat-speed {
+    display: none;
+  }
+
+
+  .staircase {
+    .win-trend, .apm-trend {
+      display: none;
+    }
+    .sat-speed {        
+      display: block;
+    }
+  }
+
+  // Toggle various fields when displaying matches in players#show
+  .matches {
+    div.filters-wrap {
+      margin-bottom: 25px;
+    }
+
+    ul.filters {
+      li.average_league { display: none; }
+
+      // undouble the type-gateway double
+      // this cancels out what is necessary from directives/matches.css 
+      // > li.double to make the type select display as single
+      .type-gateway, .category {
+        // make sure this is loaded after directives/matches so
+        // $filter-height is available :)
+
+        ul { 
+          display: inline-block;
+          border: none; 
+          vertical-align: middle;
+
+          height: auto;
+          line-height: normal;
+
+          li {
+            span.name {
+              font-size: 24px;
+            }
+          }
+        }
+
+        ul.gateway { display: none; }
+      }
+    }
+
+    table {
+      th {
+        a, a:visited {
+          color: $gray-light;
+        }
+      }
+      .team1, .team2, .type, .race, .wpm, .league, .saturation_skill, .sat_skill_1, .sat_skill_2, .sat_skill_3, .icon-star-16 { display: none; }
+      .duration, .apm, .sq, .result { display: table-cell; }
+    }
+  }
+}
+
+#player .matches table {
+  tr th, tr td {
+    padding: 4px 4px;
+  }
+}
+
+#player .matches table.staircase {
+  tr th, tr td {
+    padding: 8px 8px;
+  }
+  th.map {
+    width: 130px;
+  }
+  .racemacro, .saturation_skill, .creep_spread { display: none; }
+  .sat_skill_1, .sat_skill_2, .sat_skill_3 { display: table-cell; }
+}
+
+
+#players {
+  .center {
+    @include center;
+    margin: 0px auto 70px auto;
+  }
+
+  table {
+    @extend table.default;
+  }
+}

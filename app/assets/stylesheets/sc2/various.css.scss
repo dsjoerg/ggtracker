@@ -1,0 +1,8 @@
+// Various Sc2 styling, colors, team colors, etc.
+
+$team-colors: desaturate(red, 15%) desaturate(blue, 15%);
+
+@mixin team-background($team) {
+  background-color: nth($team-colors, $team);
+  // @include background(linear-gradient(nth($team-colors, $team), darken(nth($team-colors, $team), 5%)));
+}

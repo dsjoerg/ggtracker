@@ -1,0 +1,44 @@
+// state indicators in the top left corner currently
+
+#indicators {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+
+  .loading, .error {
+    color: green;
+  }
+  
+  .error {
+    color: red;
+  }
+}
+
+// user notifications, e.g. dialogs and messages
+
+#notifications {
+
+  width: 500px;
+  margin: 0px auto;
+
+  ul {
+    list-style-type: none;
+
+    li.notification {
+      @include boxed;
+      position: relative; 
+      padding: 8px 20px 8px 5px;
+      line-height: 125%;
+      margin-bottom: 25px;
+      
+      .close {
+//        @include button(#333, #DDD, 1.0);
+        display: inline-block;
+        position: absolute;
+        right: 5px;
+        top: 5px;
+        padding: 0px 2px;
+      }
+    }
+  }
+}

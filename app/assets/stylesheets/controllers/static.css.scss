@@ -1,0 +1,64 @@
+#static {
+  .content {
+    @include center;
+
+    min-height: 600px;
+    max-width: 900px;
+
+    margin-top: 50px;
+    font-size: 20px;
+    
+
+    .static_inner {
+      margin-left: 100px;
+      margin-right: 100px;
+    }
+    
+    a, a:visited {
+      text-decoration: underline;
+    }
+    
+    a.ggtipper2, a:visited.ggtipper2 {
+      text-decoration: none;
+    }
+
+    p {
+      margin-bottom: 1em;
+      line-height: 150%;
+    }
+    
+    h1 {
+      margin-bottom: 1em;
+    }
+
+    h2 {
+      font-weight: bold;
+    }
+    
+    img {
+      text-align: center;
+    }
+
+    .privacy_inner p,li {
+      font-size: 14px;
+    }
+    .privacy_inner ul {
+      list-style-type: circle;
+    }
+    .privacy_inner li {
+      padding-bottom: 0px;
+    }
+    .privacy_inner h1 {
+      font-weight: bold;
+    }
+
+    ul {
+      list-style-type: disc;
+      padding-left: 20px;
+      li {
+        padding-bottom: 10px;
+        line-height: 30px;
+      }
+    }
+  }
+}

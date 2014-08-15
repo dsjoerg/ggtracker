@@ -1,0 +1,40 @@
+<% content_for(:head) do %>
+  <title>Saturation Speed</title>
+  <meta name="Description" content="a Starcraft II measurement of how quickly you have the maximum efficient number of workers mining from your base.">
+<% end %>
+
+<div id="static">
+  <div class="content spending_skill">
+    <div class="static_inner">
+      <h1>What is Saturation Speed?</h1>
+<p><b>Saturation Speed</b> measures how quickly you can ramp up your economy.  Higher-league players tend to be faster than lower-league players.  Although there are strategic reasons in particular games why you might delay your economy, on average higher-league players do get their economy up faster.  You can use Saturation Speed to keep tabs on the economic side of your game.</p>
+<p>Your <b>1st Base Saturation Speed</b> measures how quickly you can get to 640 mineral income.  That's the income you get from 16 workers mining minerals.  After the 16th worker, any additional workers do not mine as quickly.</p>
+<p>Your <b>2nd Base Saturation Speed</b> measures how quickly you can go from having your 2nd base complete, and in mining position, to having 1280 (2x640) mineral income.</p>
+<p>Your <b>3rd Base Saturation Speed</b> measures how quickly you can go from having your 3rd base complete, and in mining position, to having 1920 (3x640) mineral income.</p>
+<br>
+<h1>How Can I See My Saturation Speed?</h1>
+<p>On any match page, click on the Economy button:</p>
+      <p style="text-align: center"><%= image_tag "economy.png" %></p>
+<br>
+<p>You will then see the Economic Benchmark timings for that game, including your Saturation Speed:</p>
+      <p style="text-align: center"><%= image_tag "econ_benchmarks2.png" %></p>
+<br>
+<br>
+<h1>What Saturation Speed Should I Be Shooting For?</h1>
+<p>You can compare your speed to the <a href="economy_stats">average saturation speed for any matchup and league</a>.  If you are Gold or below, you should aim for the Platinum-Diamond average speed to give yourself an economic advantage.  If you are above Gold league, you should be aware of the average Saturation Speeds, but of course in any particular game you may over- or under-focus on economy for strategic reasons.</p>
+
+<p>To see charts and league badges for your Saturation Speed, you can use the training methodology called TheStaircase, which is integrated into GGTracker.  You can read more about TheStaircase <a href="http://www.teamliquid.net/forum/viewmessage.php?topic_id=374400">here</a>.  To turn on TheStaircase view, click on the menu in the upper-right hand corner of the window:</p>
+      <p style="text-align: center"><%= image_tag "staircase_view.png" %></p>
+<br>
+<p>Your player profile page will then show different charts and stats.  You will be able to see charts of your Saturation Speed for your 1st and 2nd base, and league badges for your Saturation Speed for every game:</p>
+      <p style="text-align: center"><%= image_tag "sat_graphs.png" %></p>
+<br>
+<p>These badges are also shown when looking at the Economy section for any match:</p>
+      <p style="text-align: center"><%= image_tag "econ_badges.png" %></p>
+<br>
+<br>
+<h1>How are Saturation Speed League Badges Determined for TheStaircase?</h1>
+<p>Using all the HotS 1v1 Ladder matches in the GGTracker library, we compute the median Saturation Speed from Silver to Masters <b>for each matchup</b>.  Sometimes the line from Silver to Masters is not so straight -- we find the straight line that best approximates the trend (using least-squares regression).  You can see the resulting benchmark values <a href="http://ggtracker.com/econ_staircase">here</a>.</p>
+    </div>
+  </div>
+</div>

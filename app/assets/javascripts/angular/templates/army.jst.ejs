@@ -1,0 +1,25 @@
+<div class="army grp-entity{{ entity.index }}">
+  <!-- TODO: if I decide to keep entity info in here.. might as well rename the directive.. -->
+  <div class="entity">
+    <div class="name"><span class="flag" ng-style="{ 'background-color': '#' + entity.color }"></span><a target="_self" href="/players/{{ entity.identity.id }}/{{ entity.identity.name }}">{{ entity.identity.name }}</a></div>
+
+    <ul class="stats">
+      <li class="minerals ggtipper2" title="Mineral value of army" data-gravity="s">
+        <div class="icon sc2-mineral-16"></div><span class="value">{{ army.minerals }}</span>
+      </li>
+      <li class="gas ggtipper2" title="Gas value of army" data-gravity="s"><div class="icon sc2-gas-16"></div><span class="value">{{ army.gas }}</span></li>
+      <li class="supply ggtipper2" title="Supply used by army" data-gravity="s"><div class="icon sc2-supply-16"></div><span class="value">{{ army.supply }}</span></li>
+    </ul>
+</a>
+
+    <div class="clear"></div>
+  </div>
+
+  <div class="units" ng-style="{ 'border-color': '#' + entity.color }">
+    <div class="unit" ng-class="{inactive: count == 0}" ng-repeat="(unit, count) in army.units">
+      <div class="unit-mpq-32 unit-mpq-32-{{ unit }}"></div> 
+      <span class="count">{{ count }}</span>
+    </div>
+  </div>
+
+</div>

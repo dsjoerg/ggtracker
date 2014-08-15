@@ -1,0 +1,95 @@
+// :(
+@mixin boring-spinner {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  background: image-url('spinner-24.gif') 0px 0px no-repeat;
+}
+
+// I have crazier creations lying around somewhere too.. not sure if we should
+// go this far though. CSS3 Animation is very "on the edge" still (but every
+// modern browser can do it, of course.)
+
+@include keyframes(spin) {
+  0%  { 
+    @include rotate(0deg);
+  }
+  100%{ 
+    @include rotate(360deg);
+  }
+}
+
+@mixin spinner($diameter: 30px) {
+  position: absolute;
+  width: $diameter;
+  height: $diameter;
+  border: ($diameter / 3) solid white;
+
+  border-right-color: $gray-dark;
+  border-left-color: $gray-dark;
+
+  @include box-shadow(0 0 ($diameter / 2) rgba(255,255,255,0.4));
+  @include border-radius(50%);
+  @include animation(spin 0.7s linear infinite);
+}
+
+/*
+  TRON style spinner, taken from
+  http://www.alessioatzeni.com/blog/css3-loading-animation-loop/
+*/
+
+@mixin tron($diameter: 50px) {
+  width: $diameter + (($diameter / 10) * 2);
+  height: $diameter + (($diameter / 10) * 2);
+
+  .outter {
+  	background-color: rgba(0,0,0,0);
+  	border: ($diameter / 10) solid rgba(0,183,229,0.9);
+  	opacity: .9;
+  	border-right: ($diameter / 10) solid rgba(0,0,0,0);
+  	border-left: ($diameter / 10) solid rgba(0,0,0,0);
+  	border-radius: $diameter;
+  	box-shadow: 0 0 35px #2187e7;
+  	width: $diameter;
+  	height: $diameter;
+  	margin: 0 auto;
+  	-moz-animation: spinPulse 1s infinite ease-in-out;
+  	-webkit-animation: spinPulse 1s infinite linear;
+  }
+
+  .inner {
+  	background-color: rgba(0,0,0,0);
+  	border: ($diameter / 10) solid rgba(0,183,229,0.9);
+  	opacity: .9;
+  	border-left: ($diameter / 10) solid rgba(0,0,0,0);
+  	border-right: ($diameter / 10) solid rgba(0,0,0,0);
+  	border-radius: $diameter;
+  	box-shadow: 0 0 15px #2187e7; 
+  	width: $diameter - ($diameter / 2.5);
+  	height: $diameter - ($diameter / 2.5);
+  	margin: 0 auto;
+  	position: relative;
+  	top: -$diameter;
+  	-moz-animation: spinoffPulse 1s infinite linear;
+  	-webkit-animation: spinoffPulse 1s infinite linear;
+  }
+}
+@-moz-keyframes spinPulse {
+	0% { -moz-transform:rotate(160deg); opacity:0; box-shadow:0 0 1px #2187e7;}
+	50% { -moz-transform:rotate(145deg); opacity:1; }
+	100% { -moz-transform:rotate(-320deg); opacity:0; }
+}
+@-moz-keyframes spinoffPulse {
+	0% { -moz-transform:rotate(0deg); }
+	100% { -moz-transform:rotate(360deg);  }
+}
+@-webkit-keyframes spinPulse {
+	0% { -webkit-transform:rotate(160deg); opacity:0; box-shadow:0 0 1px #2187e7; }
+	50% { -webkit-transform:rotate(145deg); opacity:1;}
+	100% { -webkit-transform:rotate(-320deg); opacity:0; }
+}
+@-webkit-keyframes spinoffPulse {
+	0% { -webkit-transform:rotate(0deg); }
+	100% { -webkit-transform:rotate(360deg); }
+}
+

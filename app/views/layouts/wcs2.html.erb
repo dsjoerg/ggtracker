@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html ng-app="gg">
+<head>
+  <meta charset='utf-8'>
+  <meta name="robots" content="all">
+  <meta name="content-language" content="en">
+
+  <%= include_gon(init: true) %>
+  <%= stylesheet_link_tag "wcs_gg", :media => "all" %>
+  <%= csrf_meta_tags %>
+
+  <script>
+    window.dontggtipper = true;
+  </script>
+
+  <% if !Rails.env.production? %>
+    <%= javascript_include_tag "gg" %>
+  <% end %>
+
+<!-- https://developers.google.com/speed/docs/best-practices/payload#DeferLoadingJS -->
+<!-- http://stackoverflow.com/questions/5852767/possible-to-defer-loading-of-jquery -->
+<script type="text/javascript">
+
+  function getScript(url,success){
+    var script=document.createElement('script');
+    script.src=url;
+    var head=document.getElementsByTagName('head')[0],
+        done=false;
+    script.onload=script.onreadystatechange = function(){
+      if ( !done && (!this.readyState || this.readyState == 'loaded' || this.readyState == 'complete') ) {
+        done=true;
+        success();
+        script.onload = script.onreadystatechange = null;
+        head.removeChild(script);
+      }
+    };
+    head.appendChild(script);
+  }
+
+  function afterScriptLoads() {
+    $(function() {
+      $('.djcloak').removeClass('djcloak');
+    });
+  };
+
+  function getOurScript() {
+    getScript("<%= javascript_path 'gg' %>", afterScriptLoads);
+  }
+
+  <% if Rails.env.production? %>
+    // Check for browser support of event handling capability
+    if (window.addEventListener)
+      window.addEventListener("load", getOurScript, false);
+    else if (window.attachEvent)
+      window.attachEvent("onload", getOurScript);
+    else window.onload = getOurScript;
+  <% else %>
+    afterScriptLoads();
+  <% end %>
+
+</script>
+
+
+  <%= yield :head %>
+</head>
+<body class="<%= body_name %>" ng-class="{loading: gg.state.loading}">
+  <div id="content" style="width:1300px">
+    <%= yield %>
+    <div class="clear"></div>
+  </div>
+</body>
+</html>

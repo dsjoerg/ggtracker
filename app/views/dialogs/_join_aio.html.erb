@@ -1,0 +1,47 @@
+<div class="form form-join">
+  <div class="logo logo30"><em>GG</em>TRACKER</div>
+
+  <%= semantic_form_for(resource, :method => 'post', :url => registration_path(:user)) do |f| %>
+    <%= f.inputs do %>
+      <%= f.input :email, :label => false, :input_html => {:placeholder => 'E-Mail Address'} %>
+      <%= f.input :password, :label => false, :input_html => {:placeholder => 'Password'} %>
+      <%= f.action :submit, :as => :button, :label => 'sign up' %>
+    <% end %>
+  <% end %>
+
+  <a href="" class="toggle" data-toggle="form-login">login</a>
+  <a href="" class="toggle" data-toggle="form-password">forgot password?</a>
+</div>
+
+<div class="form form-login">
+  <div class="logo logo30"><em>GG</em>TRACKER</div>
+  <%= semantic_form_for(resource, :as => :user, :url => session_path(:user)) do |f| %>
+    <span class="inline-errors"><%= flash[:alert] if flash[:alert] %></span>
+  
+    <%= f.inputs do %>
+      <%= f.input :email, :label => false, :input_html => {:placeholder => 'E-Mail Address'} %>
+    <% end %>
+
+    <%= f.inputs do %>
+      <%= f.input :password, :label => false, :input_html => {:placeholder => 'Password'} %>
+      <%= f.action :submit, :as => :button, :label => 'login' %>
+    <% end %>
+  <% end %>
+
+  <a href="" class="toggle" data-toggle="form-join">Sign up</a>
+  <a href="" class="toggle" data-toggle="form-password">Forgot password?</a>
+</div>
+
+<div class="form form-password">
+  <div class="logo logo30"><em>GG</em>TRACKER</div>
+
+  <%= semantic_form_for(resource, :url => password_path(:user), :html => { :method => :post }) do |f| %>
+    <%= f.inputs do %>
+      <%= f.input :email, :label => false, :input_html => {:placeholder => 'E-Mail Address'} %>
+      <%= f.action :submit, :as => :button, :label => 'send reset instructions' %>
+    <% end %>
+  <% end %>
+
+  <a href="" class="toggle" data-toggle="form-join">sign up</a>
+  <a href="" class="toggle" data-toggle="form-login">login</a>
+</div>

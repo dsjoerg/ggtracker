@@ -1,0 +1,134 @@
+// footer positioning:
+// when using percentage, we scale based on our parent.
+// the html tag has no parent, so it will scale to the viewport.
+html {
+  height: 100%;
+}
+
+body.home-home, 
+body.users-create, 
+body.sessions-new,
+body.passwords-edit,
+body.passwords-update,
+body.sessions-create {
+  // footer positioning: with html being at min 100%, we can scale our body to 
+  // 100% too.
+  height: 100%;
+  #content { 
+    height: 100%; 
+    min-height: 600px;
+  }
+
+  background: image-url('home2.jpg') 50% 0% #000 no-repeat !important;
+
+  header {
+    @include box-shadow(0px 0px 13px rgba(0,0,0,.4));
+    border-bottom: #444 1px solid;
+  }
+
+  // it's dark.. inside #content, we can default all logos to white in it :)
+  #content, footer {
+    .logo40 { background: image-url('logo40w.png') right center transparent no-repeat; }
+    .logo30 { background: image-url('logo30w.png') right center transparent no-repeat; }
+    .logo20 { background: image-url('logo20w.png') right center transparent no-repeat; }
+    .logo10 { background: image-url('logo10w.png') right center transparent no-repeat; }
+    .contact { display: none; }
+  }
+
+  // This is not being done in the layout anymore or restricted to guests
+  // users that are signed in shouldn't come back to sign_in or home#home
+  // so it can be hidden here.
+  header { display: none; }
+
+  // footer positioning:
+  // with both html and body being at 100% height, our footer is below the 
+  // viewport, so we move it back in with a negative margin-top.
+  footer {
+    margin-top: -60px;
+    width: 100%;
+
+    background: transparent;
+    color: $white;
+
+    ul {
+      li, li a {
+        font-size: 100%;
+        color: #34B5CE !important;
+        @include text-shadow(2px 2px 2px rgba(23, 0, 196, 1.0));
+      }
+    }
+  }
+}
+
+#home {
+  background: black;
+
+  .content {
+    @include center;
+    position: relative;
+
+    .hookline {
+      position: absolute;
+      top: 425px;
+      left: 0px;
+      
+      font-size: 26px;
+      line-height: 36px;
+      color: white;
+      
+      @include text-shadow(0px 0px 6px rgba(0,0,0,0.8));
+    }
+    
+    .boxes {
+      position: absolute;
+      right: 40px;
+      top: 170px;
+
+      form {
+       input[type=text], 
+       input[type=email], 
+        input[type=password] {
+          @include button2($gray-white, black);
+          font-family: $font-default;
+          text-align: left;
+          padding: 8px 10px;
+          font-size: 16px;
+          cursor: auto;
+        }
+      }
+      
+      // careful now - we have .dialog-signup in there and don't want to modify
+      // it too much.
+      .box, .dialog-signup {
+        @include box-shadow(0px 0px 50px 0px rgba(#225395, .7));
+        @include border-radius(2px);
+        border: black 1px solid;
+        // @include opacity(0.95);
+        
+        margin-bottom: 25px;
+        a {
+          font-size: 75%;
+        }
+      }
+
+      .box {
+        // @include background(linear-gradient(#141414, #0A0A0A));
+        @include background-noisegrid;
+        padding: 25px;
+        color: $white;
+
+        text-align: center;
+
+        h3 {
+          margin-bottom: 15px;
+        }
+        
+        // modifications to .button-upload, original in uploads.css
+        .button-upload {
+          width: 250px;
+          margin-top: 0px;
+        }
+      }
+    }
+  }
+}

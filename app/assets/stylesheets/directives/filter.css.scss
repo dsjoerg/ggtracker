@@ -1,0 +1,202 @@
+// Filter styling for both matches and players directives
+
+
+  ul.filters {
+    height: $filter-height;
+
+    // do we ever not center the filters?
+    // (even inside .center it should be fine)
+    @include center;    
+
+    li.filter {
+      display: block;
+      float: left;
+
+      padding: 0px 15px;
+      height: $filter-height;
+      line-height: $filter-height - 4px; // HAX
+
+      ul { line-height: normal; }
+
+      border-right: #ddd 1px solid;
+      border-left: white 1px solid;
+
+      &:nth-child(1) {
+        border-left: none;
+        padding-left: none;
+      }
+    
+      &:nth-last-child(1) {
+        border-right: none;
+        padding-right: none;
+      }
+
+      span.label {
+        font-size: 14px;
+        font-weight: normal;
+        text-transform: uppercase;
+        margin-right: 10px;
+        color: $gray-light;
+      }
+
+      span.below {
+        opacity: 0.45;
+        position:relative;
+        top:5px;
+        &:hover {
+          @include opacity(1.0);
+          cursor: pointer;
+        }
+      }
+      span.below.selected {
+        @include opacity(1.0);
+        cursor: pointer;
+      }
+
+      input {
+        font-size: 14px;
+      }
+    }
+
+    // For double blocks, such as the game_type + gateway select
+    li.double {
+      height: $filter-height;
+      padding: 0px 7px;
+
+      text-align: justify !important;
+      ul {
+        text-align: justify !important;
+        display: block;
+        padding: 0px 7px;
+        height: (($filter-height) / 2) - 2px;
+        line-height: (($filter-height) / 2) - 2px; // HAX
+
+        &:nth-child(1) {
+          border-bottom: #ddd 1px solid;
+        }
+
+        &:nth-child(2) {
+          border-top: white 1px solid;
+        }
+      }
+    }
+
+    // Specials, such as "vs" between races, making type select even width, etc
+  
+    ul.type {
+    }
+
+    li.map {
+      .select2-container {
+        width: 250px;
+        vertical-align: middle;
+      }
+    }
+
+    li.race, li.vs_race {
+      .select2-container {
+        width: 100px;
+        padding-top: 15px;
+      }
+      .s2times {
+        margin-right: 10px;
+      }
+    }
+
+    li.vs {
+      float: left;
+      position: relative;
+      width: 1px;
+
+      // Yes, things like this could be done with images and it might be 
+      // preferable. TODO'ish. I just <3 CSS.
+      span {
+        display: block;
+        position: absolute;
+        left: -12px;
+        top: ($filter-height / 2) - 10px;
+      
+        color: $gray-light;
+        font-weight: $semibold;
+        font-size: 14px;
+        text-transform: uppercase;
+      
+        background: $bg;
+        padding: 4px;
+      }
+    }
+  }
+
+
+// "inset" styling override for matches and players index
+// icon colors are being overridden in directives/select.css
+
+#matches, #players, #spending {
+  div.filters-wrap {
+    @include inset;
+    margin-bottom: 15px;
+
+    // give the filters some breathing room on indices
+    // (grouped the rules up here)
+    li.vs span {
+      top: (($filter-height + 20px) / 2) - 10px;
+    }
+
+    ul.search {
+      li.filter.race, li.filter.vs_race {
+        line-height: 20px;
+        padding-left: 5px;
+        padding-right: 5px;
+      }
+    }
+
+    ul.filters {
+      margin-bottom: 0px;
+      height: $filter-height + 20px;
+
+      li.filter {
+        padding: 10px 15px;
+        line-height: 51px;
+
+        border-right: #111 1px solid;
+        border-left: #333 1px solid;
+        color: white;
+
+        &:nth-last-child(1) {
+          border-right: none;
+        }
+
+        &:nth-child(1) {
+          border-left: none;
+        }
+      }
+
+      li.double {
+        ul {
+          &:nth-child(1) {
+            border-bottom: #111 1px solid;
+          }
+
+          &:nth-child(2) {
+            border-top: #333 1px solid;
+          }
+        }
+      }
+
+      li.vs {
+        span {
+          background: transparent;
+        }
+      }
+    }
+  }
+}
+
+div#matches.matchessearch {
+  div.matches {
+    div.filters-wrap {
+      ul.search {
+        li.filter.race, li.filter.vs_race {
+          padding-left: 10px;
+          padding-right: 10px;
+}}}}}

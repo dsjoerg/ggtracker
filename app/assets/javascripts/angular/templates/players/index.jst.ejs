@@ -1,0 +1,45 @@
+<div class="players">
+  <div class="filters-wrap">
+    <ul class="filters">
+      <li class="filter name"><input placeholder=" Search for a player" name="name" ng-model="name" class="input-medium search-query" /></li>
+      <li class="filter current_highest_league"><leagueselect name="current_highest_league" /></li>
+      <li class="filter race"><raceselect name="race" /></li>
+
+      <li class="filter double type-gateway">
+        <ggselect class="type" name="game_type" values="1v1,2v2,3v3,4v4,FFA"/>
+        <ggselect class="gateway" name="gateway" values="AM:us,EU:eu,KR/TW:kr,SEA:sea,CN:cn"/>
+      </li>
+    </ul>
+  </div>
+
+  <div class="center">
+    <table border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <th class="name">name</th>
+        <th class="region">region</th>
+        <th class="orderable" data-order="matches_count" ng-click="filter.order('matches_count', $event)" class="matches">matches<b class="arrow"></b></th>
+        <th class="apm">avg apm</th>
+        <th class="orderable" data-order="current_highest_league" ng-click="filter.order('current_highest_league', $event)" class="league">top league<b class="arrow"></b></th>
+        <th class="rank">rank</th>
+        <th class="type">mode</th>
+        <th class="race">race</th>
+      </tr>
+
+      <tr ng-repeat="player in players" ng-click="go(player.id)">
+        <td class="name"><a target="_self" href="/players/{{ player.id }}">{{ player.name }}</a></td>
+        <td class="region">{{ player.region }}</td>
+        <td class="matches">{{ player.matches_count }}</td>
+        <td class="apm">{{ player.stats.apm.avg | number: 0 }}</td>
+        <td class="league"><league data-league="{{ player.current_highest_league }}" data-rank="{{ player.current_highest_leaguerank }}"></league></td>
+        <td class="rank">{{ player.current_highest_leaguerank }}</td>
+        <td class="type">{{ player.current_highest_type }}</td>
+        <td class="race"><div class="icon sc2 sc2-{{ player.race_name }}-plain-24">{{ player.race_name }}</div></td>
+      </tr>
+    </table>
+
+    <unpaginate data-collection="players"></unpaginate>
+  </div>
+
+  <div class="transcluded" ng-transclude></div>
+
+</div>

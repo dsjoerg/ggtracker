@@ -1,0 +1,329 @@
+/*
+  Match Regular View
+*/
+
+#match {
+  $perspective: 300;
+
+  // override background colors on bars for teams
+  // FIXME: we only ever have 2 teams - disable condensed view for FFA!
+  .top .teams .team1 .info .flag { @include team-background(1); }
+  .top .teams .team2 .info .flag { @include team-background(2); }
+
+  .dlbutton {
+    margin-top: 10px;
+  }
+
+  .botbutbox {
+    margin-top: 10px;
+    display: block;
+    min-width: 100px;
+  }
+
+  .midbutbox {
+    margin-top: 30px;
+    display: block;
+    min-width: 145px;
+  }
+
+  .atstyle {
+    margin-left: 23px;
+  }
+  
+  .lilreddit {
+    margin-top: 1px;
+    margin-left: 35px;
+  }
+
+  .spoiler {
+    position: relative;
+    
+    .button2 {
+      // maximum sc2 name length is 12 iirc, this fits 12 at our font size
+      width: 110px;
+    }
+    
+    .front, .back {
+      position: absolute;
+      @include backface-visibility(hidden);
+      @include single-transition(transform);
+    }
+        
+    .front {
+      @include transform3d(perspective($perspective) rotateX(0));
+      z-index: 3;
+    }
+        
+    .back {
+      @include rotateX(-180deg);
+      z-index: 2;
+    }
+  }
+
+  .spoiled {
+    .front {
+      @include transform(rotateX(180deg));
+      @include transform3d(perspective($perspective) rotateX(180deg));
+    }
+    
+    .back {
+      z-index: 4; // fallback for ye olde IE9
+      @include transform(rotateX(0deg));
+      @include transform3d(perspective($perspective) rotateX(0deg));
+    }
+  }
+
+  .button-team1 { background: nth($team-colors, 1); }
+  .button-team2 { background: nth($team-colors, 2); }
+
+  // army directive for each entity - general army directive styling is in
+  // directives/army.css.scss
+  .army {
+  }
+
+  .armychart {
+    width: 100%;
+    clear: both;
+    display: inline-block;
+    
+    .canvas {
+      width: 1024px;
+      height: 170px;
+    }
+  }
+
+  .top {
+    padding-bottom: 10px;
+
+    // so that sidebarad can be positioned relative to it
+    position: relative;
+
+    // condense collapse/expand button
+    .condense {
+      @include button2(#f7a725, black);
+      display: block;
+      width: 100px;
+      margin: 0px auto;
+    }
+
+    // teams
+    .teams {
+      display: inline-block;
+      clear: both;
+      position: relative;
+
+      // match time sitting directly below the "vs" image above
+      .sep {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin-left: -25px;
+        margin-top: -40px;
+
+        text-align: center;
+        font-weight: bold;
+        
+        background: $bg;
+        border: 10px $bg solid;
+        border-left: none;
+        border-right: none;
+        
+        .vs {
+          font-weight: bold;
+          font-size: 20px;
+          color: darken($bg, 15%);
+          text-align: center;
+          padding-bottom: 5px;
+        }
+
+        .time {
+          width: 40px;
+          padding: 5px;
+          color: black;
+          background: $bg;
+          border: darken($bg, 15%) 1px solid;
+          @include border-radius(2px);
+        }
+      }
+
+      .team {
+        // @include debug-highlight;
+
+        background: #dbdee3;
+
+        padding: 0px 3px;
+        width: 438px;
+
+        display: inline-block;
+
+        .info { 
+          @include entity-header;
+
+          // team info header hidden in regular view
+          display: none; 
+        }
+      }
+
+      .team:nth-child(even) {
+        float: left;
+        text-align: left;
+      }
+    
+      .team:nth-child(odd) {
+        float: right;
+        text-align: right;
+        margin-left: 20px;
+
+        // .entity is defined in army.css
+        // just turning around floats for split teams
+        .entity, .info {
+          .name {
+            float: right;
+
+            .flag {
+              float: right;
+              margin-right: 0px;
+              margin-left: 15px;
+            }
+          }
+          
+          .stats {
+            float: left;
+          }
+        }
+
+        .army .unit {
+          margin: 0px 5px 5px 0px;
+        }
+      }
+    } //.teams
+  }
+}  // #match
+
+.statsblock {
+  display: inline-block;
+  width: 100px;
+}
+
+.ytplayer {
+  display: inline-block;
+}
+
+/*
+  Match Condensed View and Transition States
+  
+  This might be confusing: I'm not adding from/to transition states to the 
+  general styling of #match below (Regular Styling) because these states
+  (height, opacity, etc.) are specifically here to have a state to transition
+  from.
+  
+  Removing both this and the condensed section should not influence the general
+  styling at all if possible. </lecture>
+*/
+
+#match {
+  .top .teams {
+    .army {
+      .entity {
+        height: 20px;
+        margin-bottom: 20px;
+        @include opacity(1.0);
+        
+        .value {
+          font-size: 14px;
+        }
+      }
+    }
+    
+    .team .info {
+      display: block;
+      overflow: hidden;
+      margin-bottom: 15px;
+      @include opacity(0.5);
+      
+      .stats {
+        @include opacity(0.0);
+      }
+    }
+  }
+
+  // Show individual player bars
+  .team-bar .bar {
+    @include opacity(1.0);
+  }
+  
+  // And to be safe, remove the background on team-bar
+  .bars .team1,
+  .bars .team2 {
+    background-color: transparent;
+  }
+}
+
+#match.condensed {
+  .bars .team1 { @include team-background(1); }
+  .bars .team2 { @include team-background(2); }
+
+  // reverse right side
+  .top .teams {
+    .army {
+      // individual .entity headers are hidden
+      .entity { 
+        // display: none;
+        height: 0px;
+        margin-bottom: 0px;
+        @include opacity(0.0);
+      }
+
+      .units {
+        // The player's color is a border on .army instead
+        // (border color is set in the army directive template)
+        border-left-width: 10px;
+        border-left-style: solid;
+        padding-left: 10px;
+      }
+    
+      // and give it a margin on the bottom instead
+      margin-bottom: 10px;
+    }
+
+    .team .info {
+      margin-bottom: 15px;
+      @include opacity(1.0);
+
+      .stats {
+        @include opacity(1.0);
+      }
+    }
+
+    .team:nth-child(odd) {
+      .army .units {
+        border-left-width: 0px;
+        border-right-width: 10px;
+        border-right-style: solid;
+        padding-left: 0px;
+        padding-right: 10px;
+      }
+    }
+  }
+
+  // Hide individual team player bars to show the underlying team-bar
+  .team-bar .bar {
+    @include opacity(0);
+  }
+}
+
+// it makes no sense to condense a 1v1!
+#match.type-1v1 {
+  .condense { display: none; }
+  .top .teams .team .info { display: none; }
+}
+
+.matches {
+  table {
+    @extend table.default;
+  }
+
+  .slider {
+    margin-bottom: 20px;
+  }
+}

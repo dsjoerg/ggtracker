@@ -1,0 +1,208 @@
+<div id="player" ng-controller="PlayerController">
+  <div id="heading" class="inset">
+    <div class="content player">
+      <a class="first portrait block" href="/players/<%= @identity.id %>/<%= @identity.name %>" style="<%= @identity.portrait_css(90) %>"></a>
+
+      <div class="name block
+      <% if player_logo(@identity) %>
+      first last
+      <% end %>
+      ">
+        <h2><a href="/players/<%= @identity.id %>/<%= @identity.name %>"><%= @identity.name %></a><span ng-show="<%= @prolevel %> > 0" class="djcloak icon icon-star-white-32"></span><!--<span class="tiny prolabel">PRO</span>--></h2>
+        <div class="links">
+          <%= link_to('bnet', @identity.profile_url, {:class => 'bnet'}) if @identity.profile_url.present? %>
+          <%= link_to('sc2ranks', @identity.sc2ranks_url) if @identity.sc2ranks_url.present? %>
+          <% if controller.superuser? %>
+            <%= link_to('+1Month', :controller => :players, :action => :give_one_month_ggtracker_pro) %>
+          <% end %>
+
+          <% if @identity.gateway == 'xx' %>
+            <span>BETA TEST</span>
+            <% if @identity.name != 'Unknown' && signed_in? %>
+              <a id="charcode" href ng-click="charcode()">CHARCODE</a>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+      <% if player_logo(@identity) %>
+        <div class="first last block">
+          <%= image_tag "userlogos/#{player_logo(@identity)}" %>
+        </div>
+      <% end %>
+      
+
+      <div class="info block
+      <% if player_logo(@identity) %>
+      first
+      <% end %>
+      ">
+        <div class="icon sc2 sc2-<%= @identity.race_name %>-plain-white-48"><%= @identity.race_name %></div>
+        <league data-league="<%= @identity.current_highest_league %>" data-size="normal"></league>
+        <span class="bracket"><%= @identity.current_highest_type %><br />
+        <% if @identity.gateway != 'xx' %>
+        <div class="djcloak tiny gray-medium gateway">{{ identity.region | uppercase }}</div></span>
+        <% end %>
+      </div>
+
+      <div class="block centered" ng-show="matches.stats.spending_skill.avg.as_identity_<%= @identity.id %> > 0">
+        <div>
+          <league data-league="{{ matches.stats.spending_skill.avg.as_identity_<%= @identity.id %> }}" data-size="normal"></league><br />
+          <span class="tiny gray-medium">spending skill</span>
+        </div>
+      </div>
+      <div class="block centered" ng-show="user.view_mode == 1 && matches.stats.saturation_skill.avg.as_identity_<%= @identity.id %> > 0">
+        <div>
+          <league data-league="{{ matches.stats.saturation_skill.avg.as_identity_<%= @identity.id %> }}" data-size="normal"></league><br />
+          <span class="tiny gray-medium">saturation speed</span>
+        </div>
+      </div>
+      
+      <div class="last stats block" ng-show='user.view_mode != 1'>
+        <div class="stat centered">
+          <div>
+            <span class="huge bold narrow"><%= @identity.matches_count %></span><br />
+            <span class="tiny gray-medium">games played</span>
+          </div>
+        </div>
+        <div class="stat centered">
+          <div>
+            <span class="huge bold narrow"><%= @identity.hours_played.round %></span><br />
+            <span class="tiny gray-medium">hours played</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="center">
+    <%= render 'shared/sidebarad' %>    
+
+    <matches data-collection="matches" data-identity="identity" data-stats="player" paginate="true" have-replay="true">
+
+      <div class="overlay" style="display: none;">
+        <div class="content">
+          <h1>Sorry, nothing to see here.</h1>
+          <h2>If you know <%= @identity.name %>, encourage him to use ggtracker to track his play!</h2>
+        </div>
+      </div>
+
+      <div class="charts" ng-class="{staircase: user.view_mode == 1}" ng-hide="matches.length < 2">
+        <div class="win-trend">
+        <div class="chart-wrap">
+          <areachart id="winchart" classes="chart-win-trend" 
+            data-values="matches.stats.win.mavg.as_identity_<%= @identity.id %>"
+            data-name="win percentage"
+            data-help="The history of <%= @identity.name %>'s 10-game win percentage."
+            data-resolution="resolution" 
+            data-cursor="cursor" 
+            data-multiplier="100" 
+            data-ymax="100" 
+            data-areafill="'#000000'" 
+            data-arealine="'#000000'" 
+            mti="25" 
+            playername="'<%= @identity.name %>'"
+          ></areachart>
+          <p>
+            <span class="stat first">
+              {{ (100.0 * matches.stats.win.count.as_identity_<%= @identity.id %> / matches.total).toFixed(1) }}%
+            </span>
+            <span class="statdescrip">matches won</span>
+            <span class="stat">{{ (100.0 * matches.stats.win.mavg.as_identity_<%= @identity.id %>.slice(-1)[0]).toFixed(0) }}%</span>
+            <span class="statdescrip">recently</span>
+          </p>
+        </div></div>
+        <div class="chart-wrap">
+          <areachart id="spendingchart" classes="chart-spending-trend" 
+            data-values="matches.stats.spending_skill.mavg.as_identity_<%= @identity.id %>" 
+            data-name="spending skill" 
+            data-help="The history of <%= @identity.name %>'s 10-game average Spending Skill.  See the Help article on Spending Skill for more."
+            data-resolution="resolution"
+            data-cursor="cursor" 
+            data-areafill="'#A2C900'" 
+            data-arealine="'#759800'" 
+            mti="'auto'" 
+            playername="'<%= @identity.name %>'"
+          ></areachart>
+          <p class="chartleague">
+            <league class="chartleague first" data-league="{{ matches.stats.spending_skill.avg.as_identity_<%= @identity.id %> }}" data-size="small"></league>
+            <span class="statdescrip spendingskill first">spending skill</span>
+            <league class="chartleague" data-league="{{ matches.stats.spending_skill.mavg.as_identity_<%= @identity.id %>.slice(-1)[0] }}" data-size="small"></league>
+            <span class="statdescrip spendingskill">recently</span>
+          </p>
+        </div>
+
+        <div class="sat-speed">
+        <div class="chart-wrap">
+          <areachart id="sat1chart" classes="chart-sat1-trend" 
+            data-values="matches.stats.sat_1_skill.mavg.as_identity_<%= @identity.id %>" 
+            data-name="1st base saturation speed" 
+            data-help="The history of <%= @identity.name %>'s 10-game average 1st Base Saturation Speed."
+            data-resolution="resolution"
+            data-cursor="cursor" 
+            data-areafill="'#6BB8DF'" 
+            data-arealine="'#528CAA'" 
+            mti="'auto'" 
+            playername="'<%= @identity.name %>'"
+          ></areachart>
+          <p class="chartleague">
+            <league class="chartleague first" data-league="{{ matches.stats.sat_1_skill.avg.as_identity_<%= @identity.id %> }}" data-size="small"></league>
+            <span class="statdescrip spendingskill first">1st base sat speed</span>
+            <league class="chartleague" data-league="{{ matches.stats.sat_1_skill.mavg.as_identity_<%= @identity.id %>.slice(-1)[0] }}" data-size="small"></league>
+            <span class="statdescrip spendingskill">recently</span>
+          </p>
+        </div>
+        </div>
+
+        <div class="sat-speed">
+        <div class="chart-wrap">
+          <areachart id="sat2chart" classes="chart-sat2-trend" 
+            data-values="matches.stats.sat_2_skill.mavg.as_identity_<%= @identity.id %>" 
+            data-name="2nd base saturation speed" 
+            data-help="The history of <%= @identity.name %>'s 10-game average 2nd Base Saturation Speed."
+            data-resolution="resolution"
+            data-cursor="cursor" 
+            data-areafill="'#E76993'" 
+            data-arealine="'#B25071'" 
+            mti="'auto'" 
+            playername="'<%= @identity.name %>'"
+          ></areachart>
+          <p class="chartleague">
+            <league class="chartleague first" data-league="{{ matches.stats.sat_2_skill.avg.as_identity_<%= @identity.id %> }}" data-size="small"></league>
+            <span class="statdescrip spendingskill first">2nd base sat speed</span>
+            <league class="chartleague" data-league="{{ matches.stats.sat_2_skill.mavg.as_identity_<%= @identity.id %>.slice(-1)[0] }}" data-size="small"></league>
+            <span class="statdescrip spendingskill">recently</span>
+          </p>
+        </div>
+        </div>
+
+        <div class="apm-trend">
+        <div class="chart-wrap">
+          <areachart id="apmchart" classes="chart-apm-trend" 
+            data-values="matches.stats.apm.mavg.as_identity_<%= @identity.id %>" 
+            data-name="actions per minute" 
+            data-help="The history of <%= @identity.name %>'s 10-game average Actions Per Minute."
+            data-resolution="resolution" 
+            data-cursor="cursor" 
+            data-areafill="'#f23d40'" 
+            data-arealine="'#a42123'" 
+            mti="'auto'" 
+            playername="'<%= @identity.name %>'"
+          ></areachart>
+          <p>
+            <span class="stat first apm">{{ matches.stats.apm.avg.as_identity_<%= @identity.id %>.toFixed(0) }}</span>
+            <span class="statdescrip apm">APM</span>
+            <span class="stat apm">{{ matches.stats.apm.mavg.as_identity_<%= @identity.id %>.slice(-1)[0].toFixed(0) }}</span>
+            <span class="statdescrip apm">recently</span>
+          </p>
+        </div></div>
+        <div class="clear"></div>
+      </div>
+
+      <div ng-show="matches.total > resolution">
+        <div class="slider" data-value-bind="cursor" data-max-bind="matches.total - resolution"></div>
+      </div>
+
+    </matches>
+  </div>
+</div>
+

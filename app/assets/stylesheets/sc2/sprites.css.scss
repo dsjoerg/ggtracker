@@ -1,0 +1,15 @@
+// Time to tighten this up. All sc2 related sprites are now in a single 
+// spritemap. Except for units, they'll stay in their own as they are not being
+// loaded unless a match is viewed.
+
+$sc2-sprites: sprite-map("sc2/images/*.png");
+
+.sc2 {
+  display: inline-block;
+  background: $sc2-sprites;
+  
+}
+
+@include sprites($sc2-sprites, sprite_names($sc2-sprites), '.sc2', true, 'sc2');
+
+   

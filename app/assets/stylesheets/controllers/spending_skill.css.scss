@@ -1,0 +1,48 @@
+
+  #spending {
+    div.filters-wrap {
+      ul { 
+//          display: inline-block;
+//          border: none; 
+//          vertical-align: middle;
+
+//          height: auto;
+//          line-height: normal;
+
+          li {
+            span.name {
+              font-size: 20px;
+              vertical-align: middle;
+            }
+          }
+        }
+    }
+  }
+  
+  .content.spending_skill {
+    p, li {
+      font-size: 16px;
+    }
+
+    .chart {
+      padding-bottom: 30px;
+      .canvas {
+        height: 400px;
+      }
+    }
+    .title {
+      font-size: 110%;
+      opacity: 1.0;
+    }
+
+  }
+
+  .sqcalc {
+    border: 1px solid #333;
+    padding: 10px 10px 0px 10px;
+    .sq {
+      padding-left: 20px;
+    }
+    margin-bottom: 10px;
+  }
+

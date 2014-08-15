@@ -1,0 +1,67 @@
+#tour {
+  .content {
+    @include center;
+    width: 1044px;
+
+    min-height: 600px;
+//    max-width: 900px;
+
+    margin-top: 50px;
+    font-size: 20px;
+    
+
+    .boxy {
+      border: 1px solid #ccc;
+      padding: 20px 10px;
+      margin-bottom: 75px;
+      @include box-shadow(0px 0px 50px 0px rgba(#225395, .7));
+      @include border-radius(8px);
+//      border-radius: 8px;
+    }
+
+    .explitext {
+      text-align: center;
+      padding-bottom: 10px;
+    }
+    .static_inner {
+      margin-left: 100px;
+      margin-right: 100px;
+    }
+    
+    a, a:visited {
+      text-decoration: underline;
+    }
+    
+    a.ggtipper2, a:visited.ggtipper2 {
+      text-decoration: none;
+    }
+
+    p {
+      margin-bottom: 1em;
+      line-height: 150%;
+    }
+    
+    h1 {
+      margin-bottom: 1em;
+      text-align: center;
+      font-size: 300%;
+    }
+    
+    img {
+      text-align: center;
+    }
+
+    .button-upload {
+      width: 300px;
+      height: 30px;
+      top: -4px;
+      .caption {
+        position: static;
+        span {
+          display: inline-block;
+        }
+      }
+    }
+
+  }
+}

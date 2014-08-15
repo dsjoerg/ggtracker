@@ -1,0 +1,19 @@
+<div id="uploads">
+  <div class="top">
+    <span ng-show="creplays.length > 0">uploading...</span><span ng-show="creplays.length == 0">preparing replay summary...</span>
+  </div>
+
+  <!-- the fadey directive watches the replay.state and clears items that are in a final state -->
+  <ul class="uploads">
+    <li class="replay" data-replay="{{ replay.replay_file_name }}" ng-repeat="replay in creplays" fadey="500">
+    <span class="spinner" ng-class="{nospinner: replay.state != 'processing'}"></span><span>{{ replay.replay_file_name.replace('.SC2Replay', '') }}</span>
+    </li>
+  </ul>
+
+  <div class="runforthehills">
+    <div class="animation">
+      <img class="runner" src="/assets/run2.gif" />
+      <img class="shadow" src="/assets/run2.gif" />
+    </div>
+  </div>
+</div>

@@ -1,0 +1,148 @@
+<div id="castersheet">
+
+  <form method="GET" action="">
+    <select name="player1" class="combobox">
+      <optgroup label="Races">
+        <%=raw options_for_select({'All Races' => ''}.merge(@races.invert), :selected => @race) %>
+      </optgroup>
+      <optgroup label="Summer Arena Players">
+        <%=raw options_for_select(@supported_players, :selected => @player1 ? @player1.id : nil) %>
+      </optgroup>
+      <optgroup label="Various Players">
+        <%=raw options_for_select(@various_players, :selected => @player1 ? @player1.id : nil) %>
+      </optgroup>
+    </select> vs&nbsp;
+
+    <select name="player2" class="combobox">
+      <optgroup label="Races">
+        <%=raw options_for_select({'All Races' => ''}.merge(@races.invert), :selected => @vs_race) %>
+      </optgroup>
+      <optgroup label="Summer Arena Players">
+        <%=raw options_for_select(@supported_players, :selected => @player2 ? @player2.id : nil) %>
+      </optgroup>
+      <optgroup label="Various Players">
+        <%=raw options_for_select(@various_players, :selected => @player2 ? @player2.id : nil) %>
+      </optgroup>
+    </select>
+
+    <input type="submit"/>
+  </form>
+
+  <% if @stats %>
+
+  <div class="header">
+    <h1><%= @player1 ? @player1.name : @races[@race] %>
+      <% if @vs_race %>
+        <%= "vs #{@races[@vs_race]}" %>
+      <% elsif @player2 %>
+        <%= "vs #{@player2.name}" %>
+      <% else %>
+        <%= "vs All Races" %>
+      <% end %>
+    </h1>
+
+    <%
+      minute = 0
+      pct = "%.0f" % @stats['win']['pct']["after_minute_#{minute}#{@condition_suffix}"]
+      wins = @stats['win']['count']["after_minute_#{minute}#{@condition_suffix}"]
+      losses = @stats['loss']['count']["after_minute_#{minute}#{@condition_suffix}"]
+    %>
+    <br>
+    <p>Overall MLG record<% if params[:before_date].present? %> before <%= params[:before_date] %><% end %><% if params[:after_date].present? %> after <%= params[:after_date] %><% end %>: <%= wins %>-<%= losses %> (<%= pct %>% win)</p>
+
+    <%
+      # no apm until we can explain to MLG exactly how it is computed
+      #  and how it differs from the other APM calcs out there,
+      #  including their own.
+      # and APM isnt _that_ important or interesting IMHO
+    %>
+    <% if false %>
+      <p>Average APM: <%= "%.0f" % @stats['apm']['avg']['default'] %> <%= "(vs #{@races[@vs_race]}: #{"%.0f" % @stats['apm']['avg']["vs_race_#{@vs_race}"]})" if @vs_race %></p>
+    <% end %>
+  </div>
+
+  <table border="0" cellspacing="0" cellpadding="0" id="timetable">
+    <tr>
+      <th>Time</th>
+      <th>Win %</th>
+      <th>Wins</th>
+      <th>Losses</th>
+      <th id="avgarmycost">Avg army cost @ time</th>
+    </tr>
+    <% 6.times do |n| 
+      minute = 5*(n+1)
+      %>
+    <tr>
+      <td><%= minute %>:00</td>
+      <td><%= "%.0f%" % @stats['win']['pct']["after_minute_#{minute}#{@condition_suffix}"]%></td>
+      <td><%= @stats['win']['count']["after_minute_#{minute}#{@condition_suffix}"]%></td>
+      <td><%= @stats['loss']['count']["after_minute_#{minute}#{@condition_suffix}"]%></td>
+      <td><%= army_size(@race, @stats['army']['avg']["at_minute_#{minute}#{@condition_suffix}"]) %></td>
+    </tr>
+    <% end %>
+  </table>
+
+  <br><br>
+
+  <table class="army" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <th>Time</th>
+      <th>Early</th>
+      <th></th>
+      <th>Mid</th>
+      <th></th>
+      <th>Late</th>
+      <th></th>
+    </tr>
+    <tr>
+      <th>Unit</th>
+      <% @bottom_times.each do |snaptime| %>
+      <th>% usage at <%= snaptime %>:00</th>
+      <th># in army, when used</th>
+      <% end %>
+    </tr>
+    <% unitnames_in_order(@race).each do |unitname|
+         n = unitnumber(@race,unitname); %>
+    <tr>
+      <td class="first"><%= unitname %></td>
+      <% @bottom_times.each do |snaptime| %>
+        <% pct = @stats['army']['pct']["at_minute_#{snaptime}#{@condition_suffix}_not_0"][n.to_s].to_i %>
+
+        <td class="<%= pct == 0 ? 'unused' : 'used' %>">
+          <div><%= pct %>%</div>
+          <div class="bar" style="width: <%= pct %>%;"></div>
+        </td>
+        <td class="<%= pct == 0 ? 'unused' : 'used' %>"><%= render_one_sigfig(@stats['army']['avg']["at_minute_#{snaptime}#{@condition_suffix}_not_0"][n.to_s]) %></td>
+      <% end %>
+    </tr>
+    <% end %>
+  </table>
+  <br>
+  <p>Army stats from <%= @num_games %> games since Nov 2011 (patch 1.4+)</p>
+
+  <p id="credit">
+    <img src="<%= asset_path('providers/mlg/logo-castersheet.png') %>" />
+    stats provided by ggtracker
+  </p>
+
+<% if false %>
+  <table border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+    <% @replays.each do |replay| %>
+    <tr>
+      <td><%= Time.parse(replay["played_at"]).strftime("%b %d  '%y") %></td>
+      <td <%= 'class = winner' if replay["player1_stats"]["win"] %>><%= replay["player1"]["name"] %></td>
+      <td><%= replay["player2"]["name"] %> <%= "W" if replay["player2_stats"]["win"] %></td>
+    </tr>
+    <% end %>
+   </table>
+
+ <%= @replays %>
+<% end %>
+
+<% end # if @player1 %>
+</div>

@@ -1,0 +1,146 @@
+// Le Button!
+// Note: here, any anywhere else, we'll include bootstrap class names..
+// because "yes we can". Doesn't hurt really. We are also stealing from
+// bootstrap for some general styling because as much as I dislike using it,
+// it does a lot of things right.
+
+@mixin button($background: #111, $color: #DDD, $scale: 1.0) {
+  outline: 0;
+
+  background: $background;
+  @include background(linear-gradient(lighten($background, 10%), $background));
+
+  @include box-shadow(inset 0 1px 0 rgba(255,255,255,0.2), 0 1px 2px rgba(0,0,0,0.05));
+
+  border: 1px solid rgba(0,0,0,0.1);
+
+  vertical-align: middle;
+  cursor: pointer;
+
+  @include border-radius(4px * $scale);
+  padding: (4px * $scale) (14px * $scale);
+
+  color: $color;
+  
+  font-size: 100% * $scale;
+
+  &:hover {
+    background: darken($background, 10%);
+    @include background(linear-gradient($background, darken($background, 10%)));
+    // TODO: add transitions properly.
+  }
+  
+  &:active {
+    @include box-shadow(inset 0 2px 4px rgba(0,0,0,0.15), 0 1px 2px rgba(0,0,0,0.05));
+  }
+}
+
+/*
+.button,
+input[type=submit], 
+button,
+.btn {
+  @include button(#51A351, #FFF);
+}
+
+.button-medium,
+button.medium {
+  @include button(#51A351, #FFF, 1.2);
+}
+
+.button-large,
+button.large {
+  @include button(#51A351, #FFF, 1.4);
+}
+*/
+
+
+// Button 2!
+// a much simpler, flatter, nicer button ..for buttons
+
+@mixin button2($background: #111, $color: #DDD) {
+  outline: 0;
+  border: none;
+
+  background: $background;
+  @include background(linear-gradient(lighten($background, 2%), $background));
+
+  // border: darken($background, 5%) 1px solid;
+  // @include box-shadow(-1px -3px 0 darken($background, 5%) inset, 1px -3px 0 darken($background, 5%) inset);
+  // @include box-shadow(0px -2px 0 darken($background, 5%) inset, 0px 1px 0 lighten($background, 15%) inset);
+  // @include box-shadow(0px 1px 0 lighten($background, 15%) inset);
+  @include border-radius(2px);
+
+  padding: 8px 14px;
+  
+  color: $color;
+  // @include text-shadow(1px 1px 0px rgba(0,0,0,0.6));
+  text-align: center;
+
+  display: inline-block;
+  cursor: pointer;
+
+  @include border-radius(2px);
+
+  &:hover {
+    background: lighten($background, 2%);
+    @include background(linear-gradient(lighten($background, 8%), lighten($background, 5%)));
+  }
+  
+  &:active {
+    background: darken($background, 2%);
+    @include background(linear-gradient(darken($background, 2%), darken($background, 0%)));
+    @include box-shadow(0px 1px 0 darken($background, 0%) inset);
+  }
+
+  span.caption {
+    vertical-align: middle;
+    display: inline-block;
+    // margin-top: -4px;
+
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+}
+
+a.button2,
+.button2 {
+  @include button2(#444, #FFF);
+}
+
+a.button2-green,
+.button2-green {
+  @include button2(desaturate(green, 20%), #FFF);
+}
+
+// I have no idea if that's lime. I'm a dude.
+a.button2-lime,
+.button2-lime {
+  @include button2(desaturate(#8bda27, 10%), #FFF);
+}
+
+a.button2-lightblue,
+.button-lightblue {
+  @include button2(desaturate(#27bedb, 10%), #FFF);
+}
+
+.button,
+input[type=submit], 
+button,
+.btn {
+  @include button2(#51A351, #FFF);
+}
+
+.button-orange {
+  @include button2(#f7a725, #FFF);
+}
+
+.button-medium,
+button.medium {
+  @include button2(#51A351, #FFF);
+}
+
+.button-large,
+button.large {
+  @include button2(#51A351, #FFF);
+}

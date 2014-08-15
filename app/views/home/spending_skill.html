@@ -1,0 +1,48 @@
+<% content_for(:head) do %>
+  <title>Spending Skill</title>
+  <meta name="Description" content="Spending Skill: derived from Spending Quotient (SQ), it's a good way to track your Starcraft II macro skill.">
+<% end %>
+
+<div id="static">
+  <div class="content spending_skill">
+    <div class="static_inner">
+      <h1>What is Spending Skill?</h1>
+      <p><b>Summary</b>: We measure your Spending Skill as a league score, ranging from Bronze to Grandmaster.  For each game you play, your Average Unspent Resources (AUR) and Income are combined into a single number (called Spending Quotient, also known as SQ).  Your Spending Skill is based on typical SQ levels for your race, region (NA, EU, etc) and game length.  As you can see from the <a href="http://ggtracker.com/spending_skill_stats">Spending Skill Stats</a>, long games tend to have lower SQs.  For example, an SQ of 76 for an EU Protoss in a 27-minute game is a Grandmaster-level performance, but in a 7-minute game that same SQ is only Platinum level. and then similarity-checked against our Starcraft library of more than 100,000 1v1 ladder games.</p>
+      <br><hr><br>
+      <p>There's an excellent article called <a href="http://www.teamliquid.net/forum/viewmessage.php?topic_id=266019">Do you macro like a pro?</a> which studies 2,100 games and proves that pros <b>spend their resources better than noobs</b>.</p>
+      <p>Spending can make a big difference.  Let's say you and your enemy have the same income, and the same tech, but you have 1,000 unspent resources and she has 0.  Then her army is going to be 1,000 resources bigger than yours.  That's 20 extra marines.  Assuming her micro skill is equal to yours, then she's going to win.</p>
+      <p>Don't let her win!!</p>
+      <p style="text-align: center"><%= image_tag "keep_calm_sml.png" %></p>
+      <br>
+      <p>After every game, the Score Screen shows your <b>Average Unspent Resources</b> (AUR).  But that one number doesn't tell you if you did a good or bad job on spending.</p>
+      <p>An AUR of 1,000 is great when your <a href="/matches/470351">Resource Collection Rate (aka Income) is 1,900</a>, but it's not good <a href="/matches/478936">when your Income is 400</a>. So AUR alone isn't enough to know if your Spending was good.</p>
+      <p><a href="http://www.teamliquid.net/forum/viewmessage.php?topic_id=266019">Do you macro like a pro?</a> introduced the idea of <b>Spending Quotient</b> (SQ), a formula that combines AUR and Income into a single score, usually between 40 and 100, that measures how well you're spending.  It's a nice formula, it's even got a logarithm in it.</p>
+      <p>Here's a calculator you can use to play with the SQ formula.</p>
+      <div class="sqcalc">
+        <p>
+          <label>Resource Collection Rate (Income)</label>
+          <input type="text" ng-model="inc" placeholder="Enter RCR here">
+        </p>
+        <p>
+          <label>Average Unspent Resources</label>
+          <input type="text" ng-model="aur" placeholder="Enter AUR here">
+        </p>
+        <p>
+          <label>Spending Quotient</label>
+          <span class="sq"><b>{{ sq }}</b></span>
+        </p>
+      </div>
+      <p>Grandmasters and pros get SQ around 100, and bronze leaguers get 40 or 50.</p>
+      <p>However, when you get the data together for over 100,000 games<a href class="ggtipper2 tiny" style="vertical-align:super" title="The chart depicts only our US 1v1 ladder games.  Soon we will be releasing results for EU, and later for other regions.">*</a>, the fuller picture emerges:</p>
+      <p style="text-align: center"><%= image_tag "US_SQ_vs_duration_20121207.png" %></p>
+      <p>The longer a game goes on, the lower the SQ tends to be.  The lower the league, the more pronounced the effect.  SQ also varies by race and region: check out the data <a href="/spending_skill_stats">here</a>.</p>
+      <p>But let's not lose sight of the most important fact:</p>
+      <p style="text-align: center"><b>Higher-league players achieve higher SQ</b>.</p>
+      <p>Which leads to our conclusion:</p>
+      <p style="text-align: center"><b>One way to get better at Starcraft is to improve your spending</b>.</p>
+      <br><hr><br>
+      <p>That's where GGTracker can help.  For each game you play, we measure<a href class="ggtipper2 tiny" style="vertical-align:super" title="We use your SQ, the game length, your race and your gateway.">*</a> your Spending Skill as a league-equivalent score, ranging from Bronze to Grandmaster.  We'll chart your Spending Skill over time, so you can set a target and see how you're doing.</p>
+      <p>To get started tracking your Spending Skill, <a class="signup" href>sign up for GGTracker</a>!</p>
+    </div>
+  </div>
+</div>

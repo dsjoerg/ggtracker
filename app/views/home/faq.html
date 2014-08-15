@@ -1,0 +1,64 @@
+<% content_for(:head) do %>
+  <title>Frequently Asked Questions</title>
+  <meta name="Description" content="Frequently asked questions about GGTracker.">
+<% end %>
+
+<div id="static">
+  <div class="content spending_skill">
+    <div class="static_inner">
+      <h1>Frequently Asked Questions</h1>
+      <p><b>Most of my games aren't here, LOL.</b></p>
+      <p>GGTracker only knows about the games that you (or your opponent) uploads.</p>
+      <p><b>Sometimes my Spending Skill doesn't seem to line up with my SQ. What's up with that?</b></p>
+      <p>Your Spending Skill is based on typical SQ levels for your race, region (NA, EU, etc) and game length. As you can see from the <a href="http://ggtracker.com/spending_skill_stats">Spending Skill Stats</a>, long games tend to have lower SQs.  For example, an SQ of 76 for an EU Protoss in a 27-minute game is a Grandmaster-level performance, but in a 7-minute game that same SQ is only Platinum level.</p>
+      <p><b>How do I share my player profile page with someone?</b></p>
+      <p>Just send them the link!  All player pages and match pages on GGTracker are public.</p>
+      <p><b>I'm playing in several regions.  How do I add my account for the other regions I play in?</b></p>
+      <p>Each region (EU, NA, SEA, KR, CN) is a different battle.net profile.  GGTracker Pro users can have multiple battle.net profiles in a single GGTracker account.</p>
+    <% if current_user && current_user.pro? %>
+      <p><b>How do I get the battle.net link for my account in another region?</b></p>
+      <ul>
+        <li>Upload a game that you played in the other region.</li>
+        <li>The GGTracker page for the match will appear.</li>
+        <li>Click on your name in that match page.  Now the GGTracker page for your profile in that region will appear.</li>
+        <li>Click on the BNET link under your name.</li>
+        <li>Now you're on the battle.net page for your profile in that region.  Copy the link from the browser address bar.</li>
+      </ul>
+    <% end %>
+      <p id="delete"><b>How do I delete a match?</b></p>
+      <p>Logged-in authenticated users can delete matches that they played in using the "DELETE" link on the match page, just below the map name.</p>
+      <p style="text-align: center"><%= image_tag "deletebutton.png" %></p>
+      <p id="spending_skill_right"><b>Is Spending Skill right?  My Spending Skill is higher than the league I'm in.</b></p>
+      <p>Yes, it's right.  Player skills vary widely, and your Spending Skill in a particular game or on average might be different from the league you're in.  See <a href="http://www.teamliquid.net/forum/viewmessage.php?topic_id=329510&currentpage=3#55">this discussion</a> on TeamLiquid for more.</p>
+    <% if current_user && current_user.pro? %>
+    <p><b>How do I use the auto-uploader?</b></p>
+<ul>
+<li>Download the auto-uploader: <a class="action button" href="https://s3.amazonaws.com/auto-uploader/ggtracker+uploader.zip">download</a></li>
+<li>Unzip it and start the version appropriate to your operating system.</li>
+<li>Click the Choose... button and pick a directory.  The auto-uploader will watch that directory and its subdirectories for new replays.</li>
+<li>Paste this code: <span class="token"><%= current_user.access_token %></span> into the Upload key field in the Auto-uploader window.</li>
+<li>Play Starcraft!  The auto-uploader will watch for any new replays and upload them to ggtracker.</li>
+</ul>
+    <% end %>
+
+      <p><b>I have a question that's not listed here!</b></p>
+      <p>Email me at <a href="mailto:dsjoerg@ggtracker.com">dsjoerg@ggtracker.com</a>, I would be happy to help.  Or tweet <a href="https://twitter.com/ggtracker">@ggtracker</a>.</p>
+<br><br><br><br>
+      <p><b>Who's behind GGTracker?</b></p>
+      <ul>
+      <li><a href="https://twitter.com/dsjoerg">David Joerg</a> founder and developer</li>
+      <li><a href="https://github.com/GraylinKim/sc2reader/">Graylin Kim</a> maintainer of the sc2reader library</li>
+      <li><a href="http://www.bernatfortet.com/">Bernat Fortet</a> design</li>
+      <li><a href="https://twitter.com/effekt">Marian Rudzynski</a> developer and mad scientist</li>
+      <li><a href="https://sites.google.com/site/sc2gears/">András Belicza</a> created the auto-uploader and the incredible sc2gears</li>
+      <li><a href="https://twitter.com/Dougcope">Doug Copestake</a> built the SC2Gears auto-uploader plugin</li>
+      <li><a href="https://github.com/jonomon">Jonathan Chung</a> built the creep spread calculations</li>
+      <li>Leafs apologist <a href="http://twitter.com/willlang">William "Grandmaster Wannabee" Lang</a></li>
+      <li>Alex Kam worked on map images</li>
+      <li>Alex Hanhikoski and <a href="http://drop.sc">drop.sc</a> shared replays, provided lots of source code and the phrase "Go Pro"</li>
+      <li><a href="http://iconmonstr.com/">iconmonstr</a> provided some icons</li>
+      <li>Blizzard Entertainment provided Starcraft and all the Starcraft-related images and words here are theirs</li>
+      </ul>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,54 @@
+<% content_for(:head) do %>
+  <title>Hiring Heroes</title>
+  <meta name="Description" content="GGTracker needs you!  Tell your friends they should work here!">
+<% end %>
+
+<div id="go_pro">
+  <div class="content">
+    <div id="players" class="going_pro" style="line-height:28px; width: 700px; margin:0px auto">
+      <p>GGTracker has big plans, and we need a developer to make it happen.</p>
+      <br>
+        <p><b>You can help!</b></p>
+        <p>Share this link with all your software developer friends:</p>
+          <br>
+        <p  style="text-align:center"><b><a href="<%= @recruiting_url %>"><%= @recruiting_url %></a></b>
+<br>
+<p style="text-align:center" class="tiny">
+        <% if signed_in? %>
+        (This link is specific to you. You get all the credit!)</p>
+        <% else %>
+        (Log in and come back to this page to get your own personal link code.)
+        <% end %>
+</p>
+<br>
+<p>
+Your score is how many people view your link.  On Sunday, September 15th, 9pm EDT, the top 5 GGTracker Hiring Heroes will receive our eternal gratitude, plus a year's subscription to GGTracker Pro.</p>
+
+        <br>
+        <p><b>GGTracker Hiring Heroes</b></p>
+        <br>
+      <table style="width:500px; margin: 0px auto">
+        <tr>
+          <th>Name</th>
+          <th>Score</th>
+        </tr>
+      <% $leaders.each do |leader| %>
+        <tr>
+          <td>
+            <% if leader[:primary_account].present? %>
+              <a style="text-decoration: none" href="players/<%= leader[:primary_account].esdb_id %>"><%= leader[:name] %></a>
+            <% else %>
+              <%= leader[:name] %>
+            <% end %>
+          </td>
+          <td>
+        <%= leader[:score].to_i %>
+        </td>
+      </tr>
+      <% end %>
+      </table>
+      <br>
+      <p class="tiny">Updated once per minute, last updated <%= l $leaders_age %></p>
+    </div>
+  </div>
+</div>

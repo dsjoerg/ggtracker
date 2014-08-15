@@ -1,0 +1,17 @@
+// Hint: spritemap regeneration is a little fickle.
+// to get it to regenerate just modify and save this file.
+
+
+$icons: sprite-map("icons/*.png");
+.ui-icon { background: $icons; }  
+@include sprites($icons, sprite_names($icons), '.ui-icon', true, 'icon');
+
+// Generic icon class, add to all icons (including sc2/icons)
+
+.icon {
+  display: inline-block;
+  vertical-align: middle;
+  text-align: left; 
+  text-indent: -99999px;
+}
+  

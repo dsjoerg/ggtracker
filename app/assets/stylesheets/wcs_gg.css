@@ -1,0 +1,12 @@
+/*
+ * This is a manifest file that'll be compiled into gg.css, which will include all the files
+ * listed below.
+ *
+ * Note: we are including almost anything inside all.css.scss, as we want 
+ * macros/functions/etc to be inherited, which sprocket (the asset pipeline)
+ * will not make possible. If we would instead use this manifest, we'd have
+ * the same includes and declarations in every single scss file.
+ *
+ *= require_self
+ *= require wcs_all
+ */
