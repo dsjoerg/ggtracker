@@ -133,8 +133,6 @@ Ggtracker::Application.routes.draw do
 
   match 'simple_report' => 'report_mailer#simple_report'
 
-  match 'castersheet' => 'castersheet#castersheet'
-
   post 'backend/ipn', :to => 'payment#paypal_ipn'
 
   # 404
