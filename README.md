@@ -4,11 +4,14 @@ This 'ggtracker' repository is the web server for ggtracker, plus the
 HTML/CSS/Javascript that makes the pretty pages pretty.
 
 It does *not* do replay parsing, and delegates queries about players
-and matches to the ESDB API, both of which are in other repos:
+and matches to the ESDB API.
 
-* ESDB <-- the ruby API server, planning to make this public but it's not ready yet
-* https://github.com/dsjoerg/ggpyjobs <-- the replay-parsing python server
-* https://github.com/dsjoerg/gg <-- little gem for accessing ESDB
+The other repos involved in ggtracker are:
+* https://github.com/dsjoerg/esdb <-- the API server
+* https://github.com/dsjoerg/ggpyjobs <-- the replay-parsing python
+  server, included by ESDB as a git submodule
+* https://github.com/dsjoerg/gg <-- little gem for accessing ESDB,
+  used by this codebase
 
 
 ### Requirements
@@ -20,7 +23,7 @@ and matches to the ESDB API, both of which are in other repos:
  * juggernaut (npm install -g juggernaut, see https://github.com/maccman/juggernaut)
  * MySQL
  
-On Mac OSX, I recommend using homebrew as package manager: http://mxcl.github.com/homebrew/
+On Mac OSX, you can use homebrew as package manager: http://mxcl.github.com/homebrew/
 
 
 ### Basic installation and updating
@@ -32,6 +35,11 @@ On Mac OSX, I recommend using homebrew as package manager: http://mxcl.github.co
  * Create the database ggtracker needs (`mysql -u root` and then `create database ggtracker_development;` and then `quit`)
  * Run migrations (`bundle exec rake db:migrate`)
 
+If you want to be able to upload replays, you'll need to have an
+Amazon S3 account.  After setting that up, edit your config/s3.yml
+file accordingly.
+
+
 ### Starting
 
 `foreman start web`
@@ -40,11 +48,19 @@ And then go to http://localhost:3000/ in your browser.
 
 Note: the first time you request a page, it will be slow while it compiles CSS, JS etc.
 
-It'll work, but there will be no matches, no players.  To make it more interesting, point your ggtracker at the production ESDB server like so:
+It'll work, but there will be no matches, no players.  To make it more
+interesting, you can simply point your ggtracker at the production
+ESDB server like so:
 
 `ESDB_HOST=api.ggtracker.com ESDB_MATCHBLOBS_BUCKET=gg2-matchblobs-prod foreman start web`
 
-And then go to http://localhost:3000/matches in your browser.  If you see recent matches, it's working!
+And then go to http://localhost:3000/matches in your browser.  If you
+see recent matches, it's working!
+
+If you are working on changes that involve replay processing as well,
+you can run your own local instance of ESDB; in the default
+development configuration, the ggtracker server and ESDB server will
+find each other correctly.
 
 
 ### Testing
@@ -79,11 +95,3 @@ Start testacular: `/usr/local/share/npm/bin/testacular start`
 This will launch a chrome window (you need chrome installed, of course) and automatically monitor specs for changes.
 
 Run all tests: `/usr/local/share/npm/bin/testacular run`
-
-
-### Keeping npm/node updated
-
-update/install npm: `curl https://npmjs.org/install.sh | sh`
-update/install node: `brew install node`
-
-Note: node includes npm, which should be sufficient. If you installed npm before node, you may have to `brew link -f node`
