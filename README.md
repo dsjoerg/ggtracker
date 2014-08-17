@@ -95,3 +95,9 @@ Start testacular: `/usr/local/share/npm/bin/testacular start`
 This will launch a chrome window (you need chrome installed, of course) and automatically monitor specs for changes.
 
 Run all tests: `/usr/local/share/npm/bin/testacular run`
+
+
+### I don't understand XXXX
+
+Just ask, I'll add questions and answers to a FAQ here.
+
