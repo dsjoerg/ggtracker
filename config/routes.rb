@@ -117,6 +117,7 @@ Ggtracker::Application.routes.draw do
   match 'privacy' => 'home#privacy'
   match 'changelog' => 'home#changelog'
   match 'api' => 'home#api'
+  match 'developers' => 'home#developers'
   match 'terms' => 'home#terms'
   match 'injects' => 'home#injects'
   match 'wcsmatch' => 'matches#wcsmatch'
