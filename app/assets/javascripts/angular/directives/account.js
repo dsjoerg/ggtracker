@@ -38,6 +38,14 @@ gg.directive('uaccount', ['Account', function(Account) {
                   error: function() {
                       alert("Sorry, your matches could not be deleted for some reason.  Please contact hello@ggtracker.com and we will beat the person responsible.");
                   }
+
+                  # next steps through the code:
+                  #
+                  # ggtracker: app/controllers/accounts_controller.rb destroy_all_matches
+                  # gg: lib/esdb/identity.rb destroy_all_matches
+                  # esdb: esdb/api/identities.rb  post ':id/destroy_all_matches'
+                  # esdb: esdb/jobs/sc2/identity/delete_all_matches.rb
+                  # esdb: esdb/games/sc2/identity.rb destroy_all_matches!
               });
           }
       }
