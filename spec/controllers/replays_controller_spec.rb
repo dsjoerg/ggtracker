@@ -25,31 +25,13 @@ describe ReplaysController do
         pending("can't test this without configuring Amazon S3")
       end
 
-      post :drop, :replay => Rack::Test::UploadedFile.new(@replay_file)
+      post :drop, :replays => [ Rack::Test::UploadedFile.new(@replay_file) ]
     
       response.status.should == 201 # created
       response.body.should_not be_empty
 
       replay = Replay.where(:replay_file_name => File.basename(@replay_file.path)).first
       replay.should_not == nil
-    end
-
-    # We want to create replays with 100% initial progress to indicate that
-    # the upload has been a success and inform the user we're not waiting to
-    # process the replay.
-    it 'should create the replay with 100% progress' do
-      if Rails.configuration.s3['replays']['access_key_id'] == 'YOUR_ACCESS_KEY'
-        pending("can't test this without configuring Amazon S3")
-      end
-
-      post :drop, :replay => Rack::Test::UploadedFile.new(@replay_file)
-    
-      response.status.should == 201 # created
-      response.body.should_not be_empty
-
-      replay = Replay.where(:replay_file_name => File.basename(@replay_file.path)).first
-      replay.should_not == nil
-      replay.progress.should == 100
     end
 
     it 'should create the replay via s3 drop' do
