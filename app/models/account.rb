@@ -252,14 +252,6 @@ class Account < ActiveRecord::Base
     esdb_id.present? ? "/players/#{esdb_id}/#{name}" : ''
   end
 
-  def destroy_all_matches!
-    ident = ESDB::Identity.find(params[:id])
-    not_found and return if !ident
-
-    response = @match.userdelete(current_user.id)
-
-  end
-
   # Return Jbuilder for serialization
   def to_builder(builder = nil)
     builder ||= Jbuilder.new
