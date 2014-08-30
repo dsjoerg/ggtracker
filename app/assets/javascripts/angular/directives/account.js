@@ -39,13 +39,13 @@ gg.directive('uaccount', ['Account', function(Account) {
                       alert("Sorry, your matches could not be deleted for some reason.  Please contact hello@ggtracker.com and we will beat the person responsible.");
                   }
 
-                  # next steps through the code:
-                  #
-                  # ggtracker: app/controllers/accounts_controller.rb destroy_all_matches
-                  # gg: lib/esdb/identity.rb destroy_all_matches
-                  # esdb: esdb/api/identities.rb  post ':id/destroy_all_matches'
-                  # esdb: esdb/jobs/sc2/identity/delete_all_matches.rb
-                  # esdb: esdb/games/sc2/identity.rb destroy_all_matches!
+                  // next steps through the code:
+                  //
+                  // ggtracker: app/controllers/accounts_controller.rb destroy_all_matches
+                  // gg: lib/esdb/identity.rb destroy_all_matches
+                  // esdb: esdb/api/identities.rb  post ':id/destroy_all_matches'
+                  // esdb: esdb/jobs/sc2/identity/delete_all_matches.rb
+                  // esdb: esdb/games/sc2/identity.rb destroy_all_matches!
               });
           }
       }
@@ -63,7 +63,7 @@ gg.directive('uaccount', ['Account', function(Account) {
         // instantiation should also be moved away..)
         account = new Account({id: scope.account.id, account: scope.account});
 
-        // Note: there was a way to bind this in the resource, but @id doesn#t
+        // Note: there was a way to bind this in the resource, but @id doesnt
         // work anymore.. figure out what they changed it to.
         account.$save({id: account.id});
         

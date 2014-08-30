@@ -111,6 +111,8 @@
             <span class="statdescrip">recently</span>
           </p>
         </div></div>
+
+        <% if !([22, 99055].include?(@identity.id)) %>
         <div class="chart-wrap">
           <areachart id="spendingchart" classes="chart-spending-trend" 
             data-values="matches.stats.spending_skill.mavg.as_identity_<%= @identity.id %>" 
@@ -130,6 +132,7 @@
             <span class="statdescrip spendingskill">recently</span>
           </p>
         </div>
+        <% end %>
 
         <div class="sat-speed">
         <div class="chart-wrap">
@@ -174,6 +177,31 @@
           </p>
         </div>
         </div>
+
+
+        <% if [22, 99055].include?(@identity.id) %>
+        <div class="sat-speed">
+        <div class="chart-wrap">
+          <areachart id="sat3chart" classes="chart-sat3-trend" 
+            data-values="matches.stats.sat_3_skill.mavg.as_identity_<%= @identity.id %>" 
+            data-name="3nd base saturation speed" 
+            data-help="The history of <%= @identity.name %>'s 10-game average 3nd Base Saturation Speed."
+            data-resolution="resolution"
+            data-cursor="cursor" 
+            data-areafill="'#E76993'" 
+            data-arealine="'#B25071'" 
+            mti="'auto'" 
+            playername="'<%= @identity.name %>'"
+          ></areachart>
+          <p class="chartleague">
+            <league class="chartleague first" data-league="{{ matches.stats.sat_3_skill.avg.as_identity_<%= @identity.id %> }}" data-size="small"></league>
+            <span class="statdescrip spendingskill first">3rd base sat speed</span>
+            <league class="chartleague" data-league="{{ matches.stats.sat_3_skill.mavg.as_identity_<%= @identity.id %>.slice(-1)[0] }}" data-size="small"></league>
+            <span class="statdescrip spendingskill">recently</span>
+          </p>
+        </div>
+        </div>
+        <% end %>
 
         <div class="apm-trend">
         <div class="chart-wrap">
