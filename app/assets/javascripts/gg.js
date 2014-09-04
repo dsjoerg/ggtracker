@@ -70,6 +70,10 @@
 //= require_tree ./angular/controllers/
 //= require ./angular/filters.js
 
+//= require d3.js
+//= require crossfilter.js
+//= require scout.js
+
 function dontDoThisEither() {
     //  Proxino.log("log this");
   throw "help i'm having a cloudfront problem";

@@ -1,0 +1,78 @@
+<% content_for(:head) do %>
+  <title>Scout</title>
+  <meta name="Description" content="Learn what wins.  Over 100,000 games of Starcraft 2.">
+
+  <style>
+#charts {
+  padding: 10px 0;
+}
+
+.chart {
+  display: inline-block;
+  height: 151px;
+  margin-bottom: 20px;
+}
+
+.reset {
+  padding-left: 1em;
+  font-size: smaller;
+  color: #ccc;
+}
+
+.background.bar {
+  fill: #ccc;
+}
+
+.foreground.bar {
+  fill: steelblue;
+}
+
+.axis path, .axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.axis text {
+  font: 10px sans-serif;
+}
+
+.brush rect.extent {
+  fill: steelblue;
+  fill-opacity: .125;
+}
+
+.brush .resize path {
+  fill: #eee;
+  stroke: #666;
+}
+
+#duration-chart {
+  width: 260px;
+}
+
+#date-chart {
+  width: 260px;
+}
+</style>
+<% end %>
+
+<script type="text/javascript">
+  scout_init();
+</script>
+
+<div id="static">
+  <div class="content">
+    <div class="static_inner">
+
+      <div id="charts">
+        <div id="duration-chart" class="chart">
+          <div class="title">Game Length, minutes</div>
+        </div>
+        <div id="date-chart" class="chart">
+          <div class="title">Game Date</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -136,6 +136,8 @@ Ggtracker::Application.routes.draw do
 
   post 'backend/ipn', :to => 'payment#paypal_ipn'
 
+  match 'scout' => 'home#scout'
+
   # 404
   match "*path" => 'application#not_found'
 end
