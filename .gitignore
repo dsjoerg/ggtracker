@@ -41,3 +41,7 @@ ggtracker_scan
 
 # Ignore nonsense that node installed here
 node_modules
+
+# Ignore temp data used for development
+public/ents.json
+public/matches.json

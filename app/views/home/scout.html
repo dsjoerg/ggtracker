@@ -52,8 +52,17 @@
 }
 
 #date-chart {
+  width: 520px;
+}
+
+#as-chart {
   width: 260px;
 }
+
+#oas-chart {
+  width: 260px;
+}
+
 </style>
 <% end %>
 
@@ -64,8 +73,33 @@
 <div id="static">
   <div class="content">
     <div class="static_inner">
-
+      <div id="player_race">
+        <span>Player race:</span>
+        <span class="selector">P</span>
+        <span class="selector">T</span>
+        <span class="selector">Z</span>
+      </div>
+      <div id="opponent_race">
+        <span>Opponent race:</span>
+        <span class="selector">P</span>
+        <span class="selector">T</span>
+        <span class="selector">Z</span>
+      </div>
+      <div><span id="winrate">-</span>% matches won.</div>
+      <div><span id="active">-</span> of <span id="total">-</span> matches selected.</div>
       <div id="charts">
+        <div id="as-chart" class="chart">
+          <div class="title">Player's Army Strength @ X minutes</div>
+        </div>
+        <div id="oas-chart" class="chart">
+          <div class="title">Opponent's Army Strength @ X minutes</div>
+        </div>
+        <div id="ws-chart" class="chart">
+          <div class="title">Player's Workers @ X minutes</div>
+        </div>
+        <div id="ows-chart" class="chart">
+          <div class="title">Opponent's Workers @ X minutes</div>
+        </div>
         <div id="duration-chart" class="chart">
           <div class="title">Game Length, minutes</div>
         </div>
@@ -73,6 +107,7 @@
           <div class="title">Game Date</div>
         </div>
       </div>
+
     </div>
   </div>
 </div>

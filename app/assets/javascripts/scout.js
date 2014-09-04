@@ -1,27 +1,30 @@
-  var formatNumber = d3.format(",d"),
-      formatChange = d3.format("+,d"),
-      formatDate = d3.time.format("%B %d, %Y"),
-      formatTime = d3.time.format("%I:%M %p");
+var formatNumber = d3.format(",d"),
+formatChange = d3.format("+,d"),
+formatDate = d3.time.format("%B %d, %Y"),
+formatTime = d3.time.format("%I:%M %p");
 
- function render(method) {
-   d3.select(this).call(method);
- }
+function render(method) {
+    d3.select(this).call(method);
+}
 
- function renderAll() {
+function renderAll() {
     chart.each(render);
-// dont have a number yet showing all
-//    d3.select("#active").text(formatNumber(all.value()));
- }
+    d3.select("#active").text(formatNumber(gr_all.value()));
+    numWins = _.find(winGrp.all(), function(grp) {return grp.key}).value
+    pctWins = Math.round(1000.0 * numWins / gr_all.value()) / 10.0;
+    console.log("wins:", numWins, pctWins);
+    d3.select("#winrate").text(pctWins);
+}
 
-  window.filter = function(filters) {
+window.filter = function(filters) {
     filters.forEach(function(d, i) { charts[i].filter(d); });
     renderAll();
-  };
+};
 
-  window.reset = function(i) {
+window.reset = function(i) {
     charts[i].filter(null);
     renderAll();
-  };
+};
 
 
 function barChart() {
@@ -217,57 +220,136 @@ function barChart() {
 };
 
 function scout_init() {
-    matches = [];
+    matches = {};
     entities = [];
+    match_winner = {};
+    match_loser = {};
+    gamerecords = [];
     $.getJSON("http://localhost:3000/matches.json", function( data ) {
         $.each( data, function( index, match ) {
             match.play_date = new Date(match.play_date);
-            matches.push(match);
+            matches[match.id] = match
         });
         $.getJSON("http://localhost:3000/ents.json", function( data ) {
             $.each( data, function( index, entity ) {
                 entities.push(entity);
+                if (entity.match_id in matches) {
+                    match = matches[entity.match_id];
+                    if (entity.win == 1) {
+                        match_winner[entity.match_id] = entity;
+                    } else if (entity.win == 0) {
+                        match_loser[entity.match_id] = entity;
+                    }
+                    if (entity.match_id in match_winner && entity.match_id in match_loser) {
+                        gamerecords.push({'player': match_winner[entity.match_id],
+                                          'opponent': match_loser[entity.match_id],
+                                          'match': match})
+                        gamerecords.push({'player': match_loser[entity.match_id],
+                                          'opponent': match_winner[entity.match_id],
+                                          'match': match})
+                    }
+                    
+                }
             });
-            ent_cf = crossfilter(entities);
-            raceDim = ent_cf.dimension(function(ent) { return ent.race });
-            winDim = ent_cf.dimension(function(ent) { return ent.race });
+            gr_cf = crossfilter(gamerecords);
+            gr_all = gr_cf.groupAll();
 
-            m_cf = crossfilter(matches);
-            m_dur_d = m_cf.dimension(function(m) { return Math.min(40, m.duration_minutes) });
-            m_dur_g = m_dur_d.group(function(d) { return Math.floor(d / 5) * 5 });
+            raceDim = gr_cf.dimension(function(gr) { return gr.player.race });
+            raceGrp = raceDim.group();
 
-            m_date_d = m_cf.dimension(function(m) { return m.play_date });
-            m_date_g = m_date_d.group(d3.time.day);
+            oppRaceDim = gr_cf.dimension(function(gr) { return gr.opponent.race });
+            oppRaceGrp = oppRaceDim.group();
+
+            winDim = gr_cf.dimension(function(gr) { return gr.player.win });
+            winGrp = winDim.group();
+
+            durDim = gr_cf.dimension(function(gr) { return Math.min(40, gr.match.duration_minutes) });
+            durGrp = durDim.group(function(d) { return Math.floor(d / 5) * 5 });
+
+            dateDim = gr_cf.dimension(function(gr) { return gr.match.play_date });
+            dateGrp = dateDim.group();
+            
+            asDim = gr_cf.dimension(function(gr) { return gr.player.as8 });
+            asGrp = asDim.group(function(d) { return Math.floor(d / 100) * 100 });
+
+            oasDim = gr_cf.dimension(function(gr) { return gr.opponent.as8 });
+            oasGrp = oasDim.group(function(d) { return Math.floor(d / 100) * 100 });
+            
+            wsDim = gr_cf.dimension(function(gr) { return gr.player.w8 });
+            wsGrp = wsDim.group(function(d) { return Math.floor(d / 5) * 5 });
+
+            owsDim = gr_cf.dimension(function(gr) { return gr.opponent.w8 });
+            owsGrp = owsDim.group(function(d) { return Math.floor(d / 5) * 5 });
             
             charts = [
                 barChart()
-                .dimension(m_dur_d)
-                .group(m_dur_g)
-                .x(d3.scale.linear()
-                   .domain([0, 40])
-                   .rangeRound([0, 20 * 8])),
+                    .dimension(asDim)
+                    .group(asGrp)
+                    .x(d3.scale.linear()
+                       .domain([0, 1500])
+                       .rangeRound([0, 10 * 15])),
 
                 barChart()
-                    .dimension(m_date_d)
-                    .group(m_date_g)
+                    .dimension(oasDim)
+                    .group(oasGrp)
+                    .x(d3.scale.linear()
+                       .domain([0, 1500])
+                       .rangeRound([0, 10 * 15])),
+
+                barChart()
+                    .dimension(wsDim)
+                    .group(wsGrp)
+                    .x(d3.scale.linear()
+                       .domain([0, 50])
+                       .rangeRound([0, 10 * 20])),
+
+                barChart()
+                    .dimension(owsDim)
+                    .group(owsGrp)
+                    .x(d3.scale.linear()
+                       .domain([0, 50])
+                       .rangeRound([0, 10 * 20])),
+
+                barChart()
+                    .dimension(durDim)
+                    .group(durGrp)
+                    .x(d3.scale.linear()
+                       .domain([0, 40])
+                       .rangeRound([0, 20 * 8])),
+
+                barChart()
+                    .dimension(dateDim)
+                    .group(dateGrp)
                     .round(d3.time.day.round)
                     .x(d3.time.scale()
-                       .domain([new Date(2014, 7, 15), new Date(2014, 8, 15)])
-                       .rangeRound([0, 10 * 30]))
+                       .domain([new Date(2014, 7, 1), new Date(2014, 8, 3)])
+                       .rangeRound([0, 10 * 40])),
             ];
 
             chart = d3.selectAll(".chart")
                 .data(charts)
                 .each(function(chart) { chart.on("brush", renderAll).on("brushend", renderAll); });
 
+            d3.selectAll("#total")
+                .text(formatNumber(gr_cf.size()));
+
+            $("#player_race .selector").each( function(index, raceSelector) {
+                $(raceSelector).click( function() {
+                    raceDim.filter(this.textContent);
+                    renderAll();
+                })
+            });
+            $("#opponent_race .selector").each( function(index, raceSelector) {
+                $(raceSelector).click( function() {
+                    oppRaceDim.filter(this.textContent);
+                    renderAll();
+                })
+            });
+
             renderAll();
 
-//                   .domain([0, 24])
-//                   .rangeRound([0, 10 * 24]))
         });
     });
 
-    // raceDim.group().size()
-    // raceDim.group().all()   <-- counts for P, T and Z
 
 }
