@@ -12,7 +12,7 @@ function renderAll() {
     d3.select("#active").text(formatNumber(gr_all.value()));
     numWins = _.find(winGrp.all(), function(grp) {return grp.key}).value
     pctWins = Math.round(1000.0 * numWins / gr_all.value()) / 10.0;
-    console.log("wins:", numWins, pctWins);
+//    console.log("wins:", numWins, pctWins);
     d3.select("#winrate").text(pctWins);
 }
 
@@ -220,24 +220,37 @@ function barChart() {
 };
 
 function scout_init() {
+    var start = Date.now();
+
     matches = {};
     entities = [];
     match_winner = {};
     match_loser = {};
     gamerecords = [];
-    $.getJSON("http://localhost:3000/matches.json", function( data ) {
-        $.each( data, function( index, match ) {
+
+    entity_non_numerics = ["race", "chosen_race", "win"]
+
+    d3.csv("http://localhost:3000/matches.csv", function(error, csv_matches) {
+        csv_matches.forEach( function(match, index) {
             match.play_date = new Date(match.play_date);
+            match.id = +match.id
+            match.average_league = +match.average_league
+            match.duration_minutes = +match.duration_minutes
             matches[match.id] = match
         });
-        $.getJSON("http://localhost:3000/ents.json", function( data ) {
-            $.each( data, function( index, entity ) {
+        d3.csv("http://localhost:3000/ents.csv", function(error, csv_ents) {
+            csv_ents.forEach( function(entity, index) {
+                for (var key in entity) {
+                    if (!(_.contains(entity_non_numerics, key))) {
+                        entity[key] = +entity[key];
+                    }
+                }
                 entities.push(entity);
                 if (entity.match_id in matches) {
                     match = matches[entity.match_id];
-                    if (entity.win == 1) {
+                    if (entity.win == "true") {
                         match_winner[entity.match_id] = entity;
-                    } else if (entity.win == 0) {
+                    } else if (entity.win == "false") {
                         match_loser[entity.match_id] = entity;
                     }
                     if (entity.match_id in match_winner && entity.match_id in match_loser) {
@@ -251,6 +264,7 @@ function scout_init() {
                     
                 }
             });
+            var rec_built = Date.now();
             gr_cf = crossfilter(gamerecords);
             gr_all = gr_cf.groupAll();
 
@@ -280,20 +294,38 @@ function scout_init() {
 
             owsDim = gr_cf.dimension(function(gr) { return gr.opponent.w8 });
             owsGrp = owsDim.group(function(d) { return Math.floor(d / 5) * 5 });
+
+            mb2Dim = gr_cf.dimension(function(gr) { return Math.floor(gr.player.miningbase_2 / 60) });
+            mb2Grp = mb2Dim.group(function(d) { return d; })
+
+            omb2Dim = gr_cf.dimension(function(gr) { return Math.floor(gr.opponent.miningbase_2 / 60) });
+            omb2Grp = omb2Dim.group(function(d) { return d; })
+
+            lgDim = gr_cf.dimension(function(gr) { return gr.match.average_league });
+            lgGrp = lgDim.group(function(d) { return d; });
+
+            var dims_built = Date.now();
             
             charts = [
+                barChart()
+                    .dimension(lgDim)
+                    .group(lgGrp)
+                    .x(d3.scale.linear()
+                       .domain([0, 6])
+                       .rangeRound([0, 10 * 15])),
+
                 barChart()
                     .dimension(asDim)
                     .group(asGrp)
                     .x(d3.scale.linear()
-                       .domain([0, 1500])
+                       .domain([0, 2000])
                        .rangeRound([0, 10 * 15])),
 
                 barChart()
                     .dimension(oasDim)
                     .group(oasGrp)
                     .x(d3.scale.linear()
-                       .domain([0, 1500])
+                       .domain([0, 2000])
                        .rangeRound([0, 10 * 15])),
 
                 barChart()
@@ -308,6 +340,20 @@ function scout_init() {
                     .group(owsGrp)
                     .x(d3.scale.linear()
                        .domain([0, 50])
+                       .rangeRound([0, 10 * 20])),
+
+                barChart()
+                    .dimension(mb2Dim)
+                    .group(mb2Grp)
+                    .x(d3.scale.linear()
+                       .domain([0, 15])
+                       .rangeRound([0, 10 * 20])),
+
+                barChart()
+                    .dimension(omb2Dim)
+                    .group(omb2Grp)
+                    .x(d3.scale.linear()
+                       .domain([0, 15])
                        .rangeRound([0, 10 * 20])),
 
                 barChart()
@@ -348,6 +394,14 @@ function scout_init() {
 
             renderAll();
 
+            var end = Date.now();
+            var total_time = end - start;
+            console.log("init took " + (total_time / 1000) + " seconds");
+
+            var build_rec = (rec_built - start) / 1000;
+            var build_dims = (dims_built - rec_built) / 1000;
+            var build_chart = (end - dims_built) / 1000;
+            console.log(build_rec, build_dims, build_chart);
         });
     });
 

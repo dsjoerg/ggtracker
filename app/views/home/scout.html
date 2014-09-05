@@ -47,6 +47,10 @@
   stroke: #666;
 }
 
+#league-chart {
+  width: 260px;
+}
+
 #duration-chart {
   width: 260px;
 }
@@ -72,7 +76,6 @@
 
 <div id="static">
   <div class="content">
-    <div class="static_inner">
       <div id="player_race">
         <span>Player race:</span>
         <span class="selector">P</span>
@@ -88,6 +91,9 @@
       <div><span id="winrate">-</span>% matches won.</div>
       <div><span id="active">-</span> of <span id="total">-</span> matches selected.</div>
       <div id="charts">
+        <div id="league-chart" class="chart">
+          <div class="title">Game League</div>
+        </div>
         <div id="as-chart" class="chart">
           <div class="title">Player's Army Strength @ X minutes</div>
         </div>
@@ -100,6 +106,12 @@
         <div id="ows-chart" class="chart">
           <div class="title">Opponent's Workers @ X minutes</div>
         </div>
+        <div id="mb2-chart" class="chart">
+          <div class="title">Player's 2nd Mining Base Timing</div>
+        </div>
+        <div id="omb2-chart" class="chart">
+          <div class="title">Opponent's 2nd Mining Base Timing</div>
+        </div>
         <div id="duration-chart" class="chart">
           <div class="title">Game Length, minutes</div>
         </div>
@@ -108,6 +120,5 @@
         </div>
       </div>
 
-    </div>
   </div>
 </div>
