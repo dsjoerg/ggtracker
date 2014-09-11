@@ -131,7 +131,7 @@
 // "inset" styling override for matches and players index
 // icon colors are being overridden in directives/select.css
 
-#matches, #players, #spending {
+#matches, #players, #spending, #scout {
   div.filters-wrap {
     @include inset;
     margin-bottom: 15px;

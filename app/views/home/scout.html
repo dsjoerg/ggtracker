@@ -1,93 +1,23 @@
 <% content_for(:head) do %>
   <title>Scout</title>
   <meta name="Description" content="Learn what wins.  Over 100,000 games of Starcraft 2.">
-
-  <style>
-#charts {
-  padding: 10px 0;
-}
-
-.chart {
-  display: inline-block;
-  height: 151px;
-  margin-bottom: 20px;
-}
-
-.reset {
-  padding-left: 1em;
-  font-size: smaller;
-  color: #ccc;
-}
-
-.background.bar {
-  fill: #ccc;
-}
-
-.foreground.bar {
-  fill: steelblue;
-}
-
-.axis path, .axis line {
-  fill: none;
-  stroke: #000;
-  shape-rendering: crispEdges;
-}
-
-.axis text {
-  font: 10px sans-serif;
-}
-
-.brush rect.extent {
-  fill: steelblue;
-  fill-opacity: .125;
-}
-
-.brush .resize path {
-  fill: #eee;
-  stroke: #666;
-}
-
-#league-chart {
-  width: 260px;
-}
-
-#duration-chart {
-  width: 260px;
-}
-
-#date-chart {
-  width: 520px;
-}
-
-#as-chart {
-  width: 260px;
-}
-
-#oas-chart {
-  width: 260px;
-}
-
-</style>
 <% end %>
 
 <script type="text/javascript">
   scout_init();
 </script>
 
-<div id="static">
-  <div class="content">
-      <div id="player_race">
-        <span>Player race:</span>
-        <span class="selector">P</span>
-        <span class="selector">T</span>
-        <span class="selector">Z</span>
-      </div>
-      <div id="opponent_race">
-        <span>Opponent race:</span>
-        <span class="selector">P</span>
-        <span class="selector">T</span>
-        <span class="selector">Z</span>
-      </div>
+<div id="static" ng-controller="ScoutController">
+  <div id="scout" class="content">
+ 
+    <div class="filters-wrap">
+      <ul class="filters">
+        <li class="filter" style="border-right: none;"><span class="name">SCOUT</span></li>
+        <li class="filter race" style="border-left: none"><raceselect name="race"/></li>
+        <li class="filter vs_race"><raceselect name="vs_race"/></li>
+      </ul>
+    </div>
+ 
       <div><span id="winrate">-</span>% matches won.</div>
       <div><span id="active">-</span> of <span id="total">-</span> matches selected.</div>
       <div id="charts">
@@ -119,6 +49,15 @@
           <div class="title">Game Date</div>
         </div>
       </div>
-
+      <div id="lists">
+        <table id="match-list" class="list">
+          <tbody>
+            <tr>
+              <th class="num">Match #</th>
+              <th class="result">result</th>
+            </tr>
+          </tbody>
+        </table>
+      </div>
   </div>
 </div>

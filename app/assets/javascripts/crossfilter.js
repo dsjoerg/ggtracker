@@ -603,6 +603,7 @@ function crossfilter() {
       group: group,
       groupAll: groupAll,
       dispose: dispose,
+      range: range,
       remove: dispose // for backwards-compatibility
     };
 
@@ -775,6 +776,10 @@ function crossfilter() {
       hi0 = hi1;
       filterListeners.forEach(function(l) { l(one, added, removed); });
       return dimension;
+    }
+
+    function range() {
+        return [lo0, hi0];
     }
 
     // Filters this dimension using the specified range, value, or null.

@@ -1,0 +1,114 @@
+#charts {
+  padding: 10px 0;
+}
+
+.chart {
+  display: inline-block;
+  height: 151px;
+  margin-bottom: 20px;
+}
+
+.reset {
+  padding-left: 1em;
+  font-size: smaller;
+  color: #ccc;
+}
+
+.background.bar {
+  fill: #ccc;
+}
+
+.foreground.bar {
+  fill: steelblue;
+}
+
+.axis path, .axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.axis text {
+  font: 10px sans-serif;
+}
+
+.brush rect.extent {
+  fill: steelblue;
+  fill-opacity: .125;
+}
+
+.brush .resize path {
+  fill: #eee;
+  stroke: #666;
+}
+
+#league-chart {
+  width: 260px;
+}
+
+#duration-chart {
+  width: 260px;
+}
+
+#date-chart {
+  width: 520px;
+}
+
+#as-chart {
+  width: 260px;
+}
+
+#oas-chart {
+  width: 260px;
+}
+
+table#match-list {
+  @extend table.default;
+  min-height: 1024px;
+}
+
+#match-list .match {
+  line-height: 1.5em;
+  background: #eee;
+//  width: 640px;
+  margin-bottom: 1px;
+}
+
+#match-list {
+  th.num {
+    min-width: 200px;
+  }
+}
+
+table#match-list {
+  table-layout: fixed;
+
+  tbody {
+    width: 401px;
+
+    th, td {
+      &.result {
+        text-align: center;
+      }
+    }
+
+    th.num {
+      min-width: 200px;
+    }
+  }
+}
+
+
+  #scout {
+    div.filters-wrap {
+      ul { 
+          li {
+            span.name {
+              font-size: 20px;
+              vertical-align: middle;
+            }
+          }
+        }
+    }
+  }
+  

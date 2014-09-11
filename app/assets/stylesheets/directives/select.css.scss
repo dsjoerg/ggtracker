@@ -48,7 +48,7 @@ $leagues: bronze, silver, gold, platinum, diamond, master, grandmaster;
 
 // Colors on inset background
 
-#matches, #players, #spending {
+#matches, #players, #spending, #scout {
   .filters-wrap {
     @for $i from 1 through length($leagues) {
       .leagueselect li .league-#{nth($leagues, $i)} { @extend .sc2-#{nth($leagues, $i)}-white-#{$ssize}; }

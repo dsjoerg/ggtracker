@@ -3,19 +3,32 @@ formatChange = d3.format("+,d"),
 formatDate = d3.time.format("%B %d, %Y"),
 formatTime = d3.time.format("%I:%M %p");
 
+// we will keep a list of filter objects
+// each filter object will have:
+// * dim: the crossfilter dimension object
+// * range: the currently filtered range, or null if nothing is currently applied
+
+// currently filter settings get changed in the following places:
+// brush.chart calls dimension.filterRange(extent);
+// brushend.chart calls dimension.filterAll();
+// chart.filter() calls both of those
+// our race selectors call raceDim.filter(this.textContent) and oppRaceDim.filter(this.textContext)
+
 function render(method) {
     d3.select(this).call(method);
 }
 
 function renderAll() {
     chart.each(render);
+    list.each(render);
     d3.select("#active").text(formatNumber(gr_all.value()));
-    numWins = _.find(winGrp.all(), function(grp) {return grp.key}).value
+    numWins = _.find(winGrp.all(), function(grp) {return grp.key == "true"}).value
     pctWins = Math.round(1000.0 * numWins / gr_all.value()) / 10.0;
-//    console.log("wins:", numWins, pctWins);
+    //    console.log("wins:", numWins, pctWins);
     d3.select("#winrate").text(pctWins);
 }
 
+// not currently used, was from the original crossfilter demo
 window.filter = function(filters) {
     filters.forEach(function(d, i) { charts[i].filter(d); });
     renderAll();
@@ -26,6 +39,24 @@ window.reset = function(i) {
     renderAll();
 };
 
+function matchList(elem) {
+    var gamerecordsByDate = dateDim.top(80);
+
+    elem.each(function() {
+        var match = d3.select(this).selectAll(".match")
+            .data(gamerecordsByDate);
+
+        var matchEnter = match.enter().append("tr").attr("class", "match");
+        matchEnter.append("td").attr("class", "id").append("a");
+        matchEnter.append("td").attr("class", "result");
+
+        match.exit().remove();
+
+        match.select('.id a').text(function(gr) { return gr.match.id });
+        match.select('.id a').attr("href", function(gr) { return "http://ggtracker.com/matches/" + gr.match.id });
+        match.select('.result').text(function(gr) { return gr.player.win == "true" ? "win" : "loss" });
+    });
+}
 
 function barChart() {
     if (!barChart.id) barChart.id = 0;
@@ -53,11 +84,28 @@ function barChart() {
 
             // Create the skeletal chart.
             if (g.empty()) {
+                // RESET link, hidden at first
                 div.select(".title").append("a")
                     .attr("href", "javascript:reset(" + id + ")")
                     .attr("class", "reset")
+                    .attr("class", "filtered")
                     .text("reset")
                     .style("display", "none");
+
+                limits = div.select(".title").append("div")
+                             .attr("class", "filtered")
+                             .style("display", "none")
+                             .text("from ");
+
+                lower_limit = limits.append("span")
+                                     .text("-")
+                                     .attr("class", "lower");
+
+                limits.append("span").text(" to ");
+
+                upper_limit = limits.append("span")
+                                     .text("-")
+                                     .attr("class", "upper");
 
                 g = div.append("svg")
                     .attr("width", width + margin.left + margin.right)
@@ -95,7 +143,7 @@ function barChart() {
             if (brushDirty) {
                 brushDirty = false;
                 g.selectAll(".brush").call(brush);
-                div.select(".title a").style("display", brush.empty() ? "none" : null);
+                div.selectAll(".title .filtered").style("display", brush.empty() ? "none" : null);
                 if (brush.empty()) {
                     g.selectAll("#clip-" + id + " rect")
                         .attr("x", 0)
@@ -141,7 +189,7 @@ function barChart() {
 
     brush.on("brushstart.chart", function() {
         var div = d3.select(this.parentNode.parentNode.parentNode);
-        div.select(".title a").style("display", null);
+        div.selectAll(".title .filtered").style("display", null);
     });
 
     brush.on("brush.chart", function() {
@@ -155,12 +203,15 @@ function barChart() {
             .attr("x", x(extent[0]))
             .attr("width", x(extent[1]) - x(extent[0]));
         dimension.filterRange(extent);
+        var div = d3.select(this.parentNode.parentNode.parentNode);
+        div.select(".lower").text(Math.floor(extent[0]));
+        div.select(".upper").text(Math.floor(extent[1]));
     });
 
     brush.on("brushend.chart", function() {
         if (brush.empty()) {
             var div = d3.select(this.parentNode.parentNode.parentNode);
-            div.select(".title a").style("display", "none");
+            div.selectAll(".title .filtered").style("display", "none");
             div.select("#clip-" + id + " rect").attr("x", null).attr("width", "100%");
             dimension.filterAll();
         }
@@ -219,6 +270,28 @@ function barChart() {
     return d3.rebind(chart, brush, "on");
 };
 
+function data_host() {
+    return "http://localhost:3000";
+}
+
+function debug_suffix() {
+    debug = true;
+
+    if (debug) {
+        return "_debug";
+    } else {
+        return "";
+    }
+}
+
+function matches_url() {
+    return data_host() + "/matches" + debug_suffix() + ".csv";
+}
+
+function entities_url() {
+    return data_host() + "/ents" + debug_suffix() + ".csv";
+}
+
 function scout_init() {
     var start = Date.now();
 
@@ -230,7 +303,7 @@ function scout_init() {
 
     entity_non_numerics = ["race", "chosen_race", "win"]
 
-    d3.csv("http://localhost:3000/matches.csv", function(error, csv_matches) {
+    d3.csv(matches_url(), function(error, csv_matches) {
         csv_matches.forEach( function(match, index) {
             match.play_date = new Date(match.play_date);
             match.id = +match.id
@@ -238,7 +311,7 @@ function scout_init() {
             match.duration_minutes = +match.duration_minutes
             matches[match.id] = match
         });
-        d3.csv("http://localhost:3000/ents.csv", function(error, csv_ents) {
+        d3.csv(entities_url(), function(error, csv_ents) {
             csv_ents.forEach( function(entity, index) {
                 for (var key in entity) {
                     if (!(_.contains(entity_non_numerics, key))) {
@@ -278,7 +351,7 @@ function scout_init() {
             winGrp = winDim.group();
 
             durDim = gr_cf.dimension(function(gr) { return Math.min(40, gr.match.duration_minutes) });
-            durGrp = durDim.group(function(d) { return Math.floor(d / 5) * 5 });
+            durGrp = durDim.group(function(d) { return d });
 
             dateDim = gr_cf.dimension(function(gr) { return gr.match.play_date });
             dateGrp = dateDim.group();
@@ -290,10 +363,10 @@ function scout_init() {
             oasGrp = oasDim.group(function(d) { return Math.floor(d / 100) * 100 });
             
             wsDim = gr_cf.dimension(function(gr) { return gr.player.w8 });
-            wsGrp = wsDim.group(function(d) { return Math.floor(d / 5) * 5 });
+            wsGrp = wsDim.group(function(d) { return d });
 
             owsDim = gr_cf.dimension(function(gr) { return gr.opponent.w8 });
-            owsGrp = owsDim.group(function(d) { return Math.floor(d / 5) * 5 });
+            owsGrp = owsDim.group(function(d) { return d });
 
             mb2Dim = gr_cf.dimension(function(gr) { return Math.floor(gr.player.miningbase_2 / 60) });
             mb2Grp = mb2Dim.group(function(d) { return d; })
@@ -333,28 +406,28 @@ function scout_init() {
                     .group(wsGrp)
                     .x(d3.scale.linear()
                        .domain([0, 50])
-                       .rangeRound([0, 10 * 20])),
+                       .rangeRound([0, 10 * 15])),
 
                 barChart()
                     .dimension(owsDim)
                     .group(owsGrp)
                     .x(d3.scale.linear()
                        .domain([0, 50])
-                       .rangeRound([0, 10 * 20])),
+                       .rangeRound([0, 10 * 15])),
 
                 barChart()
                     .dimension(mb2Dim)
                     .group(mb2Grp)
                     .x(d3.scale.linear()
                        .domain([0, 15])
-                       .rangeRound([0, 10 * 20])),
+                       .rangeRound([0, 10 * 15])),
 
                 barChart()
                     .dimension(omb2Dim)
                     .group(omb2Grp)
                     .x(d3.scale.linear()
                        .domain([0, 15])
-                       .rangeRound([0, 10 * 20])),
+                       .rangeRound([0, 10 * 15])),
 
                 barChart()
                     .dimension(durDim)
@@ -376,21 +449,12 @@ function scout_init() {
                 .data(charts)
                 .each(function(chart) { chart.on("brush", renderAll).on("brushend", renderAll); });
 
+            // Render the initial lists.
+            list = d3.selectAll(".list tbody")
+                .data([matchList]);
+
             d3.selectAll("#total")
                 .text(formatNumber(gr_cf.size()));
-
-            $("#player_race .selector").each( function(index, raceSelector) {
-                $(raceSelector).click( function() {
-                    raceDim.filter(this.textContent);
-                    renderAll();
-                })
-            });
-            $("#opponent_race .selector").each( function(index, raceSelector) {
-                $(raceSelector).click( function() {
-                    oppRaceDim.filter(this.textContent);
-                    renderAll();
-                })
-            });
 
             renderAll();
 
