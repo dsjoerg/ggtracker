@@ -43,5 +43,5 @@ ggtracker_scan
 node_modules
 
 # Ignore temp data used for development
-public/ents.*
-public/matches.*
+public/ents*
+public/matches*
