@@ -14,15 +14,72 @@ formatTime = d3.time.format("%I:%M %p");
 // chart.filter() calls both of those
 // our race selectors call raceDim.filter(this.textContent) and oppRaceDim.filter(this.textContext)
 
+function reduceAddDJ(p, v) {
+  ++p.value;
+  return p;
+}
+
+function reduceRemoveDJ(p, v) {
+  --p.value;
+  return p;
+}
+
+function reduceInitialDJ() {
+  return {value:0};
+}
+
+function reduceAddWinPct(p, v) {
+  ++p.games;
+  if (v.player.win == "true") {
+      ++p.wins;
+  }
+  if (p.games == 0) {
+      p.value = 0;
+  } else {
+      p.value = Math.round(1000.0 * p.wins / p.games) / 10.0;
+  }
+  return p;
+}
+
+function reduceRemoveWinPct(p, v) {
+  --p.games;
+  if (v.player.win == "true") {
+      --p.wins;
+  }
+  if (p.games == 0) {
+      p.value = 0;
+  } else {
+      p.value = Math.round(1000.0 * p.wins / p.games) / 10.0;
+  }
+  return p;
+}
+
+function reduceInitialWinPct() {
+  return {games:0, wins:0, value:0};
+}
+
+function orderValueDJ(p) {
+  return p.value;
+}
+
+function groupDJ(group) {
+    return group.reduce(reduceAddDJ, reduceRemoveDJ, reduceInitialDJ).order(orderValueDJ);
+}
+
+function groupWinPct(group) {
+    return group.reduce(reduceAddWinPct, reduceRemoveWinPct, reduceInitialWinPct).order(orderValueDJ);
+}
+
 function render(method) {
     d3.select(this).call(method);
 }
 
 function renderAll() {
+    $('#static').scope().render();
     chart.each(render);
     list.each(render);
     d3.select("#active").text(formatNumber(gr_all.value()));
-    numWins = _.find(winGrp.all(), function(grp) {return grp.key == "true"}).value
+    numWins = _.find(winGrp.all(), function(grp) {return grp.key == "true"}).value.value
     pctWins = Math.round(1000.0 * numWins / gr_all.value()) / 10.0;
     //    console.log("wins:", numWins, pctWins);
     d3.select("#winrate").text(pctWins);
@@ -65,7 +122,8 @@ function barChart() {
     x,
     y = d3.scale.linear().range([100, 0]),
     id = barChart.id++,
-    axis = d3.svg.axis().orient("bottom"),
+    axis = d3.svg.axis().orient("bottom").ticks(4),
+//    vaxis = d3.svg.axis().orient("left").ticks(4).scale(y),
     brush = d3.svg.brush(),
     brushDirty,
     dimension,
@@ -76,7 +134,12 @@ function barChart() {
         var width = x.range()[1],
         height = y.range()[0];
 
-        y.domain([0, group.top(1)[0].value]);
+        var topValue = group.top(1)[0].value;
+        if (_.has(topValue, "wins")) {
+            y.domain([0, 100]);
+        } else {
+            y.domain([0, topValue.value]);
+        }
 
         div.each(function() {
             var div = d3.select(this),
@@ -113,11 +176,13 @@ function barChart() {
                     .append("g")
                     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+/**   WHY IS THIS HERE
                 g.append("clipPath")
                     .attr("id", "clip-" + id)
                     .append("rect")
                     .attr("width", width)
                     .attr("height", height);
+*/
 
                 g.selectAll(".bar")
                     .data(["background", "foreground"])
@@ -132,6 +197,13 @@ function barChart() {
                     .attr("class", "axis")
                     .attr("transform", "translate(0," + height + ")")
                     .call(axis);
+
+/**  Y AXIS WAS DISTRACTING AS IT CHANGED CONSTANTLY
+                g.append("g")
+                    .attr("class", "axis")
+                    .attr("class", "vaxis")
+                    .attr("transform", "translate(" + width + ", 0)");
+*/
 
                 // Initialize the brush component with pretty resize handles.
                 var gBrush = g.append("g").attr("class", "brush").call(brush);
@@ -157,16 +229,18 @@ function barChart() {
             }
 
             g.selectAll(".bar").attr("d", barPath);
+//            g.selectAll(".vaxis").call(vaxis);
         });
 
         function barPath(groups) {
             var path = [],
             i = -1,
             n = groups.length,
+            barwidth = Math.floor(width / n) + 1,
             d;
             while (++i < n) {
                 d = groups[i];
-                path.push("M", x(d.key), ",", height, "V", y(d.value), "h9V", height);
+                path.push("M", x(d.key), ",", height, "V", y(d.value.value), "h", barwidth, "V", height);
             }
             return path.join("");
         }
@@ -234,6 +308,7 @@ function barChart() {
     chart.y = function(_) {
         if (!arguments.length) return y;
         y = _;
+        vaxis.scale(y);
         return chart;
     };
 
@@ -342,40 +417,42 @@ function scout_init() {
             gr_all = gr_cf.groupAll();
 
             raceDim = gr_cf.dimension(function(gr) { return gr.player.race });
-            raceGrp = raceDim.group();
+            raceGrp = groupDJ(raceDim.group());
 
             oppRaceDim = gr_cf.dimension(function(gr) { return gr.opponent.race });
-            oppRaceGrp = oppRaceDim.group();
+            oppRaceGrp = groupDJ(oppRaceDim.group());
 
             winDim = gr_cf.dimension(function(gr) { return gr.player.win });
-            winGrp = winDim.group();
+            winGrp = groupDJ(winDim.group());
 
             durDim = gr_cf.dimension(function(gr) { return Math.min(40, gr.match.duration_minutes) });
-            durGrp = durDim.group(function(d) { return d });
+            durGrp = groupWinPct(durDim.group(function(d) { return d }));
 
             dateDim = gr_cf.dimension(function(gr) { return gr.match.play_date });
-            dateGrp = dateDim.group();
+            dateGrp = groupDJ(dateDim.group());
             
             asDim = gr_cf.dimension(function(gr) { return gr.player.as8 });
-            asGrp = asDim.group(function(d) { return Math.floor(d / 100) * 100 });
+            asGrp = groupDJ(asDim.group(function(d) { return Math.floor(d / 100) * 100 }));
 
             oasDim = gr_cf.dimension(function(gr) { return gr.opponent.as8 });
-            oasGrp = oasDim.group(function(d) { return Math.floor(d / 100) * 100 });
+            oasGrp = groupDJ(oasDim.group(function(d) { return Math.floor(d / 100) * 100 }));
             
             wsDim = gr_cf.dimension(function(gr) { return gr.player.w8 });
-            wsGrp = wsDim.group(function(d) { return d });
+            wsGrp = groupDJ(wsDim.group(function(d) { return d }));
 
             owsDim = gr_cf.dimension(function(gr) { return gr.opponent.w8 });
-            owsGrp = owsDim.group(function(d) { return d });
+            owsGrp = groupDJ(owsDim.group(function(d) { return d }));
 
             mb2Dim = gr_cf.dimension(function(gr) { return Math.floor(gr.player.miningbase_2 / 60) });
-            mb2Grp = mb2Dim.group(function(d) { return d; })
+            mb2Grp = groupDJ(mb2Dim.group(function(d) { return d; }));
 
             omb2Dim = gr_cf.dimension(function(gr) { return Math.floor(gr.opponent.miningbase_2 / 60) });
-            omb2Grp = omb2Dim.group(function(d) { return d; })
+            omb2Grp = groupDJ(omb2Dim.group(function(d) { return d; }));
 
             lgDim = gr_cf.dimension(function(gr) { return gr.match.average_league });
-            lgGrp = lgDim.group(function(d) { return d; });
+            lgGrp = groupDJ(lgDim.group(function(d) { return d; }));
+
+            playerDim = gr_cf.dimension(function(gr) { return gr.player.identity_id });
 
             var dims_built = Date.now();
             
@@ -391,28 +468,28 @@ function scout_init() {
                     .dimension(asDim)
                     .group(asGrp)
                     .x(d3.scale.linear()
-                       .domain([0, 2000])
+                       .domain([0, 2500])
                        .rangeRound([0, 10 * 15])),
 
                 barChart()
                     .dimension(oasDim)
                     .group(oasGrp)
                     .x(d3.scale.linear()
-                       .domain([0, 2000])
+                       .domain([0, 2500])
                        .rangeRound([0, 10 * 15])),
 
                 barChart()
                     .dimension(wsDim)
                     .group(wsGrp)
                     .x(d3.scale.linear()
-                       .domain([0, 50])
+                       .domain([0, 60])
                        .rangeRound([0, 10 * 15])),
 
                 barChart()
                     .dimension(owsDim)
                     .group(owsGrp)
                     .x(d3.scale.linear()
-                       .domain([0, 50])
+                       .domain([0, 60])
                        .rangeRound([0, 10 * 15])),
 
                 barChart()
@@ -455,6 +532,18 @@ function scout_init() {
 
             d3.selectAll("#total")
                 .text(formatNumber(gr_cf.size()));
+
+            $("#player_id").each( function(index, playerIdInput) {
+                $(playerIdInput).change( function() {
+                    var playerId = $(this).val();
+                    if (playerId && playerId.length > 0) {
+                        playerDim.filter(playerId);
+                    } else {
+                        playerDim.filterAll();
+                    }
+                    renderAll();
+                })
+            });
 
             renderAll();
 
