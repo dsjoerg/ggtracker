@@ -76,6 +76,7 @@ function render(method) {
 
 function renderAll() {
     $('#static').scope().render();
+//    $('.filterchart').each(function() { this.render() });
     chart.each(render);
     list.each(render);
     d3.select("#active").text(formatNumber(gr_all.value()));
@@ -367,6 +368,95 @@ function entities_url() {
     return data_host() + "/ents" + debug_suffix() + ".csv";
 }
 
+function filter_chart(element, dimension, group, domain, title) {
+    options = {
+      chart: {
+        type: "column",
+        renderTo: element,
+        backgroundColor: "#F7F4EF",
+        color: "#00f",
+        animation: false,
+        zoomType: 'x',
+        width: 170,
+        height: 130,
+        events: {
+          selection: function(event) {
+            console.log("Selected", event.xAxis[0].min, event.xAxis[0].max, event);
+
+            dimension.filterRange([event.xAxis[0].min, event.xAxis[0].max]);
+            renderAll();
+
+            // TODO show current filter as text
+            // TODO when filter is active, show a RESET link
+            // TODO show filter as highlighted region on chart
+            // TODO switch all charts over to highcharts            
+            // TODO if not too hard, make selection area draggable
+
+            event.preventDefault();
+          }
+        }
+      },
+      title: {text: ""},
+      legend: {enabled: false},
+      xAxis: {
+          labels: {
+              enabled: true,
+              style: {"fontFamily":"'Open Sans', verdana, arial, helvetica, sans-serif"},
+              formatter: function () { return this.value; }
+          }
+      },
+      yAxis: {
+          lineWidth: 0,
+          minorGridLineWidth: 0,
+          lineColor: 'transparent',
+          labels: { enabled: false },
+          minorTickLength: 0,
+          tickLength: 0,
+          title: '',
+          endOnTick: false
+      },
+      credits: {enabled:false},
+      plotOptions: {
+          column:{
+              animation:false,
+              color:'steelblue',
+              groupPadding: 0,
+              pointPadding: 0,
+              borderWidth: 0,
+              pointPlacement: 'on',
+              marker: {
+                  enabled:true,
+                  radius:4,
+                  symbol: "circle",
+                  lineColor: "#111",
+                  lineWidth:1,
+                  fillColor:"#222",
+                  states: {hover:{enabled:true}}
+              },
+              shadow:false,
+              threshold:0
+          }
+      },
+      subtitle: {}
+    };
+    options.series = [];
+    element.chart = new Highcharts.Chart(options);
+    var xyValues = _.map(group.all(), function (g) { return [g.key, g.value.value]; })
+    element.chart.addSeries({
+           data: xyValues
+    });
+    element.group = group;
+    element.dimension = dimension;
+    element.render = function () {
+      var grp = this.group.all();
+      if (typeof grp !== 'undefined') {
+        var xyValues = _.map(grp, function (g) { return [g.key, g.value.value]; })
+        this.chart.series[0].setData(xyValues);
+      }
+    }
+}
+
+
 function scout_init() {
     var start = Date.now();
 
@@ -544,6 +634,11 @@ function scout_init() {
                     renderAll();
                 })
             });
+
+              
+            asChart = $(document.createElement('div')).addClass('filterchart');
+//            filter_chart(asChart, asDim, asGrp, [0, 2500], 'FOOBABY');
+//            $('#filtercharts').append(asChart);
 
             renderAll();
 

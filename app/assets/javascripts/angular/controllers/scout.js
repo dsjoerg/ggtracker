@@ -47,17 +47,72 @@ gg.controller('ScoutController', ['$scope', '$element', '$urlFilter',
         type: "column",
         renderTo: $element.find('.canvas')[0],
         backgroundColor: "#F7F4EF",
+        color: "#00f",
         animation: false,
-        margin: [20],
-        width: 300,
-        height: 150
+        zoomType: 'x',
+        width: 170,
+        height: 130,
+        events: {
+          selection: function(event) {
+            console.log("Selected", event.xAxis[0].min, event.xAxis[0].max, event);
+
+            // TODO bind dimension to chart properly
+            if (typeof asDim !== 'undefined') {
+              asDim.filterRange([event.xAxis[0].min, event.xAxis[0].max]);
+              renderAll();
+            }
+
+            // TODO show current filter as text
+            // TODO when filter is active, show a RESET link
+            // TODO show filter as highlighted region on chart
+            // TODO switch all charts over to highcharts            
+            // TODO if not too hard, make selection area draggable
+
+            event.preventDefault();
+          }
+        }
       },
       title: {text: ""},
       legend: {enabled: false},
-      xAxis: {labels: {enabled: true, style: {"fontFamily":"'Open Sans', verdana, arial, helvetica, sans-serif"}}},
-      yAxis: {lineWidth: 0, minorGridLineWidth: 0, lineColor: 'transparent', labels: { enabled: false }, minorTickLength: 0, tickLength: 0, title: ''},
-      credits: {'enabled':false},
-      plotOptions: {"line":{"animation":false,"lineWidth":3,"marker":{"enabled":false, "radius":4, "symbol": "circle", "lineColor":"#111", "lineWidth":1, "fillColor":"#222", "states":{"hover":{"enabled":true}}},"shadow":false,"threshold":0}},
+      xAxis: {
+          labels: {
+              enabled: true,
+              style: {"fontFamily":"'Open Sans', verdana, arial, helvetica, sans-serif"},
+              formatter: function () { return this.value; }
+          }
+      },
+      yAxis: {
+          lineWidth: 0,
+          minorGridLineWidth: 0,
+          lineColor: 'transparent',
+          labels: { enabled: false },
+          minorTickLength: 0,
+          tickLength: 0,
+          title: '',
+          endOnTick: false
+      },
+      credits: {enabled:false},
+      plotOptions: {
+          column:{
+              animation:false,
+              color:'steelblue',
+              groupPadding: 0,
+              pointPadding: 0,
+              borderWidth: 0,
+              pointPlacement: 'on',
+              marker: {
+                  enabled:true,
+                  radius:4,
+                  symbol: "circle",
+                  lineColor: "#111",
+                  lineWidth:1,
+                  fillColor:"#222",
+                  states: {hover:{enabled:true}}
+              },
+              shadow:false,
+              threshold:0
+          }
+      },
       subtitle: {}
     };
     options.series = [];
