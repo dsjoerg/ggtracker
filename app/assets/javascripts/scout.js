@@ -75,8 +75,8 @@ function render(method) {
 }
 
 function renderAll() {
-    $('#static').scope().render();
-//    $('.filterchart').each(function() { this.render() });
+//    $('#static').scope().render();
+    $('.filterchart').each(function() { this.render() });
     chart.each(render);
     list.each(render);
     d3.select("#active").text(formatNumber(gr_all.value()));
@@ -368,8 +368,8 @@ function entities_url() {
     return data_host() + "/ents" + debug_suffix() + ".csv";
 }
 
-function filter_chart(element, dimension, group, domain, title) {
-    options = {
+function filter_chart(element, dimension, group, domain) {
+    var options = {
       chart: {
         type: "column",
         renderTo: element,
@@ -383,13 +383,27 @@ function filter_chart(element, dimension, group, domain, title) {
           selection: function(event) {
             console.log("Selected", event.xAxis[0].min, event.xAxis[0].max, event);
 
+            event.xAxis[0].axis.removePlotBand('plot-band-1');
+
+            event.xAxis[0].axis.addPlotBand({
+                from: event.xAxis[0].min,
+                to: event.xAxis[0].max,
+                color: 'rgba(150, 50, 50, 0.1)',
+                zIndex: 5,
+                id: 'plot-band-1'
+            });
+
+            filterchart = event.currentTarget.container.parentElement.parentElement
+            $(filterchart).children(".filtered").show();
+            $(filterchart).find(".lower").text(Math.floor(event.xAxis[0].min));
+            $(filterchart).find(".upper").text(Math.floor(event.xAxis[0].max));
+
             dimension.filterRange([event.xAxis[0].min, event.xAxis[0].max]);
             renderAll();
 
-            // TODO show current filter as text
-            // TODO when filter is active, show a RESET link
-            // TODO show filter as highlighted region on chart
-            // TODO switch all charts over to highcharts            
+            // TODO make the RESET link actually work
+            // TODO when filter is cleared, hide the filter text and RESET link
+            // TODO switch all charts over to highcharts, in a nice DRY way
             // TODO if not too hard, make selection area draggable
 
             event.preventDefault();
@@ -635,10 +649,25 @@ function scout_init() {
                 })
             });
 
-              
+            
+            chartContainer = $(document.createElement('div')).addClass('djchart');
+
+            chartTitle = $('<div class="title">Player\'s Army Strength @ X minutes</div>');
+
+            chartFilterText = $('<div class="filtered title" style="display:none">from <span class="lower">-</span> to <span class="upper">-</span></div>');
+            filterResetLink = $('<a href="#" class="reset">reset</a>');
+            filterResetLink.click(function(e) { e.preventDefault(); console.log('reset!'); });
+            chartFilterText.append(filterResetLink);
+
+            chartContainer.append(chartTitle);
+            chartContainer.append(chartFilterText);
+
+
             asChart = $(document.createElement('div')).addClass('filterchart');
-//            filter_chart(asChart, asDim, asGrp, [0, 2500], 'FOOBABY');
-//            $('#filtercharts').append(asChart);
+            chartContainer.append(asChart);
+
+            filter_chart(asChart[0], asDim, asGrp, [0, 2500]);
+            $('#filtercharts').append(chartContainer);
 
             renderAll();
 
