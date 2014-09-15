@@ -75,9 +75,7 @@ function render(method) {
 }
 
 function renderAll() {
-//    $('#static').scope().render();
     $('.filterchart').each(function() { this.render() });
-    chart.each(render);
     list.each(render);
     d3.select("#active").text(formatNumber(gr_all.value()));
     numWins = _.find(winGrp.all(), function(grp) {return grp.key == "true"}).value.value
@@ -85,17 +83,6 @@ function renderAll() {
     //    console.log("wins:", numWins, pctWins);
     d3.select("#winrate").text(pctWins);
 }
-
-// not currently used, was from the original crossfilter demo
-window.filter = function(filters) {
-    filters.forEach(function(d, i) { charts[i].filter(d); });
-    renderAll();
-};
-
-window.reset = function(i) {
-    charts[i].filter(null);
-    renderAll();
-};
 
 function matchList(elem) {
     var gamerecordsByDate = dateDim.top(80);
@@ -351,7 +338,7 @@ function data_host() {
 }
 
 function debug_suffix() {
-    debug = true;
+    debug = false;
 
     if (debug) {
         return "_debug";
@@ -369,6 +356,53 @@ function entities_url() {
 }
 
 function filter_chart(element, dimension, group, domain) {
+    element.group = group;
+    element.dimension = dimension;
+    element.djchart = $(element).parents('.djchart');
+    var dateAxis = (domain[0] > Date.UTC(2010, 1, 1));
+
+    element.render = function () {
+      var grp = this.group.all();
+      if (typeof grp !== 'undefined') {
+        var xyValues = _.map(grp, function (g) { return [g.key, g.value.value]; })
+        this.chart.series[0].setData(xyValues);
+      }
+    }
+
+    element.reset = function () {
+      console.log('element reset!');
+      this.chart.xAxis[0].removePlotBand('plot-band-1');
+      this.dimension.filterAll();
+
+      this.djchart.children(".filtered").css('visibility', 'hidden');
+      renderAll();
+    }
+
+    element.range_select = function (event) {
+      console.log("Selected", event.xAxis[0].min, event.xAxis[0].max, event);
+
+      event.xAxis[0].axis.removePlotBand('plot-band-1');
+
+      event.xAxis[0].axis.addPlotBand({
+          from: event.xAxis[0].min,
+          to: event.xAxis[0].max,
+          color: 'rgba(150, 50, 50, 0.1)',
+          zIndex: 5,
+          id: 'plot-band-1'
+      });
+
+      element.djchart.find(".lower").text(Math.floor(event.xAxis[0].min));
+      element.djchart.find(".upper").text(Math.floor(event.xAxis[0].max));
+      element.djchart.children(".filtered").css('visibility', 'visible');
+
+      dimension.filterRange([event.xAxis[0].min, event.xAxis[0].max]);
+      renderAll();
+
+      // TODO if not too hard, make selection area draggable
+
+      event.preventDefault();
+    };
+
     var options = {
       chart: {
         type: "column",
@@ -377,38 +411,9 @@ function filter_chart(element, dimension, group, domain) {
         color: "#00f",
         animation: false,
         zoomType: 'x',
-        width: 170,
+        width: 185,
         height: 130,
-        events: {
-          selection: function(event) {
-            console.log("Selected", event.xAxis[0].min, event.xAxis[0].max, event);
-
-            event.xAxis[0].axis.removePlotBand('plot-band-1');
-
-            event.xAxis[0].axis.addPlotBand({
-                from: event.xAxis[0].min,
-                to: event.xAxis[0].max,
-                color: 'rgba(150, 50, 50, 0.1)',
-                zIndex: 5,
-                id: 'plot-band-1'
-            });
-
-            filterchart = event.currentTarget.container.parentElement.parentElement
-            $(filterchart).children(".filtered").show();
-            $(filterchart).find(".lower").text(Math.floor(event.xAxis[0].min));
-            $(filterchart).find(".upper").text(Math.floor(event.xAxis[0].max));
-
-            dimension.filterRange([event.xAxis[0].min, event.xAxis[0].max]);
-            renderAll();
-
-            // TODO make the RESET link actually work
-            // TODO when filter is cleared, hide the filter text and RESET link
-            // TODO switch all charts over to highcharts, in a nice DRY way
-            // TODO if not too hard, make selection area draggable
-
-            event.preventDefault();
-          }
-        }
+        events: { selection: element.range_select }
       },
       title: {text: ""},
       legend: {enabled: false},
@@ -416,8 +421,11 @@ function filter_chart(element, dimension, group, domain) {
           labels: {
               enabled: true,
               style: {"fontFamily":"'Open Sans', verdana, arial, helvetica, sans-serif"},
-              formatter: function () { return this.value; }
-          }
+              formatter: dateAxis ? null : function () { return this.value; }
+          },
+          type: dateAxis ? 'datetime' : 'linear',
+          min: domain[0],
+          max: domain[1]
       },
       yAxis: {
           lineWidth: 0,
@@ -459,17 +467,36 @@ function filter_chart(element, dimension, group, domain) {
     element.chart.addSeries({
            data: xyValues
     });
-    element.group = group;
-    element.dimension = dimension;
-    element.render = function () {
-      var grp = this.group.all();
-      if (typeof grp !== 'undefined') {
-        var xyValues = _.map(grp, function (g) { return [g.key, g.value.value]; })
-        this.chart.series[0].setData(xyValues);
-      }
-    }
 }
 
+function reset_click(e) {
+  console.log('reset_click', e);
+  e.preventDefault();
+  var filterchart = $(e.target).parents('.djchart').find('.filterchart')[0];
+  filterchart.reset();
+}
+
+function add_filterchart(element, dimension, group, title, domain) {
+
+  var chartContainer = $(document.createElement('div')).addClass('djchart');
+
+  var chartTitle = $('<div class="title">' + title + '</div>');
+
+  var chartFilterText = $('<div class="filtered title" style="visibility:hidden">from <span class="lower">-</span> to <span class="upper">-</span></div>');
+  var filterResetLink = $('<a href="#" class="reset">reset</a>');
+
+  filterResetLink.click(reset_click);
+  chartFilterText.append(filterResetLink);
+  chartContainer.append(chartTitle);
+  chartContainer.append(chartFilterText);
+
+  var thechart = $(document.createElement('div')).addClass('filterchart');
+  chartContainer.append(thechart);
+
+  filter_chart(thechart[0], dimension, group, domain);
+
+  element.append(chartContainer);
+}
 
 function scout_init() {
     var start = Date.now();
@@ -532,7 +559,9 @@ function scout_init() {
             durDim = gr_cf.dimension(function(gr) { return Math.min(40, gr.match.duration_minutes) });
             durGrp = groupWinPct(durDim.group(function(d) { return d }));
 
-            dateDim = gr_cf.dimension(function(gr) { return gr.match.play_date });
+            dateDim = gr_cf.dimension(function(gr) {
+                return gr.match.play_date.getTime();
+            });
             dateGrp = groupDJ(dateDim.group());
             
             asDim = gr_cf.dimension(function(gr) { return gr.player.as8 });
@@ -560,76 +589,6 @@ function scout_init() {
 
             var dims_built = Date.now();
             
-            charts = [
-                barChart()
-                    .dimension(lgDim)
-                    .group(lgGrp)
-                    .x(d3.scale.linear()
-                       .domain([0, 6])
-                       .rangeRound([0, 10 * 15])),
-
-                barChart()
-                    .dimension(asDim)
-                    .group(asGrp)
-                    .x(d3.scale.linear()
-                       .domain([0, 2500])
-                       .rangeRound([0, 10 * 15])),
-
-                barChart()
-                    .dimension(oasDim)
-                    .group(oasGrp)
-                    .x(d3.scale.linear()
-                       .domain([0, 2500])
-                       .rangeRound([0, 10 * 15])),
-
-                barChart()
-                    .dimension(wsDim)
-                    .group(wsGrp)
-                    .x(d3.scale.linear()
-                       .domain([0, 60])
-                       .rangeRound([0, 10 * 15])),
-
-                barChart()
-                    .dimension(owsDim)
-                    .group(owsGrp)
-                    .x(d3.scale.linear()
-                       .domain([0, 60])
-                       .rangeRound([0, 10 * 15])),
-
-                barChart()
-                    .dimension(mb2Dim)
-                    .group(mb2Grp)
-                    .x(d3.scale.linear()
-                       .domain([0, 15])
-                       .rangeRound([0, 10 * 15])),
-
-                barChart()
-                    .dimension(omb2Dim)
-                    .group(omb2Grp)
-                    .x(d3.scale.linear()
-                       .domain([0, 15])
-                       .rangeRound([0, 10 * 15])),
-
-                barChart()
-                    .dimension(durDim)
-                    .group(durGrp)
-                    .x(d3.scale.linear()
-                       .domain([0, 40])
-                       .rangeRound([0, 20 * 8])),
-
-                barChart()
-                    .dimension(dateDim)
-                    .group(dateGrp)
-                    .round(d3.time.day.round)
-                    .x(d3.time.scale()
-                       .domain([new Date(2014, 7, 1), new Date(2014, 8, 3)])
-                       .rangeRound([0, 10 * 40])),
-            ];
-
-            chart = d3.selectAll(".chart")
-                .data(charts)
-                .each(function(chart) { chart.on("brush", renderAll).on("brushend", renderAll); });
-
             // Render the initial lists.
             list = d3.selectAll(".list tbody")
                 .data([matchList]);
@@ -649,26 +608,16 @@ function scout_init() {
                 })
             });
 
+            add_filterchart($('#filtercharts'), lgDim, lgGrp, 'Game league', [0, 6]);
+            add_filterchart($('#filtercharts'), asDim, asGrp, 'Player\'s Army Strength @ X minutes', [0, 2500]);
+            add_filterchart($('#filtercharts'), oasDim, oasGrp, 'Opponent\'s Army Strength @ X minutes', [0, 2500]);
+            add_filterchart($('#filtercharts'), wsDim, wsGrp, 'Player\'s Workers @ X minutes', [0, 60]);
+            add_filterchart($('#filtercharts'), owsDim, owsGrp, 'Opponent\'s Workers @ X minutes', [0, 60]);
+            add_filterchart($('#filtercharts'), mb2Dim, mb2Grp, 'Player\'s 2nd Mining Base Timing', [0, 15]);
+            add_filterchart($('#filtercharts'), omb2Dim, omb2Grp, 'Opponent\'s 2nd Mining Base Timing', [0, 15]);
+            add_filterchart($('#filtercharts'), durDim, durGrp, 'Game Length, minutes', [0, 40]);
+            add_filterchart($('#filtercharts'), dateDim, dateGrp, 'Game Date', [Date.UTC(2014, 7, 1), Date.UTC(2014, 8, 3)]);
             
-            chartContainer = $(document.createElement('div')).addClass('djchart');
-
-            chartTitle = $('<div class="title">Player\'s Army Strength @ X minutes</div>');
-
-            chartFilterText = $('<div class="filtered title" style="display:none">from <span class="lower">-</span> to <span class="upper">-</span></div>');
-            filterResetLink = $('<a href="#" class="reset">reset</a>');
-            filterResetLink.click(function(e) { e.preventDefault(); console.log('reset!'); });
-            chartFilterText.append(filterResetLink);
-
-            chartContainer.append(chartTitle);
-            chartContainer.append(chartFilterText);
-
-
-            asChart = $(document.createElement('div')).addClass('filterchart');
-            chartContainer.append(asChart);
-
-            filter_chart(asChart[0], asDim, asGrp, [0, 2500]);
-            $('#filtercharts').append(chartContainer);
-
             renderAll();
 
             var end = Date.now();

@@ -12,6 +12,10 @@
   display: inline-block;
   height: 151px;
   margin-bottom: 20px;
+  .title {
+    margin-bottom: 0px;
+    max-width: 175px;
+  }
 }
 
 .reset {
