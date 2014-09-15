@@ -885,6 +885,7 @@ function crossfilter() {
         orderNatural: orderNatural,
         size: size,
         dispose: dispose,
+        clone: clone,
         remove: dispose // for backwards-compatibility
       };
 
@@ -1224,6 +1225,10 @@ function crossfilter() {
         i = removeDataListeners.indexOf(removeData);
         if (i >= 0) removeDataListeners.splice(i, 1);
         return group;
+      }
+
+      function clone() {
+        return dimension.group(key);
       }
 
       return reduceCount().orderNatural();

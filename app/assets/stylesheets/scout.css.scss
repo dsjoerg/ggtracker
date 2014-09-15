@@ -2,12 +2,6 @@
   padding: 10px 0;
 }
 
-.chart {
-  display: inline-block;
-  height: 151px;
-  margin-bottom: 20px;
-}
-
 .djchart {
   display: inline-block;
   height: 151px;
@@ -15,6 +9,9 @@
   .title {
     margin-bottom: 0px;
     max-width: 175px;
+  }
+  .highcharts-container, .highcharts-container svg {
+    overflow: visible !important;
   }
 }
 

@@ -1,7 +1,9 @@
 var formatNumber = d3.format(",d"),
-formatChange = d3.format("+,d"),
-formatDate = d3.time.format("%B %d, %Y"),
-formatTime = d3.time.format("%I:%M %p");
+    winInterp = d3.interpolateHsl(d3.hsl(0, 0.44, 0.49), d3.hsl(122, 0.44, 0.49));
+
+function logistic(x) {
+  return 1.0 / (1 + Math.exp(-x));
+}
 
 // we will keep a list of filter objects
 // each filter object will have:
@@ -103,236 +105,6 @@ function matchList(elem) {
     });
 }
 
-function barChart() {
-    if (!barChart.id) barChart.id = 0;
-
-    var margin = {top: 10, right: 10, bottom: 20, left: 10},
-    x,
-    y = d3.scale.linear().range([100, 0]),
-    id = barChart.id++,
-    axis = d3.svg.axis().orient("bottom").ticks(4),
-//    vaxis = d3.svg.axis().orient("left").ticks(4).scale(y),
-    brush = d3.svg.brush(),
-    brushDirty,
-    dimension,
-    group,
-    round;
-
-    function chart(div) {
-        var width = x.range()[1],
-        height = y.range()[0];
-
-        var topValue = group.top(1)[0].value;
-        if (_.has(topValue, "wins")) {
-            y.domain([0, 100]);
-        } else {
-            y.domain([0, topValue.value]);
-        }
-
-        div.each(function() {
-            var div = d3.select(this),
-            g = div.select("g");
-
-            // Create the skeletal chart.
-            if (g.empty()) {
-                // RESET link, hidden at first
-                div.select(".title").append("a")
-                    .attr("href", "javascript:reset(" + id + ")")
-                    .attr("class", "reset")
-                    .attr("class", "filtered")
-                    .text("reset")
-                    .style("display", "none");
-
-                limits = div.select(".title").append("div")
-                             .attr("class", "filtered")
-                             .style("display", "none")
-                             .text("from ");
-
-                lower_limit = limits.append("span")
-                                     .text("-")
-                                     .attr("class", "lower");
-
-                limits.append("span").text(" to ");
-
-                upper_limit = limits.append("span")
-                                     .text("-")
-                                     .attr("class", "upper");
-
-                g = div.append("svg")
-                    .attr("width", width + margin.left + margin.right)
-                    .attr("height", height + margin.top + margin.bottom)
-                    .append("g")
-                    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-/**   WHY IS THIS HERE
-                g.append("clipPath")
-                    .attr("id", "clip-" + id)
-                    .append("rect")
-                    .attr("width", width)
-                    .attr("height", height);
-*/
-
-                g.selectAll(".bar")
-                    .data(["background", "foreground"])
-                    .enter().append("path")
-                    .attr("class", function(d) { return d + " bar"; })
-                    .datum(group.all());
-
-                g.selectAll(".foreground.bar")
-                    .attr("clip-path", "url(#clip-" + id + ")");
-
-                g.append("g")
-                    .attr("class", "axis")
-                    .attr("transform", "translate(0," + height + ")")
-                    .call(axis);
-
-/**  Y AXIS WAS DISTRACTING AS IT CHANGED CONSTANTLY
-                g.append("g")
-                    .attr("class", "axis")
-                    .attr("class", "vaxis")
-                    .attr("transform", "translate(" + width + ", 0)");
-*/
-
-                // Initialize the brush component with pretty resize handles.
-                var gBrush = g.append("g").attr("class", "brush").call(brush);
-                gBrush.selectAll("rect").attr("height", height);
-                gBrush.selectAll(".resize").append("path").attr("d", resizePath);
-            }
-
-            // Only redraw the brush if set externally.
-            if (brushDirty) {
-                brushDirty = false;
-                g.selectAll(".brush").call(brush);
-                div.selectAll(".title .filtered").style("display", brush.empty() ? "none" : null);
-                if (brush.empty()) {
-                    g.selectAll("#clip-" + id + " rect")
-                        .attr("x", 0)
-                        .attr("width", width);
-                } else {
-                    var extent = brush.extent();
-                    g.selectAll("#clip-" + id + " rect")
-                        .attr("x", x(extent[0]))
-                        .attr("width", x(extent[1]) - x(extent[0]));
-                }
-            }
-
-            g.selectAll(".bar").attr("d", barPath);
-//            g.selectAll(".vaxis").call(vaxis);
-        });
-
-        function barPath(groups) {
-            var path = [],
-            i = -1,
-            n = groups.length,
-            barwidth = Math.floor(width / n) + 1,
-            d;
-            while (++i < n) {
-                d = groups[i];
-                path.push("M", x(d.key), ",", height, "V", y(d.value.value), "h", barwidth, "V", height);
-            }
-            return path.join("");
-        }
-
-        function resizePath(d) {
-            var e = +(d == "e"),
-            x = e ? 1 : -1,
-            y = height / 3;
-            return "M" + (.5 * x) + "," + y
-                + "A6,6 0 0 " + e + " " + (6.5 * x) + "," + (y + 6)
-                + "V" + (2 * y - 6)
-                + "A6,6 0 0 " + e + " " + (.5 * x) + "," + (2 * y)
-                + "Z"
-                + "M" + (2.5 * x) + "," + (y + 8)
-                + "V" + (2 * y - 8)
-                + "M" + (4.5 * x) + "," + (y + 8)
-                + "V" + (2 * y - 8);
-        }
-    }
-
-    brush.on("brushstart.chart", function() {
-        var div = d3.select(this.parentNode.parentNode.parentNode);
-        div.selectAll(".title .filtered").style("display", null);
-    });
-
-    brush.on("brush.chart", function() {
-        var g = d3.select(this.parentNode),
-        extent = brush.extent();
-        if (round) g.select(".brush")
-            .call(brush.extent(extent = extent.map(round)))
-            .selectAll(".resize")
-            .style("display", null);
-        g.select("#clip-" + id + " rect")
-            .attr("x", x(extent[0]))
-            .attr("width", x(extent[1]) - x(extent[0]));
-        dimension.filterRange(extent);
-        var div = d3.select(this.parentNode.parentNode.parentNode);
-        div.select(".lower").text(Math.floor(extent[0]));
-        div.select(".upper").text(Math.floor(extent[1]));
-    });
-
-    brush.on("brushend.chart", function() {
-        if (brush.empty()) {
-            var div = d3.select(this.parentNode.parentNode.parentNode);
-            div.selectAll(".title .filtered").style("display", "none");
-            div.select("#clip-" + id + " rect").attr("x", null).attr("width", "100%");
-            dimension.filterAll();
-        }
-    });
-
-    chart.margin = function(_) {
-        if (!arguments.length) return margin;
-        margin = _;
-        return chart;
-    };
-
-    chart.x = function(_) {
-        if (!arguments.length) return x;
-        x = _;
-        axis.scale(x);
-        brush.x(x);
-        return chart;
-    };
-
-    chart.y = function(_) {
-        if (!arguments.length) return y;
-        y = _;
-        vaxis.scale(y);
-        return chart;
-    };
-
-    chart.dimension = function(_) {
-        if (!arguments.length) return dimension;
-        dimension = _;
-        return chart;
-    };
-
-    chart.filter = function(_) {
-        if (_) {
-            brush.extent(_);
-            dimension.filterRange(_);
-        } else {
-            brush.clear();
-            dimension.filterAll();
-        }
-        brushDirty = true;
-        return chart;
-    };
-
-    chart.group = function(_) {
-        if (!arguments.length) return group;
-        group = _;
-        return chart;
-    };
-
-    chart.round = function(_) {
-        if (!arguments.length) return round;
-        round = _;
-        return chart;
-    };
-
-    return d3.rebind(chart, brush, "on");
-};
-
 function data_host() {
     return "http://localhost:3000";
 }
@@ -355,18 +127,24 @@ function entities_url() {
     return data_host() + "/ents" + debug_suffix() + ".csv";
 }
 
-function filter_chart(element, dimension, group, domain) {
+function filter_chart(element, dimension, group, colorgroup, domain) {
     element.group = group;
+    element.colorgroup = colorgroup;
     element.dimension = dimension;
     element.djchart = $(element).parents('.djchart');
     var dateAxis = (domain[0] > Date.UTC(2010, 1, 1));
 
     element.render = function () {
       var grp = this.group.all();
-      if (typeof grp !== 'undefined') {
-        var xyValues = _.map(grp, function (g) { return [g.key, g.value.value]; })
-        this.chart.series[0].setData(xyValues);
-      }
+      var colorGrp = this.colorgroup.all();
+      
+      var xycolor = _.map(_.zip(grp, colorGrp), function (gs) {
+          var winpct = gs[1].value.value;
+          var color = winInterp(logistic((winpct - 50) / 10.0));
+          return {x:gs[0].key, y:gs[0].value.value, color:color, winpct:winpct};
+      });
+
+      this.chart.series[0].setData(xycolor);
     }
 
     element.reset = function () {
@@ -399,8 +177,13 @@ function filter_chart(element, dimension, group, domain) {
       renderAll();
 
       // TODO if not too hard, make selection area draggable
+      // TODO get rid of remaining uses of d3, make page lighter
 
       event.preventDefault();
+    };
+
+    element.tooltip = function () {
+      return this.x + ': ' + this.y + ' games, ' + this.point.winpct + '% win.';
     };
 
     var options = {
@@ -437,24 +220,19 @@ function filter_chart(element, dimension, group, domain) {
           title: '',
           endOnTick: false
       },
-      credits: {enabled:false},
+      credits: { enabled: false },
+      tooltip: { formatter: element.tooltip },
       plotOptions: {
           column:{
               animation:false,
-              color:'steelblue',
+              cursor: 'pointer',
+              color:'rgba(0,0,0,0)',
               groupPadding: 0,
               pointPadding: 0,
               borderWidth: 0,
               pointPlacement: 'on',
-              marker: {
-                  enabled:true,
-                  radius:4,
-                  symbol: "circle",
-                  lineColor: "#111",
-                  lineWidth:1,
-                  fillColor:"#222",
-                  states: {hover:{enabled:true}}
-              },
+              states: { hover: { enabled: false } },
+              marker: { enabled:false },
               shadow:false,
               threshold:0
           }
@@ -493,7 +271,9 @@ function add_filterchart(element, dimension, group, title, domain) {
   var thechart = $(document.createElement('div')).addClass('filterchart');
   chartContainer.append(thechart);
 
-  filter_chart(thechart[0], dimension, group, domain);
+  var colorgroup = groupWinPct(group.clone());
+
+  filter_chart(thechart[0], dimension, group, colorgroup, domain);
 
   element.append(chartContainer);
 }
@@ -557,7 +337,7 @@ function scout_init() {
             winGrp = groupDJ(winDim.group());
 
             durDim = gr_cf.dimension(function(gr) { return Math.min(40, gr.match.duration_minutes) });
-            durGrp = groupWinPct(durDim.group(function(d) { return d }));
+            durGrp = groupDJ(durDim.group(function(d) { return d }));
 
             dateDim = gr_cf.dimension(function(gr) {
                 return gr.match.play_date.getTime();
@@ -594,7 +374,7 @@ function scout_init() {
                 .data([matchList]);
 
             d3.selectAll("#total")
-                .text(formatNumber(gr_cf.size()));
+                .text(formatNumber(gr_cf.size() / 2));
 
             $("#player_id").each( function(index, playerIdInput) {
                 $(playerIdInput).change( function() {
@@ -616,7 +396,7 @@ function scout_init() {
             add_filterchart($('#filtercharts'), mb2Dim, mb2Grp, 'Player\'s 2nd Mining Base Timing', [0, 15]);
             add_filterchart($('#filtercharts'), omb2Dim, omb2Grp, 'Opponent\'s 2nd Mining Base Timing', [0, 15]);
             add_filterchart($('#filtercharts'), durDim, durGrp, 'Game Length, minutes', [0, 40]);
-            add_filterchart($('#filtercharts'), dateDim, dateGrp, 'Game Date', [Date.UTC(2014, 7, 1), Date.UTC(2014, 8, 3)]);
+            add_filterchart($('#filtercharts'), dateDim, dateGrp, 'Game Date', [Date.UTC(2014, 6, 25), Date.UTC(2014, 8, 15)]);
             
             renderAll();
 
