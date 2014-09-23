@@ -25,13 +25,15 @@ gg.controller('ScoutController', ['$scope', '$element', '$urlFilter',
             } else {
                 raceDim.filterAll();
             }
+        }
+        if (typeof oppRaceDim !== 'undefined') {
             if (_.isString($scope.vs_race) && ($scope.vs_race.length > 0)) {
                 oppRaceDim.filter($scope.vs_race[0].toUpperCase());
             } else {
                 oppRaceDim.filterAll();
             }
-            renderAll();
         }
+        renderAll();
     });
   }
 ]);

@@ -69,25 +69,25 @@
   width: 260px;
 }
 
-table#match-list {
+table#match-list, table#player-list {
   @extend table.default;
   min-height: 1024px;
 }
 
-#match-list .match {
+#match-list .match,.player {
   line-height: 1.5em;
   background: #eee;
 //  width: 640px;
   margin-bottom: 1px;
 }
 
-#match-list {
+#match-list, #player-list {
   th.num {
     min-width: 200px;
   }
 }
 
-table#match-list {
+table#match-list, table#player-list {
   table-layout: fixed;
 
   tbody {

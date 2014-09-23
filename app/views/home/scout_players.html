@@ -1,0 +1,37 @@
+<% content_for(:head) do %>
+  <title>Scout</title>
+  <meta name="Description" content="Learn what wins.  Over 100,000 games of Starcraft 2.">
+<% end %>
+
+<script type="text/javascript">
+  scout_players_init();
+</script>
+
+<div id="static" ng-controller="ScoutController">
+  <div id="scout" class="content">
+ 
+    <div class="filters-wrap">
+      <ul class="filters">
+        <li class="filter" style="border-right: none;"><span class="name">SCOUT</span></li>
+        <li class="filter race" style="border-left: none"><raceselect name="race"/></li>
+      </ul>
+    </div>
+ 
+      <div><span id="active">-</span> of <span id="total">-</span> players selected.</div>
+      <div id="filtercharts"></div>
+      <div id="lists">
+        <table id="player-list" class="list">
+          <tbody>
+            <tr>
+              <th class="num">#</th>
+              <th class="race">race</th>
+              <th class="league">league</th>
+              <th class="apm">apm</th>
+              <th class="num_games"># games</th>
+              <th class="winpcdt">win %</th>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+  </div>
+</div>
