@@ -129,7 +129,7 @@ _\%_____/\%_____/\%_____/\%_/   /\%___fx/\%_____/\__/   /\%_____/\__/   /.com_
           <li class="first <%= active?(:players) %>"><a class="menu-item" target="_self" href="/players"><span>players</span></a></li>
           <li class="<%= active?(:matches) %>"><a class="menu-item" target="_self" href="/matches"><span>matches</span></a></li>
           <li class="dropdown">
-            <a class="dropdown-toggle menu-item" data-toggle="dropdown" href="#"><span class="icon icon-star-16"></span>&nbsp;<span>more</span></a>
+            <a class="dropdown-toggle menu-item" data-toggle="dropdown" href="#"><span>more</span></a>
             <ul class="dropdown-menu dropdown-menu-left">
               <li><p class="menuheader">Tools</p></li>
               <li><a href="/spending_skill_stats">Spending Skill Stats</a></li>
@@ -158,6 +158,12 @@ _\%_____/\%_____/\%_____/\%_/   /\%___fx/\%_____/\__/   /\%_____/\__/   /.com_
           <% else %>
             <li><a class="menu-item" target="_self" href="/tour"><span>tour</span></a></li>
           <% end %>
+          <li class="dropdown">
+            <a class="dropdown-toggle menu-item" data-toggle="dropdown" href="#"><span style="color: #f00">alert</span></a>
+            <ul class="dropdown-menu dropdown-menu-left">
+              <li><p class="menuheader" style="font-weight: normal">We can't handle 2.1.4 replays yet. We're working with Blizzard on it. It might take a day or two. Thank you for your patience.</p></li>
+            </ul>
+          </li>
         </ul>
       </div>
 
