@@ -19,14 +19,101 @@
     </div>
  
       <div><span>Player id:</span><input type="text" id="player_id"></input></div>
+      <div><span>Unit #</span><input type="text" id="unit_num"></input></div>
+      <div><span>Unit count</span><input type="text" id="unit_count"></input></div>
+      <div><span>at minute</span><input type="text" id="unit_minute" value="8"></input></div>
       <div><span id="winrate">-</span>% matches won.</div>
-      <div><span id="active">-</span> of <span id="total">-</span> matches selected.</div>
+      <div><span id="active">-</span> of <span id="total">-</span> match-sides selected.</div>
       <div id="filtercharts"></div>
       <div id="lists">
+	<p class="compute_groups" ng-click="compute_groups()">COMPUTE GROUPS</p>
+        <table id="group-list" class="list">
+          <tbody>
+	    <tr>
+              <th class="num"># Matches</th>
+              <th class="num_unit">wrk</th>
+              <th class="num_unit">zlt</th>
+              <th class="num_unit">snt</th>
+              <th class="num_unit">stk</th>
+              <th class="num_unit">ht</th>
+              <th class="num_unit">dt</th>
+              <th class="num_unit">imm</th>
+              <th class="num_unit">cls</th>
+              <th class="num_unit">arc</th>
+              <th class="num_unit">obs</th>
+              <th class="num_unit">wrp</th>
+              <th class="num_unit">phx</th>
+              <th class="num_unit">vr</th>
+              <th class="num_unit">crr</th>
+              <th class="num_unit">mth</th>
+              <th class="num_unit">pcn</th>
+              <th class="num_unit">ocl</th>
+              <th class="num_unit">tmp</th>
+              <th class="num_unit">msc</th>
+              <th class="num_unit">win</th>
+	    </tr>
+	    <tr class="group" ng-repeat="groupstat in groupstats" ng-click="groupstat.click()">
+	      <td class="num">{{ groupstat.count }}</td>
+	      <td class="num_unit" ng-repeat="unit_count in groupstat.unit_counts">{{ unit_count }}</td>
+	      <td class="num">{{ groupstat.winPct }}</td>
+	    </tr>
+	  </tbody>
+	</table>
+        <table id="groupsub-list" class="list">
+          <tbody>
+	    <tr>
+              <th class="num"># Matches</th>
+              <th class="num_unit">wrk</th>
+              <th class="num_unit">zlt</th>
+              <th class="num_unit">snt</th>
+              <th class="num_unit">stk</th>
+              <th class="num_unit">ht</th>
+              <th class="num_unit">dt</th>
+              <th class="num_unit">imm</th>
+              <th class="num_unit">cls</th>
+              <th class="num_unit">arc</th>
+              <th class="num_unit">obs</th>
+              <th class="num_unit">wrp</th>
+              <th class="num_unit">phx</th>
+              <th class="num_unit">vr</th>
+              <th class="num_unit">crr</th>
+              <th class="num_unit">mth</th>
+              <th class="num_unit">pcn</th>
+              <th class="num_unit">ocl</th>
+              <th class="num_unit">tmp</th>
+              <th class="num_unit">msc</th>
+              <th class="num_unit">win</th>
+	    </tr>
+	    <tr class="groupsub" ng-repeat="gr in groupsub">
+	      <td class="num"><a href="http://ggtracker.com/matches/{{ gr.match.id }}">{{ gr.match.id }}</a></td>
+	      <td class="num_unit" ng-repeat="unit_count in gr.player.unit_counts(8)">{{ unit_count }}</td>
+	      <td class="num">{{ gr.player.win == 'true' }}</td>
+	    </tr>
+	  </tbody>
+	</table>
         <table id="match-list" class="list">
           <tbody>
             <tr>
               <th class="num">Match #</th>
+              <th class="num_unit">wrk</th>
+              <th class="num_unit">zlt</th>
+              <th class="num_unit">snt</th>
+              <th class="num_unit">stk</th>
+              <th class="num_unit">ht</th>
+              <th class="num_unit">dt</th>
+              <th class="num_unit">imm</th>
+              <th class="num_unit">cls</th>
+              <th class="num_unit">arc</th>
+              <th class="num_unit">obs</th>
+              <th class="num_unit">wrp</th>
+              <th class="num_unit">phx</th>
+              <th class="num_unit">vr</th>
+              <th class="num_unit">crr</th>
+              <th class="num_unit">mth</th>
+              <th class="num_unit">pcn</th>
+              <th class="num_unit">ocl</th>
+              <th class="num_unit">tmp</th>
+              <th class="num_unit">msc</th>
               <th class="result">result</th>
             </tr>
           </tbody>

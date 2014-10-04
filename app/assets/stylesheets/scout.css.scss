@@ -69,9 +69,10 @@
   width: 260px;
 }
 
-table#match-list, table#player-list {
+table#match-list, table#player-list, table#group-list, table#groupsub-list {
   @extend table.default;
-  min-height: 1024px;
+//  min-height: 1024px;
+  font-size: 80%;
 }
 
 #match-list .match,.player {
@@ -81,26 +82,37 @@ table#match-list, table#player-list {
   margin-bottom: 1px;
 }
 
-#match-list, #player-list {
-  th.num {
-    min-width: 200px;
-  }
+#group-list .group {
+  line-height: 1.5em;
+  background: #eee;
+  margin-bottom: 1px;
 }
 
-table#match-list, table#player-list {
+#groupsub-list .match {
+  line-height: 1.5em;
+  background: #eee;
+  margin-bottom: 1px;
+}
+
+table#match-list, table#player-list, table#group-list, table#groupsub-list {
   table-layout: fixed;
 
   tbody {
     width: 401px;
 
     th, td {
+      padding: 0px 0px;
       &.result {
         text-align: center;
       }
     }
 
     th.num {
-      min-width: 200px;
+       width: 125px;
+    }
+    
+    th.num_unit {
+        width: 40px;
     }
   }
 }

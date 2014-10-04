@@ -160,7 +160,7 @@ GEM
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
     mime-types (1.25.1)
-    mini_portile (0.5.2)
+    mini_portile (0.6.0)
     money (5.1.1)
       i18n (~> 0.6.0)
     mono_logger (1.1.0)
@@ -170,8 +170,8 @@ GEM
     net-http-spy (0.2.1)
     netrc (0.7.7)
     newrelic_rpm (3.9.1.236)
-    nokogiri (1.6.1)
-      mini_portile (~> 0.5.0)
+    nokogiri (1.6.3.1)
+      mini_portile (= 0.6.0)
     orm_adapter (0.4.0)
     paperclip (4.1.1)
       activemodel (>= 3.0.0)
@@ -309,6 +309,7 @@ DEPENDENCIES
   mysql2
   net-http-spy
   newrelic_rpm
+  nokogiri (= 1.6.3.1)
   paperclip
   paperclip-aws
   rails (= 3.2.19)

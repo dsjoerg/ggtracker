@@ -45,3 +45,5 @@ node_modules
 # Ignore temp data used for development
 public/ents*
 public/matches*
+public/minutes*
+public/frequent*

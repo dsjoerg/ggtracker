@@ -73,6 +73,7 @@
 //= require d3.js
 //= require crossfilter.js
 //= require scout.js
+//= require ./clusterfck/kmeans.js
 
 function dontDoThisEither() {
     //  Proxino.log("log this");

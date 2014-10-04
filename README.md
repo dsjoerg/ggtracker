@@ -29,6 +29,7 @@ On Mac OSX, you can use homebrew as package manager: http://mxcl.github.com/home
 ### Basic installation and updating
 
  * Run Bundler (`bundle`)
+ ** On Mac OSX, you may run into hassle with nokogiri: http://stackoverflow.com/a/21616065
  * Copy and adjust database configuration (`cp config/database.yml.example config/database.yml`)
  * Copy secrets configuration (`cp config/secrets.yml.example config/secrets.yml`)
  * Copy s3 configuration (`cp config/s3.yml.example config/s3.yml`)

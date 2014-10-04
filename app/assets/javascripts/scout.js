@@ -79,20 +79,21 @@ function render(method) {
 function renderAll() {
     $('.filterchart').each(function() { this.render() });
 
-// TODO make original scout page work again
-    list.each(render);
+    if (typeof list !== 'undefined') {
+      list.each(render);
+      d3.select("#active").text(formatNumber(cf_all.value()));
+    }
 
-    d3.select("#active").text(formatNumber(cf_all.value()));
-
-// TODO make original scout page work again
-//    numWins = _.find(winGrp.all(), function(grp) {return grp.key == "true"}).value.value
-//    pctWins = Math.round(1000.0 * numWins / cf_all.value()) / 10.0;
-    //    console.log("wins:", numWins, pctWins);
-//    d3.select("#winrate").text(pctWins);
+    if (typeof winGrp !== 'undefined') {
+      numWins = _.find(winGrp.all(), function(grp) {return grp.key == "true"}).value.value
+      pctWins = Math.round(1000.0 * numWins / cf_all.value()) / 10.0;
+      //    console.log("wins:", numWins, pctWins);
+      d3.select("#winrate").text(pctWins);
+    }
 }
 
 function matchList(elem) {
-    var gamerecordsByDate = dateDim.top(80);
+    var gamerecordsByDate = dateDim.top(100);
 
     elem.each(function() {
         var match = d3.select(this).selectAll(".match")
@@ -100,12 +101,27 @@ function matchList(elem) {
 
         var matchEnter = match.enter().append("tr").attr("class", "match");
         matchEnter.append("td").attr("class", "id").append("a");
+        matchEnter.append("td").attr("class", "num_workers");
+	//        matchEnter.append("td").attr("class", "num_zealots");
+	_.each(_.range(1,19), function(i) {
+	  var tdClass = 'num_unit';
+          matchEnter.append("td").attr("class", tdClass).attr("id", 'u' + i);
+        });
         matchEnter.append("td").attr("class", "result");
 
         match.exit().remove();
 
         match.select('.id a').text(function(gr) { return gr.match.id });
         match.select('.id a').attr("href", function(gr) { return "http://ggtracker.com/matches/" + gr.match.id });
+        match.select('.num_workers').text(function(gr) { return gr.player.stat(8, 'u0') });
+	_.each(_.range(1,19), function(i) {
+          var selector = '.num_unit#u' + i;
+          var unit_name = 'u' + i;
+          match.select(selector).text( function(gr) {
+	    num_units = gr.player.stat(8, unit_name);
+	    return (num_units == 0) ? '' : num_units;
+          });
+        });
         match.select('.result').text(function(gr) { return gr.player.win == "true" ? "win" : "loss" });
     });
 }
@@ -124,12 +140,58 @@ function debug_suffix() {
     }
 }
 
+function protoss_army_values () {
+    protoss_army_unit_names = [
+			       'zealot',
+			       'sentry',
+			       'stalker',
+			       'hightemplar',
+			       'darktemplar',
+			       'immortal',
+			       'colossus',
+			       'archon',
+			       'observer',
+			       'warpprism',
+			       'phoenix',
+			       'voidray',
+			       'carrier',
+			       'mothership',
+			       'photoncannon',
+			       'oracle',
+			       'tempest',
+			       'mothershipcore'
+			       ];
+    return _.map(protoss_army_unit_names, function(unit_name) {
+	    unit_stats = Sc2.armyUnits.HotS[unit_name];
+	    return unit_stats[0] + 3 * unit_stats[1];
+	});
+}
+
+PROTOSS_VALUES = protoss_army_values();
+
+function army_distance(a, b) {
+    distance = 0;
+    _.each(PROTOSS_VALUES, function(value, index) {
+      distance += value * Math.abs(a['u'+(index+1)] - b['u'+(index+1)]);
+      console.log("distance for index ", index, " = ", value * Math.abs(a['u'+(index+1)] - b['u'+(index+1)]), value, a['u'+(index+1)], b['u'+(index+1)]);
+    });
+    return distance;
+}
+
 function matches_url() {
     return data_host() + "/matches" + debug_suffix() + ".csv";
 }
 
 function entities_url() {
     return data_host() + "/ents" + debug_suffix() + ".csv";
+}
+
+function minutes_url() {
+    return data_host() + "/minutes" + debug_suffix() + ".csv";
+}
+
+function fum_url() {
+    return data_host() + "/frequent_uploader_matches.csv";
 }
 
 function cumulativize(group) {
@@ -147,6 +209,9 @@ function cumulativize(group) {
 }
 
 function filter_chart(element, dimension, group, colorgroup, domain, tooltip) {
+
+    // TODO actually use the tooltip function argument.
+
     element.group = group;
     element.colorgroup = colorgroup;
     element.dimension = dimension;
@@ -246,7 +311,7 @@ function filter_chart(element, dimension, group, colorgroup, domain, tooltip) {
           endOnTick: false
       },
       credits: { enabled: false },
-      tooltip: { formatter: element.tooltip },
+      tooltip: { enabled: true, formatter: function () { return this.x + ': ' + this.y + ' games, ' + this.point.winpct + '% win.' } },
       plotOptions: {
           column:{
               animation:false,
@@ -308,14 +373,48 @@ function add_filterchart(element, dimension, group, title, domain, addWinPct, to
   element.append(chartContainer);
 }
 
+function army_vector(minute) {
+    var entity = this;
+    if (_.has(this.minutes, minute)) {
+	return _.map(_.range(0,19), function(index) {
+		unit_count = entity.minutes[minute]['u' + index];
+		if (index == 0) return 50 * unit_count;
+		return unit_count * PROTOSS_VALUES[index - 1];
+	    });
+    }  
+    return _.map(_.range(0,19), function() { return 0; });
+}
+
+function unit_counts(minute) {
+    var entity = this;
+    if (_.has(this.minutes, minute)) {
+	return _.map(_.range(0,19), function(index) {
+		unit_count = entity.minutes[minute]['u' + index];
+		return unit_count;
+	    });
+    }  
+    return _.map(_.range(0,19), function() { return 0; });
+}
+
+
+function stat(minute, statname) {
+    if (_.has(this.minutes, minute)) {
+	return this.minutes[minute][statname];
+    }
+    return null;
+}
+
 function scout_init() {
     var start = Date.now();
 
-    matches = {};
-    entities = [];
-    match_winner = {};
-    match_loser = {};
-    gamerecords = [];
+    gamerecords = [];     // list of gamerecords, each having player entity, opponent entity and match
+    matches = {};         // map from match id to match
+    entities = [];        // list of entities
+    var entities_by_id = {};  // map of entity id to entity
+    match_winner = {};    // map from match id to winner entity
+    match_loser = {};     // map from match id to loser entity
+    // each entity is enhanced with a minutes map which maps from a
+    // numeric minute to some info about what happened in that minute
 
     entity_non_numerics = ["race", "chosen_race", "win"]
 
@@ -325,8 +424,18 @@ function scout_init() {
             match.id = +match.id
             match.average_league = +match.average_league
             match.duration_minutes = +match.duration_minutes
+	    match.fum = 0;
             matches[match.id] = match
         });
+	d3.csv(fum_url(), function(error, fums) {
+		fums.forEach( function(fum) {
+			fum.esdb_id = +fum.esdb_id;
+			if (fum.esdb_id in matches && typeof matches[fum.esdb_id] !== 'undefined') {
+			    matches[fum.esdb_id].fum = 1;
+			}
+		    });
+	    });
+
         d3.csv(entities_url(), function(error, csv_ents) {
             csv_ents.forEach( function(entity, index) {
                 for (var key in entity) {
@@ -334,7 +443,12 @@ function scout_init() {
                         entity[key] = +entity[key];
                     }
                 }
+		entity.minutes = {};
+		entity.stat = stat;
+		entity.unit_counts = unit_counts;
+		entity.army_vector = army_vector;
                 entities.push(entity);
+                entities_by_id[entity.entity_id] = entity;
                 if (entity.match_id in matches) {
                     match = matches[entity.match_id];
                     if (entity.win == "true") {
@@ -353,9 +467,36 @@ function scout_init() {
                     
                 }
             });
+	    d3.csv(minutes_url(), function(error, csv_minutes) {
+
+	      csv_minutes.forEach( function(minute, index) {
+                for (var key in minute) {
+                  minute[key] = +minute[key];
+                }
+		var entity = entities_by_id[minute.entity_id];
+		if (! _.isUndefined(entity)) {
+		  entity.minutes[minute.minute] = minute;
+                }
+	      });
+
             var rec_built = Date.now();
             gr_cf = crossfilter(gamerecords);
             cf_all = gr_cf.groupAll();
+
+            asDim = gr_cf.dimension(function(gr) { return gr.player.stat(8,'as') });
+            asGrp = groupDJ(asDim.group(function(d) { return Math.floor(d / 100) * 100 }));
+
+	    apmDim = gr_cf.dimension(function(gr) { return gr.player.apm });
+	    apmGrp = groupDJ(apmDim.group(function(d) { return Math.floor(d / 10.0) * 10.0 }));
+
+	    oppApmDim = gr_cf.dimension(function(gr) { return gr.opponent.apm });
+	    oppApmGrp = groupDJ(oppApmDim.group(function(d) { return Math.floor(d / 10.0) * 10.0 }));
+
+	    latencyDim = gr_cf.dimension(function(gr) { return gr.player.action_latency_real_seconds });
+	    latencyGrp = groupDJ(latencyDim.group(function(d) { return Math.floor(d * 10.0) / 10.0 }));
+
+	    oppLatencyDim = gr_cf.dimension(function(gr) { return gr.opponent.action_latency_real_seconds });
+	    oppLatencyGrp = groupDJ(oppLatencyDim.group(function(d) { return Math.floor(d * 10.0) / 10.0 }));
 
             raceDim = gr_cf.dimension(function(gr) { return gr.player.race });
             raceGrp = groupDJ(raceDim.group());
@@ -374,16 +515,13 @@ function scout_init() {
             });
             dateGrp = groupDJ(dateDim.group());
             
-            asDim = gr_cf.dimension(function(gr) { return gr.player.as8 });
-            asGrp = groupDJ(asDim.group(function(d) { return Math.floor(d / 100) * 100 }));
-
-            oasDim = gr_cf.dimension(function(gr) { return gr.opponent.as8 });
+            oasDim = gr_cf.dimension(function(gr) { return gr.opponent.stat(8,'as') });
             oasGrp = groupDJ(oasDim.group(function(d) { return Math.floor(d / 100) * 100 }));
             
-            wsDim = gr_cf.dimension(function(gr) { return gr.player.w8 });
+            wsDim = gr_cf.dimension(function(gr) { return gr.player.stat(8,'u0') });
             wsGrp = groupDJ(wsDim.group(function(d) { return d }));
 
-            owsDim = gr_cf.dimension(function(gr) { return gr.opponent.w8 });
+            owsDim = gr_cf.dimension(function(gr) { return gr.opponent.stat(8,'u0') });
             owsGrp = groupDJ(owsDim.group(function(d) { return d }));
 
             mb2Dim = gr_cf.dimension(function(gr) { return Math.floor(gr.player.miningbase_2 / 60) });
@@ -395,16 +533,19 @@ function scout_init() {
             lgDim = gr_cf.dimension(function(gr) { return gr.match.average_league });
             lgGrp = groupDJ(lgDim.group(function(d) { return d; }));
 
+            fumDim = gr_cf.dimension(function(gr) { return gr.match.fum });
+            fumGrp = groupDJ(fumDim.group(function(d) { return d; }));
+
             playerDim = gr_cf.dimension(function(gr) { return gr.player.identity_id });
 
             var dims_built = Date.now();
             
             // Render the initial lists.
-            list = d3.selectAll(".list tbody")
+            list = d3.selectAll(".list#match-list tbody")
                 .data([matchList]);
 
             d3.selectAll("#total")
-                .text(formatNumber(gr_cf.size() / 2));
+                .text(formatNumber(gr_cf.size()));
 
             $("#player_id").each( function(index, playerIdInput) {
                 $(playerIdInput).change( function() {
@@ -418,8 +559,35 @@ function scout_init() {
                 })
             });
 
+            $("#unit_num").each( function(index, unitNumInput) {
+                $(unitNumInput).change( function() {
+			if (typeof unitCountDim !== 'undefined') {
+			    unitCountDim.dispose();
+			    delete unitCountDim;
+			}
+			var unitNum = $(this).val();
+			if (unitNum && unitNum.length > 0) {
+			    unitNum = +unitNum;
+			    unitMinute = +$("#unit_minute").val()
+			    unitCountDim = gr_cf.dimension(function(gr) { return gr.player.unit_counts(unitMinute)[unitNum]; });
+			}
+                    renderAll();
+                    });
+		});
+		    
+            $("#unit_count").each( function(index, unitCountInput) {
+                $(unitCountInput).change( function() {
+			var unitCount = $(this).val();
+			if (unitCount && unitCount.length > 0 && (typeof unitCountDim !== 'undefined')) {
+			    unitCount = +unitCount;
+			    unitCountDim.filterRange([unitCount, Infinity]);
+			    renderAll();
+			}
+		    });
+		});
 
-            tooltip = function () {
+
+            var tooltip = function () {
                 return this.x + ': ' + this.y + ' games, ' + this.point.winpct + '% win.';
             };
 
@@ -431,6 +599,11 @@ function scout_init() {
             add_filterchart($('#filtercharts'), mb2Dim, mb2Grp, 'Player\'s 2nd Mining Base Timing', [0, 15], tooltip);
             add_filterchart($('#filtercharts'), omb2Dim, omb2Grp, 'Opponent\'s 2nd Mining Base Timing', [0, 15], tooltip);
             add_filterchart($('#filtercharts'), durDim, durGrp, 'Game Length, minutes', [0, 40], tooltip);
+            add_filterchart($('#filtercharts'), latencyDim, latencyGrp, 'Action Latency, seconds', [0, 1], tooltip);
+            add_filterchart($('#filtercharts'), oppLatencyDim, oppLatencyGrp, 'Opponent\'s Action Latency, seconds', [0, 1], tooltip);
+            add_filterchart($('#filtercharts'), apmDim, apmGrp, 'APM', [0, 200], tooltip);
+            add_filterchart($('#filtercharts'), oppApmDim, oppApmGrp, 'Opponent\'s APM', [0, 200], tooltip);
+            add_filterchart($('#filtercharts'), fumDim, fumGrp, 'Frequent Uploader', [-0.1, 1.1], tooltip);
             add_filterchart($('#filtercharts'), dateDim, dateGrp, 'Game Date', [Date.UTC(2014, 6, 25), Date.UTC(2014, 8, 15)], tooltip);
             
             renderAll();
@@ -443,6 +616,7 @@ function scout_init() {
             var build_dims = (dims_built - rec_built) / 1000;
             var build_chart = (end - dims_built) / 1000;
             console.log(build_rec, build_dims, build_chart);
+            });
         });
     });
 
@@ -637,6 +811,7 @@ if (false) {
 }
 
             tooltip = function () {
+		console.log("tooltip!");
                 return this.x + ': ' + this.y + ' players.';
             };
 
