@@ -142,3 +142,5 @@ gem 'curb'
 #gem 'aws-s3'
 
 gem 'activemerchant'
+
+gem 'rack-attack'

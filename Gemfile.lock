@@ -183,6 +183,8 @@ GEM
       paperclip (>= 2.5.0)
     polyglot (0.3.5)
     rack (1.4.5)
+    rack-attack (4.2.0)
+      rack
     rack-cache (1.2)
       rack (>= 0.4)
     rack-protection (1.5.1)
@@ -311,6 +313,7 @@ DEPENDENCIES
   newrelic_rpm
   paperclip
   paperclip-aws
+  rack-attack
   rails (= 3.2.21)
   rails-dev-boost!
   resque
