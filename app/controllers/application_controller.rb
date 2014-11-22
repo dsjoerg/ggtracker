@@ -60,6 +60,12 @@ class ApplicationController < ActionController::Base
   # The idea here is to not remove the user from the website entirely just
   # because esdb has failed.
   def esdb_exception(exception = nil)
+    if exception
+      Rails.logger.error "YO ITS AN ESDB EXCEPTION"
+      Rails.logger.error exception.message
+      st = exception.backtrace.join("\n")
+      Rails.logger.error st
+    end
     object_name = case self
       when PlayersController then 'player'
       when MatchesController then 'match'
@@ -72,6 +78,12 @@ class ApplicationController < ActionController::Base
   # The exception template has a minimal layout for itself to avoid triggering
   # the exception it was rendered for again.
   def exception(exception = nil)
+    if exception
+      Rails.logger.error "YO ITS AN EXCEPTION"
+      Rails.logger.error exception.message
+      st = exception.backtrace.join("\n")
+      Rails.logger.error st
+    end
     render 'exception', locals: {exception: exception}, status: 500, layout: false
   end
 
