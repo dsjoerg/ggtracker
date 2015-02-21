@@ -138,4 +138,5 @@ Ggtracker::Application.routes.draw do
 
   # 404
   match "*path" => 'application#not_found'
+  match "foo" => 'bar'
 end
