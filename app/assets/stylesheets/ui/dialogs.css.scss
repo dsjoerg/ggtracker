@@ -146,9 +146,16 @@ $dialog-inner-width: $dialog-width - $dialog-padding * 2;
         }
       }
 
+      #remember {
+        font-size: 12px;
+        display: inline-block;
+        word-spacing: 0px;
+        vertical-align: bottom;
+      }
+
       li.action {
         // width: ($dialog-inner-width * 0.30);
-        width: 30%;
+        //        width: 20px;
 
         button {
           @include button2(lighten(desaturate(green, 15%), 35%), black);

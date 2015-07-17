@@ -23,7 +23,11 @@
     <% end %>
 
     <%= f.inputs do %>
-      <%= f.input :password, :label => false, :input_html => {:placeholder => 'Password'} %>
+    <%= f.input :password, :label => false, :input_html => {:placeholder => 'Password'} %>
+      <div id="remember">
+        <%= f.check_box :remember_me, :label => :remember_me %>
+        <span>Remember me</span>
+        </div>
       <%= f.action :submit, :as => :button, :label => 'login' %>
     <% end %>
   <% end %>
