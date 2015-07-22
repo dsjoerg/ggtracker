@@ -95,7 +95,6 @@ ActiveRecord::Schema.define(:version => 20131101180159) do
     t.datetime "created_at",                                :null => false
     t.datetime "updated_at",                                :null => false
     t.string   "handle"
-    t.boolean  "anonymous",              :default => false
     t.boolean  "guest",                  :default => false
     t.datetime "processing_timestamp"
     t.string   "access_token"
