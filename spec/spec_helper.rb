@@ -1,7 +1,9 @@
 # SimpleCov is ..rcov for 1.9+
 # https://github.com/colszowka/simplecov
 require 'simplecov'
-SimpleCov.start
+SimpleCov.start do
+  add_filter "/spec/"
+end
 
 # This file is copied to spec/ when you run 'rails generate rspec:install'
 ENV["RAILS_ENV"] ||= 'test'
