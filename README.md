@@ -68,9 +68,7 @@ find each other correctly.
 #### Ruby (rspec)
 
  The first time you run tests, set up the test database with:
- * `mysql -u root`
- ** `create database ggtracker_test;`
- ** `quit`
+ * `rake db:create`
  * `rake db:test:prepare`
 
  To run tests: `bundle exec rspec`
