@@ -32,8 +32,8 @@ On Mac OSX, you can use homebrew as package manager: http://mxcl.github.com/home
  * Copy and adjust database configuration (`cp config/database.yml.example config/database.yml`)
  * Copy secrets configuration (`cp config/secrets.yml.example config/secrets.yml`)
  * Copy s3 configuration (`cp config/s3.yml.example config/s3.yml`)
- * Create the database ggtracker needs (`mysql -u root` and then `create database ggtracker_development;` and then `quit`)
- * Run migrations (`bundle exec rake db:migrate`)
+ * Create the database ggtracker needs (`rake db:create`)
+ * Load the latest database schema (`bundle exec rake db:schema:load`)
 
 If you want to be able to upload replays, you'll need to have an
 Amazon S3 account.  After setting that up, edit your config/s3.yml
