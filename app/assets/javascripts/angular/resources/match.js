@@ -245,6 +245,8 @@ gg.factory('Match', ['$ggResource', '$compile', 'Matchnote', function($ggResourc
     this.entityIds = [];
     this.teams = {};
 
+    var twoPlayerMatch = this.playerCount === 2;
+
     for(var ei in this.entities) {
 //              console.log("ei", ei, this.armies_by_frame, this.entities, this.entities[ei].identity.name);
       if (this.armies_by_frame && this.entities[ei].identity) {
@@ -255,6 +257,8 @@ gg.factory('Match', ['$ggResource', '$compile', 'Matchnote', function($ggResourc
         } else if (this.entities[ei].identity.id in this.armies_by_frame) {
           entityArmy = this.armies_by_frame[this.entities[ei].identity.id];
           //          console.log("got abf for ei by id", ei, entityArmy);
+        } else if (this.entities[ei].identity.name.match(/A.I./) && twoPlayerMatch) {
+          entityArmy = this.armies_by_frame[0];
         }
         this.entities[ei].armies_by_frame = entityArmy;
       }
