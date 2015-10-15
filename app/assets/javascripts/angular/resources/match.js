@@ -180,9 +180,13 @@ gg.factory('Match', ['$ggResource', '$compile', 'Matchnote', function($ggResourc
   var Match = $ggResource('http://' + gg.settings.api_host + '/api/v1/matches');
 
   Object.defineProperty(Match.prototype, 'expansion_tag', {
-    get: function() {
-      return this.expansion == 0 ? 'WoL' : 'HotS';
-    }
+      get: function() {
+          switch (this.expansion) {
+          case 0: return 'WoL';
+          case 1: return 'HotS';
+          case 2: return 'LotV';
+          }
+      }
   });
 
   
