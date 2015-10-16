@@ -25,7 +25,8 @@ GIT
 
 GIT
   remote: git@github.com:dsjoerg/gg.git
-  revision: 2a14f3c91cc5778ed3fa6eb1868e441b7776e6bc
+  revision: b58ed5e12c2d201b368980e74090987d2050f321
+  ref: b58ed5e12c2d201b368980e74090987d2050f321
   specs:
     gg (0.0.1)
       activesupport
@@ -119,7 +120,7 @@ GEM
       thread_safe (~> 0.1)
       warden (~> 1.2.3)
     diff-lcs (1.2.4)
-    domain_name (0.5.23)
+    domain_name (0.5.25)
       unf (>= 0.0.5, < 1.0.0)
     ejs (1.1.1)
     erubis (2.7.0)
@@ -140,7 +141,7 @@ GEM
     gon (4.1.1)
       actionpack (>= 2.3.0)
       json
-    hashie (3.2.0)
+    hashie (3.4.2)
     hike (1.2.3)
     hirb (0.7.1)
     http-cookie (1.0.2)
@@ -330,4 +331,5 @@ DEPENDENCIES
   sass-rails (~> 3.2.3)
   simplecov
   uglifier (>= 1.0.3)
+  unf_ext (= 0.0.6)
   unicorn (= 1.1.5)
