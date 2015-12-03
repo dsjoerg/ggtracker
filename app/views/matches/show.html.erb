@@ -261,33 +261,7 @@ completed to when 3x640 = 1920 minerals per minute income is achieved." data-gra
           <a href class="ggtipper2" title="Number of bases.<br><br>Bases are considered alive 100 seconds after the build command (worker travel time is ignored).<br><br>They are considered dead after the last time they are selected." data-gravity="n">bases</a>
         </span>
       </chart>
-      <macrochart class="grid_1" match="match" ng-show="show" ng-repeat="entity in match.race_entities('Z')">
-        <span class="title">
-          <a href class="ggtipper2" title="Each row is a Hatchery/Lair/Hive.<br><br>Times when larva-inject is active are colored rectangles. Those are good.<br><br>A score of 60% means that your Hatches were injected with larva 60% of the time. The higher the better. Scores are not comparable across races.<br><br>You can click and drag to zoom." data-gravity="n">
-            {{ entity.identity.name }}'s inject timing ({{ entity.race_macro_pretty() }}%)
-          </a>
-        </span>
-      </macrochart>
 
-      <chart id="creep_spread" ng-show="$parent.match.any_creep_spread" class="grid_1" data-series="match.series.creep_spread.combined" data-condensed="condensed">
-        <span class="title">creep spread</span>
-      </chart>
-
-
-      <protosschart class="grid_1" match="match" ng-show="show" ng-repeat="entity in match.race_entities('P')">
-        <span class="title">
-          <a href class="ggtipper2" title="Each row is a Nexus.<br><br>Chronoboosts are circles. Times when Nexus energy was maxed out are colored rectangles. Those are <b>not good</b>!<br><br>A score of 80% means that your Nexuses were <b>below</b> max energy 80% of the time. The higher the better. Scores are not comparable across races.<br><br>You can click and drag to zoom." data-gravity="n">
-            {{ entity.identity.name }}'s chronoboosts<br>and nexus energy maxouts ({{ entity.race_macro_pretty() }}%)
-          </a>
-        </span>
-      </protosschart>
-      <terranchart class="grid_1" match="match" ng-show="show" ng-repeat="entity in match.race_entities('T')">
-        <span class="title">
-          <a href class="ggtipper2" title="Each row is an Orbital Command.<br><br>MULEs are squares, scans are circles, supply calldowns are diamonds. Times when Orbital energy was maxed out are colored rectangles. Those are <b>not good</b>!<br><br>A score of 80% means that your Orbitals were <b>below</b> max energy 80% of the time. The higher the better. Scores are not comparable across races.<br><br>You can click and drag to zoom." data-gravity="n">
-            {{ entity.identity.name }}'s Orbital Command<br>usage and energy maxouts ({{ entity.race_macro_pretty() }}%)
-          </a>
-        </span>
-      </terranchart>
     <% end %>
     <% if signed_in? %>
       <matchnote data-match_id='match.id'></matchnote>
