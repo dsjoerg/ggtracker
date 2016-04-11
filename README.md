@@ -14,6 +14,19 @@ The other repos involved in ggtracker are:
   used by this codebase
 
 
+### Running with vagrant
+You can either run ggtracker in a vagrant-controlled virtualbox or on your host operating system (described after this section).
+To run with vagrant run the following commands:
+
+ * Make sure you have vagrant+virtualbox installed on your computer
+ * Run `vagrant up` to create the virtual box
+ * Run `vagrant ssh` to ssh into the vagrant box
+ * Run `ssh-keygen` in the vagrant box to generate ssh-keys for github
+ * Upload your public keys to Github
+ * Clone `ggtracker` project to `vagrant` user's home directory in the vagrant box
+ * Run the installation and updating steps below
+ * The app will be on the vagrant box's ip instead of localhost.
+
 ### Requirements
 
  * Ruby 1.9+ (get RVM: https://rvm.io/)
