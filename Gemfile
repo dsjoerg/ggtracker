@@ -145,3 +145,5 @@ gem 'activemerchant'
 
 gem 'rack-attack'
 gem 'unf_ext', '0.0.6'
+
+gem 'foreman'
