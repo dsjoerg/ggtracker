@@ -75,7 +75,7 @@ gem 'compass-rails', :git => 'git://github.com/Compass/compass-rails.git'
 # GG!
 # Don't commit the :path!
 
-gem 'gg', :git => 'git@github.com:dsjoerg/gg.git', :ref => 'b58ed5e12c2d201b368980e74090987d2050f321'
+gem 'gg', :git => 'git://github.com/dsjoerg/gg.git', :ref => 'b58ed5e12c2d201b368980e74090987d2050f321'
 # gem 'gg', :path => '/Users/mr/dev/ruby/gems/gg'
 #gem 'gg', :path => '/Users/david/Dropbox/Programming/gg'
 
@@ -107,7 +107,7 @@ gem 'gon'
 # create our own (it's a simple Nokogiri based scraper..)
 
 # Forked it and added portraits to profile scraping
-gem 'bnet_scraper', :git => 'git@github.com:ggtracker/bnet_scraper.git', :ref => 'battlenetify'
+gem 'bnet_scraper', :git => 'git://github.com/ggtracker/bnet_scraper.git', :ref => 'battlenetify'
 #gem 'bnet_scraper', :path => '/Users/david/Dropbox/Programming/bnet_scraper/'
 
 
