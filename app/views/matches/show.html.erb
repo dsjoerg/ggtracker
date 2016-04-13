@@ -19,7 +19,7 @@
       <% if @match.map_url.present? || @match.map["s2ma_hash"].present? %>
       <div class="last map block">
       <% if !@match.map_url || @match.map_url.blank? %>
-        <img class="minimap" height="90" src="http://s3.amazonaws.com/<%= Rails.configuration.s3['minimaps']['bucket']  %>/<%= @match.map["s2ma_hash"] %>_100.png" />
+          <img class="minimap" height="90" src="http://<%= Rails.configuration.s3['minimaps']['bucket']  %>.s3.amazonaws.com/<%= @match.map["s2ma_hash"] %>_100.png" />
       <% else %>
         <img src="<%= @match.map_url %>"/>
       <% end %>
@@ -62,7 +62,7 @@
   <div class="top">
     <%= render 'shared/sidebarad' %>    
 
-    <matchmap data-framee="current_framee" data-minimapurl="http://s3.amazonaws.com/<%= Rails.configuration.s3['minimaps']['bucket']  %>/<%= @match.map["s2ma_hash"] %>_100.png" data-match="match"></matchmap>
+    <matchmap data-framee="current_framee" data-minimapurl="http://<%= Rails.configuration.s3['minimaps']['bucket']  %>.s3.amazonaws.com/<%= @match.map["s2ma_hash"] %>_100.png" data-match="match"></matchmap>
     <a href class="ggtipper2" title="Total army strength in minerals + gas throughout the game.<br><br>Move your mouse over the chart to see what was in each army at any point in the game.<br><br>Click and drag to zoom.<br><br>Click on the chart to freeze that time selection." data-gravity="nw">
       <span class="title lefty">army strength, minerals + gas</span>
     </a>
