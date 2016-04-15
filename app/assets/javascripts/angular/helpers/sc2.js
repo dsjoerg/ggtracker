@@ -258,9 +258,13 @@ for (var expansion_tag in Sc2.armyUnits) {
 
 // I'd rather stuff these here, than in Match
 
-Sc2.frameToTime = function(frame) {
-  minute = Math.floor(frame / (60 * 16));
-  second = Math.floor((frame / 16) % 60).toString();
+Sc2.frameToTime = function(frame, expansion) {
+  fps = 16;
+  if (expansion >= 2) {
+    fps *= 1.4;
+  }
+  minute = Math.floor(frame / (60 * fps));
+  second = Math.floor((frame / fps) % 60).toString();
   if (second.length < 2) {
     second = "0" + second;
   }
@@ -271,7 +275,11 @@ Sc2.timeToFrame = function(time) {
   parts = time.split(':');
   seconds = parseInt(parts[parts.length-1]);
   minutes = parseInt(parts[parts.length-2]);
-  frame = ((minutes*60) + seconds) * 16;
+  fps = 16;
+  if (expansion >= 2) {
+    fps *= 1.4;
+  }
+  frame = ((minutes*60) + seconds) * fps;
   return frame;
 }
 
