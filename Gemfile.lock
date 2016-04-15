@@ -136,6 +136,8 @@ GEM
     faraday (0.9.0)
       multipart-post (>= 1.2, < 3)
     ffi (1.9.0)
+    foreman (0.78.0)
+      thor (~> 0.19.1)
     formtastic (2.2.1)
       actionpack (>= 3.0)
     gon (4.1.1)
@@ -157,6 +159,7 @@ GEM
     json (1.8.3)
     juggernaut (2.1.1)
       redis
+    kgio (2.10.0)
     listen (1.1.6)
       rb-fsevent (>= 0.9.3)
       rb-inotify (>= 0.9)
@@ -213,6 +216,7 @@ GEM
       rake (>= 0.8.7)
       rdoc (~> 3.4)
       thor (>= 0.14.6, < 2.0)
+    raindrops (0.16.0)
     rake (10.4.2)
     rb-fsevent (0.9.3)
     rb-inotify (0.9.2)
@@ -282,8 +286,9 @@ GEM
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.6)
-    unicorn (1.1.5)
-      rack
+    unicorn (5.1.0)
+      kgio (~> 2.6)
+      raindrops (~> 0.7)
     uuidtools (2.1.4)
     vegas (0.1.11)
       rack (>= 1.0.0)
@@ -310,6 +315,7 @@ DEPENDENCIES
   ey_config
   factory_girl_rails (~> 4.0)
   faker
+  foreman
   formtastic
   gg!
   gon
@@ -332,4 +338,7 @@ DEPENDENCIES
   simplecov
   uglifier (>= 1.0.3)
   unf_ext (= 0.0.6)
-  unicorn (= 1.1.5)
+  unicorn
+
+BUNDLED WITH
+   1.11.2
