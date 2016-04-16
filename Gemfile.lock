@@ -16,15 +16,7 @@ GIT
       sass (~> 3.3.0.rc.1)
 
 GIT
-  remote: git://github.com/thedarkone/rails-dev-boost.git
-  revision: 1e0cc0e1a3f6e51820b908d7de1f3e160ec2af0d
-  specs:
-    rails-dev-boost (0.2.1)
-      listen (>= 0.5)
-      railties (>= 3.0)
-
-GIT
-  remote: git@github.com:dsjoerg/gg.git
+  remote: git://github.com/dsjoerg/gg.git
   revision: b58ed5e12c2d201b368980e74090987d2050f321
   ref: b58ed5e12c2d201b368980e74090987d2050f321
   specs:
@@ -35,13 +27,21 @@ GIT
       yajl-ruby
 
 GIT
-  remote: git@github.com:ggtracker/bnet_scraper.git
+  remote: git://github.com/ggtracker/bnet_scraper.git
   revision: 624e28dddbdbafba9fc5a48693ef1aa86ae8ca9f
   ref: battlenetify
   specs:
     bnet_scraper (0.3.1)
       faraday
       nokogiri
+
+GIT
+  remote: git://github.com/thedarkone/rails-dev-boost.git
+  revision: 1e0cc0e1a3f6e51820b908d7de1f3e160ec2af0d
+  specs:
+    rails-dev-boost (0.2.1)
+      listen (>= 0.5)
+      railties (>= 3.0)
 
 GEM
   remote: https://rubygems.org/
