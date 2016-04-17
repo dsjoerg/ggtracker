@@ -115,7 +115,7 @@ gg.directive('armychart', ['$location', '$timeout', function($location, $timeout
       scope.freeze = function(frame, updateURL) {
         switch(typeof frame) {
           case "number": frame = frame; break;
-          case "string": frame = Sc2.timeToFrame(frame); break;
+          case "string": frame = Sc2.timeToFrame(frame, scope.match.expansion); break;
           default: return false;
         }
 
@@ -162,7 +162,7 @@ gg.directive('armychart', ['$location', '$timeout', function($location, $timeout
         if(typeof e == "number") {
           frame = e;
         } else if(typeof e == "string") {
-          frame = Sc2.timeToFrame(e);
+          frame = Sc2.timeToFrame(e, scope.match.expansion);
         } else {
           // If clicked on the background, we have xAxis on the event, if clicked
           // on a series, we'll have the point.
