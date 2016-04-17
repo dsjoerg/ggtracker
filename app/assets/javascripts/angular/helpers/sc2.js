@@ -279,7 +279,7 @@ Sc2.timeToFrame = function(time) {
   if (expansion >= 2) {
     fps *= Sc2.LOTV_SPEEDUP;
   }
-    frame = ((minutes*60) + seconds) * fps;
+  frame = ((minutes*60) + seconds) * fps;
   return frame;
 }
 

@@ -44,7 +44,7 @@ function($scope, $window, $route, $location, $element, Match) {
 //    console.log("matchscope", $scope);
   $scope.$watch('current_frame', function(v) {
     if(v) { 
-      $scope.current_time = Sc2.frameToTime(v); 
+      $scope.current_time = Sc2.frameToTime(v, $scope.match.expansion);
       $scope.time_has_been_set = true
     }
   });
