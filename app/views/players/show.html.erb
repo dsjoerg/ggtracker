@@ -11,7 +11,6 @@
         <h2><a href="/players/<%= @identity.id %>/<%= @identity.name %>"><%= @identity.name %></a><span ng-show="<%= @prolevel %> > 0" class="djcloak icon icon-star-white-32"></span><!--<span class="tiny prolabel">PRO</span>--></h2>
         <div class="links">
           <%= link_to('bnet', @identity.profile_url, {:class => 'bnet'}) if @identity.profile_url.present? %>
-          <%= link_to('sc2ranks', @identity.sc2ranks_url) if @identity.sc2ranks_url.present? %>
           <% if controller.superuser? %>
             <%= link_to('+1Month', :controller => :players, :action => :give_one_month_ggtracker_pro) %>
           <% end %>

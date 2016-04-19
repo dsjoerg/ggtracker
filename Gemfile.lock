@@ -16,16 +16,9 @@ GIT
       sass (~> 3.3.0.rc.1)
 
 GIT
-  remote: git://github.com/thedarkone/rails-dev-boost.git
-  revision: 1e0cc0e1a3f6e51820b908d7de1f3e160ec2af0d
-  specs:
-    rails-dev-boost (0.2.1)
-      listen (>= 0.5)
-      railties (>= 3.0)
-
-GIT
-  remote: git@github.com:dsjoerg/gg.git
-  revision: 2a14f3c91cc5778ed3fa6eb1868e441b7776e6bc
+  remote: git://github.com/dsjoerg/gg.git
+  revision: b58ed5e12c2d201b368980e74090987d2050f321
+  ref: b58ed5e12c2d201b368980e74090987d2050f321
   specs:
     gg (0.0.1)
       activesupport
@@ -34,13 +27,21 @@ GIT
       yajl-ruby
 
 GIT
-  remote: git@github.com:ggtracker/bnet_scraper.git
+  remote: git://github.com/ggtracker/bnet_scraper.git
   revision: 624e28dddbdbafba9fc5a48693ef1aa86ae8ca9f
   ref: battlenetify
   specs:
     bnet_scraper (0.3.1)
       faraday
       nokogiri
+
+GIT
+  remote: git://github.com/thedarkone/rails-dev-boost.git
+  revision: 1e0cc0e1a3f6e51820b908d7de1f3e160ec2af0d
+  specs:
+    rails-dev-boost (0.2.1)
+      listen (>= 0.5)
+      railties (>= 3.0)
 
 GEM
   remote: https://rubygems.org/
@@ -119,7 +120,7 @@ GEM
       thread_safe (~> 0.1)
       warden (~> 1.2.3)
     diff-lcs (1.2.4)
-    domain_name (0.5.23)
+    domain_name (0.5.25)
       unf (>= 0.0.5, < 1.0.0)
     ejs (1.1.1)
     erubis (2.7.0)
@@ -135,12 +136,14 @@ GEM
     faraday (0.9.0)
       multipart-post (>= 1.2, < 3)
     ffi (1.9.0)
+    foreman (0.78.0)
+      thor (~> 0.19.1)
     formtastic (2.2.1)
       actionpack (>= 3.0)
     gon (4.1.1)
       actionpack (>= 2.3.0)
       json
-    hashie (3.2.0)
+    hashie (3.4.2)
     hike (1.2.3)
     hirb (0.7.1)
     http-cookie (1.0.2)
@@ -156,6 +159,7 @@ GEM
     json (1.8.3)
     juggernaut (2.1.1)
       redis
+    kgio (2.10.0)
     listen (1.1.6)
       rb-fsevent (>= 0.9.3)
       rb-inotify (>= 0.9)
@@ -212,6 +216,7 @@ GEM
       rake (>= 0.8.7)
       rdoc (~> 3.4)
       thor (>= 0.14.6, < 2.0)
+    raindrops (0.16.0)
     rake (10.4.2)
     rb-fsevent (0.9.3)
     rb-inotify (0.9.2)
@@ -281,8 +286,9 @@ GEM
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.6)
-    unicorn (1.1.5)
-      rack
+    unicorn (5.1.0)
+      kgio (~> 2.6)
+      raindrops (~> 0.7)
     uuidtools (2.1.4)
     vegas (0.1.11)
       rack (>= 1.0.0)
@@ -309,6 +315,7 @@ DEPENDENCIES
   ey_config
   factory_girl_rails (~> 4.0)
   faker
+  foreman
   formtastic
   gg!
   gon
@@ -330,4 +337,8 @@ DEPENDENCIES
   sass-rails (~> 3.2.3)
   simplecov
   uglifier (>= 1.0.3)
-  unicorn (= 1.1.5)
+  unf_ext (= 0.0.6)
+  unicorn
+
+BUNDLED WITH
+   1.11.2

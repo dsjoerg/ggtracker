@@ -19,7 +19,7 @@
       <% if @match.map_url.present? || @match.map["s2ma_hash"].present? %>
       <div class="last map block">
       <% if !@match.map_url || @match.map_url.blank? %>
-        <img class="minimap" height="90" src="http://s3.amazonaws.com/<%= Rails.configuration.s3['minimaps']['bucket']  %>/<%= @match.map["s2ma_hash"] %>_100.png" />
+          <img class="minimap" height="90" src="http://<%= Rails.configuration.s3['minimaps']['bucket']  %>.s3.amazonaws.com/<%= @match.map["s2ma_hash"] %>_100.png" />
       <% else %>
         <img src="<%= @match.map_url %>"/>
       <% end %>
@@ -62,7 +62,7 @@
   <div class="top">
     <%= render 'shared/sidebarad' %>    
 
-    <matchmap data-framee="current_framee" data-minimapurl="http://s3.amazonaws.com/<%= Rails.configuration.s3['minimaps']['bucket']  %>/<%= @match.map["s2ma_hash"] %>_100.png" data-match="match"></matchmap>
+    <matchmap data-framee="current_framee" data-minimapurl="http://<%= Rails.configuration.s3['minimaps']['bucket']  %>.s3.amazonaws.com/<%= @match.map["s2ma_hash"] %>_100.png" data-match="match"></matchmap>
     <a href class="ggtipper2" title="Total army strength in minerals + gas throughout the game.<br><br>Move your mouse over the chart to see what was in each army at any point in the game.<br><br>Click and drag to zoom.<br><br>Click on the chart to freeze that time selection." data-gravity="nw">
       <span class="title lefty">army strength, minerals + gas</span>
     </a>
@@ -261,7 +261,7 @@ completed to when 3x640 = 1920 minerals per minute income is achieved." data-gra
           <a href class="ggtipper2" title="Number of bases.<br><br>Bases are considered alive 100 seconds after the build command (worker travel time is ignored).<br><br>They are considered dead after the last time they are selected." data-gravity="n">bases</a>
         </span>
       </chart>
-      <macrochart class="grid_1" match="match" ng-show="show" ng-repeat="entity in match.race_entities('Z')">
+<macrochart class="grid_1" match="match" ng-show="show" ng-repeat="entity in match.race_entities('Z')">
         <span class="title">
           <a href class="ggtipper2" title="Each row is a Hatchery/Lair/Hive.<br><br>Times when larva-inject is active are colored rectangles. Those are good.<br><br>A score of 60% means that your Hatches were injected with larva 60% of the time. The higher the better. Scores are not comparable across races.<br><br>You can click and drag to zoom." data-gravity="n">
             {{ entity.identity.name }}'s inject timing ({{ entity.race_macro_pretty() }}%)

@@ -568,10 +568,14 @@ gg.factory('Match', ['$ggResource', '$compile', 'Matchnote', function($ggResourc
 
     statx = function(statarray) {
         result = [];
+        seconds_between_stat_updates = 10.0;
+        if (this.expansion_tag == 'LotV') {
+            seconds_between_stat_updates /= Sc2.LOTV_SPEEDUP;
+        }
         now_seconds = 0;
         _.each(statarray, function(stat) {
             result.push([now_seconds / 60.0, stat]);
-            now_seconds = now_seconds + 10.0;
+            now_seconds = now_seconds + seconds_between_stat_updates;
         });
 //        console.log("statarray", result);
         return result;
