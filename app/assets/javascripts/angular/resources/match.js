@@ -554,7 +554,11 @@ gg.factory('Match', ['$ggResource', '$compile', 'Matchnote', function($ggResourc
         // don't graph the last base-time; its y-value is zero by definition
         _bases_x.pop();
 
-        _bases_x_minutes = _.map(_bases_x, function(_frame_x) { return _frame_x / 960.0 });
+        speed_multiplier = 1.0;
+        if (this.expansion_tag == 'LotV') {
+            speed_multiplier = Sc2.LOTV_SPEEDUP;
+        }
+        _bases_x_minutes = _.map(_bases_x, function(_frame_x) { return _frame_x / 960.0 / speed_multiplier });
 
         _series_y = [];
         _.each(_bases_x, function(_x) {

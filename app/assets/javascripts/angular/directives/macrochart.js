@@ -73,13 +73,18 @@ gg.directive('macrochart', [function() {
 
       };
 
+      speed_multiplier = 1;
+      if (scope.$parent.match.expansion_tag == 'LotV') {
+        speed_multiplier = 1.4;
+      }
+
       if (scope.$parent.match.engagements) {
           options.yAxis.plotBands = [];
           _.each(scope.$parent.match.engagements, function(engagement) {
             options.yAxis.plotBands.push({
               color: 'rgba(150, 50, 50, 0.1)',
-              from: engagement[0] / 960.0,
-              to: engagement[1] / 960.0,
+              from: engagement[0] / 960.0 / speed_multiplier,
+              to: engagement[1] / 960.0 / speed_multiplier,
               zIndex: 10
             });
           });
@@ -105,7 +110,7 @@ gg.directive('macrochart', [function() {
         for (i=0; i<hatches.length; i++) {
           times = hatches[i].times;
           for (inj=0; inj<times.length; inj++) {
-            hatchdata.push([i, times[inj] / (16.0 * 60.0), (times[inj] + 16 * 40)/(16.0 * 60.0)])
+            hatchdata.push([i, times[inj] / (16.0 * 60.0 * speed_multiplier), (times[inj] + 16 * 40)/(16.0 * 60.0 * speed_multiplier)])
           }
         }
         scope.chart.addSeries({

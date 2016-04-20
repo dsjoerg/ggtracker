@@ -125,11 +125,15 @@ gg.directive('chart', ['$compile', function($compile) {
 
       if (scope.$parent.match.engagements) {
           options.xAxis.plotBands = [];
+          speed_multiplier = 1;
+          if (scope.$parent.match.expansion_tag == 'LotV') {
+            speed_multiplier = 1.4;
+          }
           _.each(scope.$parent.match.engagements, function(engagement) {
             options.xAxis.plotBands.push({
               color: 'rgba(150, 50, 50, 0.10)',
-              from: engagement[0] / 960.0,
-              to: engagement[1] / 960.0,
+              from: engagement[0] / 960.0 / speed_multiplier,
+              to: engagement[1] / 960.0 / speed_multiplier,
               zIndex: 10
             });
           });

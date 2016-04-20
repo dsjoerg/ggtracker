@@ -74,6 +74,11 @@ gg.directive('protosschart', [function() {
 
       macro = scope.match.pmacro;
 
+      speed_multiplier = 1;
+      if (scope.$parent.match.expansion_tag == 'LotV') {
+        speed_multiplier = 1.4;
+      }
+
       nametoshow = scope.$parent.entity.identity.name;
       idtoshow = scope.$parent.entity.identity.id;
       nexus_stats = macro[idtoshow];
@@ -85,7 +90,7 @@ gg.directive('protosschart', [function() {
         maxout_blob = nexus_stats[basenum][1];
         for (j=0; j<maxout_blob.length; j++) {
           maxout = maxout_blob[j]
-          maxouts.push([basenum, maxout[0] / (16.0 * 60.0), maxout[1] / (16.0 * 60.0)])
+          maxouts.push([basenum, maxout[0] / (16.0 * 60.0 * speed_multiplier), maxout[1] / (16.0 * 60.0 * speed_multiplier)])
         }
       }
 
@@ -101,8 +106,8 @@ gg.directive('protosschart', [function() {
           _.each(scope.$parent.match.engagements, function(engagement) {
             options.yAxis.plotBands.push({
               color: 'rgba(150, 50, 50, 0.1)',
-              from: engagement[0] / 960.0,
-              to: engagement[1] / 960.0,
+              from: engagement[0] / 960.0 / speed_multiplier,
+              to: engagement[1] / 960.0 / speed_multiplier,
               zIndex: 10
             });
           });
@@ -113,7 +118,7 @@ gg.directive('protosschart', [function() {
       for (basenum=0; basenum<numbases; basenum++) {
         chrono_blob = nexus_stats[basenum][0];
         for (chrono=0; chrono<chrono_blob.length; chrono++) {
-          chronoboosts.push([basenum, chrono_blob[chrono] / (16.0 * 60.0)]);
+          chronoboosts.push([basenum, chrono_blob[chrono] / (16.0 * 60.0 * speed_multiplier)]);
         }
       }
 

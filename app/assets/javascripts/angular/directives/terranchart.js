@@ -74,6 +74,11 @@ gg.directive('terranchart', [function() {
 
       macro = scope.match.tmacro;
 
+      speed_multiplier = 1;
+      if (scope.$parent.match.expansion_tag == 'LotV') {
+        speed_multiplier = 1.4;
+      }
+
       nametoshow = scope.$parent.entity.identity.name;
       idtoshow = scope.$parent.entity.identity.id;
       base_stats = macro[idtoshow];
@@ -85,7 +90,7 @@ gg.directive('terranchart', [function() {
         maxout_blob = base_stats[basenum][3];
         for (j=0; j<maxout_blob.length; j++) {
           maxout = maxout_blob[j]
-          maxouts.push([basenum, maxout[0] / (16.0 * 60.0), maxout[1] / (16.0 * 60.0)])
+          maxouts.push([basenum, maxout[0] / (16.0 * 60.0 * speed_multiplier), maxout[1] / (16.0 * 60.0 * speed_multiplier)])
         }
       }
 
@@ -103,7 +108,7 @@ gg.directive('terranchart', [function() {
         for (basenum=0; basenum<numbases; basenum++) {
           ability_blob = base_stats[basenum][i];
           for (abilnum=0; abilnum<ability_blob.length; abilnum++) {
-            abilities.push([basenum, ability_blob[abilnum] / (16.0 * 60.0)]);
+            abilities.push([basenum, ability_blob[abilnum] / (16.0 * 60.0 * speed_multiplier)]);
           }
         }
 
@@ -133,8 +138,8 @@ gg.directive('terranchart', [function() {
           _.each(scope.$parent.match.engagements, function(engagement) {
             options.yAxis.plotBands.push({
               color: 'rgba(150, 50, 50, 0.1)',
-              from: engagement[0] / 960.0,
-              to: engagement[1] / 960.0,
+              from: engagement[0] / 960.0 / speed_multiplier,
+              to: engagement[1] / 960.0 / speed_multiplier,
               zIndex: 10
             });
           });
