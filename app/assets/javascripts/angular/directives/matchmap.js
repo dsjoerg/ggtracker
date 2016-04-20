@@ -44,7 +44,12 @@ gg.directive('matchmap', [function() {
         scope.context.lineWidth = 2;
 
 
-        nowIndex = Math.floor(999.0 * v / (scope.match.duration_seconds * 16));
+        speed_multiplier = 1;
+        if (scope.$parent.match.expansion_tag == 'LotV') {
+          speed_multiplier = Sc2.LOTV_SPEEDUP;
+        }
+
+        nowIndex = Math.floor(999.0 * v / (scope.match.duration_seconds * 16 * speed_multiplier));
         if (!scope.match.camera) return;
         cameraInfo = scope.match.camera[0];
         if (scope.match.locations)
