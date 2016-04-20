@@ -127,7 +127,7 @@ gg.directive('chart', ['$compile', function($compile) {
           options.xAxis.plotBands = [];
           speed_multiplier = 1;
           if (scope.$parent.match.expansion_tag == 'LotV') {
-            speed_multiplier = 1.4;
+            speed_multiplier = Sc2.LOTV_SPEEDUP;
           }
           _.each(scope.$parent.match.engagements, function(engagement) {
             options.xAxis.plotBands.push({

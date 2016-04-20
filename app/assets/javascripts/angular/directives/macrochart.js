@@ -75,7 +75,7 @@ gg.directive('macrochart', [function() {
 
       speed_multiplier = 1;
       if (scope.$parent.match.expansion_tag == 'LotV') {
-        speed_multiplier = 1.4;
+        speed_multiplier = Sc2.LOTV_SPEEDUP;
       }
 
       if (scope.$parent.match.engagements) {

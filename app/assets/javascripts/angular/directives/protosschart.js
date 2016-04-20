@@ -76,7 +76,7 @@ gg.directive('protosschart', [function() {
 
       speed_multiplier = 1;
       if (scope.$parent.match.expansion_tag == 'LotV') {
-        speed_multiplier = 1.4;
+        speed_multiplier = Sc2.LOTV_SPEEDUP;
       }
 
       nametoshow = scope.$parent.entity.identity.name;
