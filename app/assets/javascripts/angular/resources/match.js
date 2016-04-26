@@ -570,6 +570,30 @@ gg.factory('Match', ['$ggResource', '$compile', 'Matchnote', function($ggResourc
         return _.zip(_bases_x_minutes, _series_y);
     };
 
+    // Rescale series to a point per game minute
+    statxminutes = function(statarray) {
+        // Don't rescale the series if it is all zeros, since it will show up even as zero when rescaled
+        var sum = 0;
+        $.each(statarray, function(){
+            sum += this
+        });
+        if (sum == 0) {
+            return statarray;
+        }
+
+        result = [];
+        seconds_between_stat_updates = 60.0
+        if (this.expansion_tag == 'LotV') {
+            seconds_between_stat_updates /= Sc2.LOTV_SPEEDUP;
+        }
+        now_seconds = seconds_between_stat_updates;
+        _.each(statarray, function(stat) {
+            result.push([now_seconds / 60.0, stat]);
+            now_seconds = now_seconds + seconds_between_stat_updates;
+        });
+        return result;
+    }
+
     statx = function(statarray) {
         result = [];
         seconds_between_stat_updates = 10.0;
@@ -630,9 +654,9 @@ gg.factory('Match', ['$ggResource', '$compile', 'Matchnote', function($ggResourc
           }
 
           if(entity.data) {
-              this._series.apm.entities[_entity] = $.extend({data: entity.data.apm, pointStart: 1}, base_series);
-              this._series.wpm.entities[_entity] = $.extend({data: entity.data.wpm, pointStart: 1}, base_series);
-              this._series.creep_spread.entities[_entity] = $.extend({data: entity.data.creep_spread, pointStart: 1}, base_series);
+              this._series.apm.entities[_entity] = $.extend({data: statxminutes(entity.data.apm), pointStart: 1}, base_series);
+              this._series.wpm.entities[_entity] = $.extend({data: statxminutes(entity.data.wpm), pointStart: 1}, base_series);
+              this._series.creep_spread.entities[_entity] = $.extend({data: statxminutes(entity.data.creep_spread), pointStart: 1}, base_series);
           }
 
           if (this.num_bases) {
