@@ -8,6 +8,10 @@ class MatchesController < ApplicationController
     begin
       blob_response = Curl.get(blob_url)
     rescue Exception => e
+      Rails.logger.error "YO EXCEPTION WHILE HITTING S3"
+      Rails.logger.error e.message
+      st = e.backtrace.join("\n")
+      Rails.logger.error st
       # sometimes there are random problems retrieving from S3. we
       # dont need to hear about each one.
       # TODO complain if there are too many consecutive failures
@@ -49,8 +53,8 @@ class MatchesController < ApplicationController
     gon.match = @match.to_hash
     if blob_response && blob_response.status[0] == '2'
       gon.matchblob = blob_response.body_str
-#    else
-#      Rails.logger.warn("Got blob response status #{blob_response.status} for match #{@match.id}")
+    else
+      Rails.logger.warn("Got blob response status #{blob_response.status} for match #{@match.id}")
     end
   end
 
