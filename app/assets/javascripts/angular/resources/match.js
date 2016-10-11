@@ -622,6 +622,11 @@ gg.factory('Match', ['$ggResource', '$compile', 'Matchnote', function($ggResourc
               is_team: false
           }
 
+          speed_multiplier = 1
+          if (this.expansion_tag == 'LotV') {
+              speed_multiplier = Sc2.LOTV_SPEEDUP
+          }
+
           // Income and army graphs from summary
           // Graph data is already prepared currently, so we just have to add it
           if(entity.summary) {
@@ -633,11 +638,16 @@ gg.factory('Match', ['$ggResource', '$compile', 'Matchnote', function($ggResourc
               if (entity.summary.upgradespendinggraph) {
                   this._series.summary_upgradespending.entities[_entity] = $.extend({data: entity.summary.upgradespendinggraph}, base_series);
               }
+
+              entity.summary.resource_collection_rate_adjusted = Math.round(entity.summary.resource_collection_rate*speed_multiplier)
           }
           
-          if(this.MineralsCurrent) {
-              this._series.replayincome.entities[_entity] = $.extend({data: statx(this.MineralsCollectionRate[entity.identity.id])}, base_series);
-              this._series.replaygasincome.entities[_entity] = $.extend({data: statx(this.VespeneCollectionRate[entity.identity.id])}, base_series);
+          if(this.MineralsCurrent && this.MineralsCurrent[entity.identity.id]) {
+              function getResourceCollectionRate(x) {
+                return x*speed_multiplier
+              }
+              this._series.replayincome.entities[_entity] = $.extend({data: statx(this.MineralsCollectionRate[entity.identity.id].map(getResourceCollectionRate))}, base_series);
+              this._series.replaygasincome.entities[_entity] = $.extend({data: statx(this.VespeneCollectionRate[entity.identity.id].map(getResourceCollectionRate))}, base_series);
               this._series.replaylost.entities[_entity] = $.extend({data: statx(this.Lost[entity.identity.id])}, base_series);
               this._series.replayminerals.entities[_entity] = $.extend({data: statx(this.MineralsCurrent[entity.identity.id])}, base_series);
               this._series.replaygas.entities[_entity] = $.extend({data: statx(this.VespeneCurrent[entity.identity.id])}, base_series);
