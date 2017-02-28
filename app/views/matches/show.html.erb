@@ -164,12 +164,12 @@
                   <a href class="ggtipper2" title="When a second base is completed, and located directly next to the mineral patches." data-gravity="s">
                     2nd Mining Base Complete
                   </a>
-                </td><td ng-repeat="entity in match.entities">{{ entity.stats.miningbase_2 | minutes_seconds }}</td></tr>
+                </td><td ng-repeat="entity in match.entities">{{ entity.stats.miningbase_2_adjusted | minutes_seconds }}</td></tr>
               <tr><td>
                   <a href class="ggtipper2" title="When a third base is completed, and located directly next to the mineral patches." data-gravity="s">
                     3rd Mining Base Complete
                   </a>
-                </td><td ng-repeat="entity in match.entities">{{ entity.stats.miningbase_3 | minutes_seconds}}</td></tr>
+                </td><td ng-repeat="entity in match.entities">{{ entity.stats.miningbase_3_adjusted | minutes_seconds}}</td></tr>
               <tr><th>Saturation Speed</a></th>
                   <th ng-repeat="entity in match.doubleents" ng-show="$index % 2 == 0 || user.view_mode == 1">
                     <span ng-show="$index % 2 == 0">{{ entity.identity.name }}</span>
@@ -181,7 +181,7 @@
                     1 Base Mineral Income (870)</a>
                 </td>
                 <td ng-repeat="entity in match.doubleents" ng-show="$index % 2 == 0 || user.view_mode == 1">
-                  <span ng-show="$index % 2 == 0">{{ entity.stats.mineral_saturation_1 | minutes_seconds }}</span>
+                  <span ng-show="$index % 2 == 0">{{ entity.stats.mineral_saturation_1_adjusted | minutes_seconds }}</span>
                   <span ng-show="$index % 2 == 1" ><league data-league="{{ entity.sat_1_skill }}"></league></span>
                 </td></tr>
               <tr><td>

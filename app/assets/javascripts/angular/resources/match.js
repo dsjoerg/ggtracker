@@ -103,20 +103,20 @@ Entity.prototype.race_macro_pretty = function() {
 
 Entity.prototype.mdelta2 = function() {
     if (this.stats == null ||
-        this.stats.mineral_saturation_2 == null ||
-        this.stats.miningbase_2 == null) {
+        this.stats.mineral_saturation_2_adjusted == null ||
+        this.stats.miningbase_2_adjusted == null) {
         return null;
     }
-    return Math.max(0, this.stats.mineral_saturation_2 - this.stats.miningbase_2);
+    return Math.max(0, this.stats.mineral_saturation_2_adjusted - this.stats.miningbase_2_adjusted);
 }
 
 Entity.prototype.mdelta3 = function() {
     if (this.stats == null ||
-        this.stats.mineral_saturation_3 == null ||
-        this.stats.miningbase_3 == null) {
+        this.stats.mineral_saturation_3_adjusted == null ||
+        this.stats.miningbase_3_adjusted == null) {
         return null;
     }
-    return Math.max(0, this.stats.mineral_saturation_3 - this.stats.miningbase_3);
+    return Math.max(0, this.stats.mineral_saturation_3_adjusted - this.stats.miningbase_3_adjusted);
 }
 
 Entity.prototype.color_style = function() {
@@ -640,6 +640,22 @@ gg.factory('Match', ['$ggResource', '$compile', 'Matchnote', function($ggResourc
               }
 
               entity.summary.resource_collection_rate_adjusted = Math.round(entity.summary.resource_collection_rate*speed_multiplier)
+              if (entity.stats.mineral_saturation_1 != null) {
+	            entity.stats.mineral_saturation_1_adjusted = Math.round(entity.stats.mineral_saturation_1/speed_multiplier)
+              }
+              if (entity.stats.mineral_saturation_2 != null) {
+	            entity.stats.mineral_saturation_2_adjusted = Math.round(entity.stats.mineral_saturation_2/speed_multiplier)
+              }
+              if (entity.stats.mineral_saturation_3 != null) {
+	            entity.stats.mineral_saturation_3_adjusted = Math.round(entity.stats.mineral_saturation_3/speed_multiplier)
+              }
+
+              if (entity.stats.miningbase_2 != null) {
+	            entity.stats.miningbase_2_adjusted = Math.round(entity.stats.miningbase_2/speed_multiplier)
+              }
+              if (entity.stats.miningbase_3 != null) {
+	            entity.stats.miningbase_3_adjusted = Math.round(entity.stats.miningbase_3/speed_multiplier)
+              }
           }
           
           if(this.MineralsCurrent && this.MineralsCurrent[entity.identity.id]) {
