@@ -256,7 +256,7 @@ for (var expansion_tag in Sc2.armyUnits) {
   }
 }
 
-Sc2.LOTV_SPEEDUP = 1.4;
+Sc2.LOTV_SPEEDUP = 1.36;
 
 Sc2.frameToTime = function(frame, expansion) {
   fps = 16;
