@@ -147,3 +147,4 @@ gem 'rack-attack'
 gem 'unf_ext', '0.0.6'
 
 gem 'foreman'
+gem "recaptcha", :git => 'git://github.com/brendon/recaptcha.git', :ref => 'remove-ruby-restriction', require: "recaptcha/rails"

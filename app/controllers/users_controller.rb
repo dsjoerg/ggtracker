@@ -1,5 +1,6 @@
 class UsersController < Devise::RegistrationsController
   before_filter :authenticate_user!, :except => [:auth]
+  prepend_before_filter :check_captcha, only: [:create] # Change this to be any actions you want to protect.
   respond_to :html, :json, :xml
 
   # Overriding devise helpers
@@ -37,5 +38,14 @@ class UsersController < Devise::RegistrationsController
   def update
     current_user.update_attributes(params[:user])
     render :text => "OK"
+  end
+
+  private
+  def check_captcha
+    unless verify_recaptcha
+      self.resource = resource_class.new sign_up_params
+      respond_with_navigational(resource) { render :new }
+    else
+    end 
   end
 end
