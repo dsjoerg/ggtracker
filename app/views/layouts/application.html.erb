@@ -149,11 +149,7 @@ _\%_____/\%_____/\%_____/\%_/   /\%___fx/\%_____/\__/   /\%_____/\__/   /.com_
               <li><a href="https://sites.google.com/site/scelight/">Scelight</a></li>
             </ul>
           </li>
-          <% if signed_in? && !current_user.pro? %>
-            <li class="<%= active?(:go_pro)%>"><a class="menu-item" target="_self" href="/go_pro"><span>go pro</span></a></li>
-          <% else %>
-            <li><a class="menu-item" target="_self" href="/tour"><span>tour</span></a></li>
-          <% end %>
+          <li><a class="menu-item" target="_self" href="/tour"><span>tour</span></a></li>
         </ul>
       </div>
 
