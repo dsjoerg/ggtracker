@@ -381,6 +381,14 @@ uploadLimit = function() {
     }
 };
 
+blockForShutdown = function() {
+    var shutdownLimit = 1;
+    if (gg.limits) {
+        shutdownLimit = gg.limits[3];
+    }
+    return (Math.random() * 100 < shutdownLimit);
+}
+
 notifyAboutUploadLimit = _.once(function() {
   accountDescrip = ["Anonymous", "Free", "Pro"][userLevel()];
   ul = uploadLimit();
@@ -395,6 +403,10 @@ notifyAboutUploadLimit = _.once(function() {
       plural = "s";
   }
   alert(apology + accountDescrip + " accounts are limited to " + uploadLimit() + " replay" + plural + " per upload.  You can upload more any time you want.");
+});
+
+notifyAboutGGGReplays = _.once(function() {
+    alert("Hi, GGTracker is shutting down but you can upload your replays to GGGReplays.com (a GGTracker clone), or to SC2ReplayStats.com or Drop.sc.");
 });
 
 $(function() {
@@ -448,6 +460,8 @@ $(function() {
 
       if (uploadScope.allreplays.length >= uploadLimit()) {
         notifyAboutUploadLimit();
+      } else if (blockForShutdown()) {
+        notifyAboutGGGReplays();
       } else {
 
 
