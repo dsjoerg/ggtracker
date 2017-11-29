@@ -459,9 +459,11 @@ $(function() {
       }
 
       if (uploadScope.allreplays.length >= uploadLimit()) {
-        notifyAboutUploadLimit();
+          notifyAboutUploadLimit();
+          return false;
       } else if (blockForShutdown()) {
-        notifyAboutGGGReplays();
+          notifyAboutGGGReplays();
+          return false;
       } else {
 
 
