@@ -406,7 +406,7 @@ notifyAboutUploadLimit = _.once(function() {
 });
 
 notifyAboutGGGReplays = _.once(function() {
-    alert("Hi, GGTracker is shutting down but you can upload your replays to GGGReplays.com (a GGTracker clone), or to SC2ReplayStats.com or Drop.sc.");
+    alert("Hi, GGTracker is shutting down but you can upload your replays to GGGReplays.com (a GGTracker clone; note three Gs in the name), or to SC2ReplayStats.com or Drop.sc.");
 });
 
 $(function() {
