@@ -1,14 +1,6 @@
 <div class="form form-join">
   <div class="logo logo30"><em>GG</em>TRACKER</div>
 
-  <%= semantic_form_for(resource, :method => 'post', :url => registration_path(:user)) do |f| %>
-    <%= f.inputs do %>
-      <%= f.input :email, :label => false, :input_html => {:placeholder => 'E-Mail Address'} %>
-      <%= f.input :password, :label => false, :input_html => {:placeholder => 'Password'} %>
-      <%= f.action :submit, :as => :button, :label => 'sign up' %>
-    <% end %>
-  <% end %>
-
   <a href="" class="toggle" data-toggle="form-login">login</a>
   <a href="" class="toggle" data-toggle="form-password">forgot password?</a>
 </div>
