@@ -405,9 +405,9 @@ notifyAboutUploadLimit = _.once(function() {
   alert(apology + accountDescrip + " accounts are limited to " + uploadLimit() + " replay" + plural + " per upload.  You can upload more any time you want.");
 });
 
-notifyAboutGGGReplays = _.once(function() {
+notifyAboutGGGReplays = function() {
     alert("Hi, GGTracker is shutting down but you can upload your replays to GGGReplays.com (a GGTracker clone; note three Gs in the name), or to SC2ReplayStats.com or Drop.sc.");
-});
+};
 
 $(function() {
 
